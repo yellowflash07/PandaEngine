@@ -57,6 +57,9 @@
     <ClCompile Include="cLightManager.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
+    <ClCompile Include="MeshManager.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsCommon.h">
@@ -79,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="cLightManager.h">
       <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshManager.h">
+      <Filter>Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

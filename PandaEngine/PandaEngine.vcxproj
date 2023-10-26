@@ -154,6 +154,7 @@
     <ClCompile Include="cMesh.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MeshManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Basic Shader Manager\cShaderManager.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMesh.h" />
     <ClInclude Include="GraphicsCommon.h" />
+    <ClInclude Include="MeshManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Assets\Shaders\fragmentshader.glsl" />
