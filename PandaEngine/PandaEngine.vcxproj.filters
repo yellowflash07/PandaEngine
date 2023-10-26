@@ -28,6 +28,9 @@
     <Filter Include="Lights">
       <UniqueIdentifier>{e3acfeea-70e6-418f-906e-a9d86cd00e79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Random">
+      <UniqueIdentifier>{1d96c3aa-12dd-4c46-8482-adb60e66ea4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,6 +63,9 @@
     <ClCompile Include="MeshManager.cpp">
       <Filter>Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Random</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsCommon.h">
@@ -85,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="MeshManager.h">
       <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Random</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
