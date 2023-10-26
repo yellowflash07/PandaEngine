@@ -2,28 +2,15 @@
 #include "../PandaEngine/GraphicsCommon.h"
 
 #include <iostream>
-#include <fstream>     
-#include <sstream>      
-#include <vector>      
-
-//#include "linmath.h"
-#include <glm/glm.hpp>
-#include <glm/vec3.hpp> // glm::vec3
-#include <glm/vec4.hpp> // glm::vec4
-#include <glm/mat4x4.hpp> // glm::mat4
-#include <glm/gtc/matrix_transform.hpp> 
 // glm::translate, glm::rotate, glm::scale, glm::perspective
-#include <glm/gtc/type_ptr.hpp> // glm::value_ptr
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string>
+#include <glm/gtc/type_ptr.hpp> 
 
 #include "../Basic Shader Manager/cShaderManager.h"
 #include "MeshManager.h"
 #include "cLightManager.h"
 #include "cLightHelper.h"
 
+//TODO create a camera class for this
 glm::vec3 g_cameraEye = glm::vec3(0.0, 70.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -37,7 +24,6 @@ static void error_callback(int error, const char* description)
 
 int main(void)
 {
-
     GLFWwindow* window;
     glfwSetErrorCallback(error_callback);
 
