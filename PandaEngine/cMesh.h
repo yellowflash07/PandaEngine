@@ -48,15 +48,6 @@ public:
 
 	glm::vec3 drawScale;
 	void setUniformDrawScale(float scale);
-
-	// STARTOF: From: iPhysicsMeshTransformAccess interface
-	virtual glm::vec3 getDrawPosition(void);
-	virtual glm::vec3 getDrawOrientation(void);
-	virtual void setDrawPosition(const glm::vec3& newPosition);
-	virtual void setDrawOrientation(const glm::vec3& newOrientation);
-	virtual void setDrawOrientation(const glm::quat& newOrientation);
-	// ENDOF: iPhysicsMeshTransformAccess interface
-
 	bool bIsVisible;
 
 	bool bUseDebugColours;
