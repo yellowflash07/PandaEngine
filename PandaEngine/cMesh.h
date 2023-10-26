@@ -7,38 +7,25 @@
 #include <string>
 #include <vector>
 
-
 class cMesh
 {
 public:
-	cMesh();		// Called on creation   c'tor
-	~cMesh();		// Called on deletion   d'tor
+	cMesh();	
+	~cMesh();		
 
 	std::string meshName;
-
-	std::string friendlyName;		// "Ground"
-
+	std::string friendlyName;		
 	glm::vec3 drawPosition;
-
-//	glm::vec3 drawOrientation;
 
 	void setRotationFromEuler(glm::vec3 newEulerAngleXYZ)
 	{
 		this->m_qOrientation = glm::quat(newEulerAngleXYZ);
 	}
 
-	void adjustRoationAngleFromEuler(glm::vec3 EulerAngleXYZ_Adjust)
+	void Rotate(glm::vec3 EulerAngleXYZ_Adjust)
 	{
-		// To combine quaternion values, you multiply them together
-		// Make a quaternion that represents that CHANGE in angle
 		glm::quat qChange = glm::quat(EulerAngleXYZ_Adjust);
-
-		// Multiply them together to get the change
-		// Just like with matrix math
 		this->m_qOrientation *= qChange;
-
-// Which is exactly the same as:
-//		this->m_qOrientation = this->m_qOrientation * qChange;
 	}
 
 	glm::quat get_qOrientation(void)
@@ -57,9 +44,6 @@ public:
 	bool bDoNotLight;
 
 	std::vector<cMesh*> vec_pChildMeshes;
-
-	//void Update(double deltaTime);
-
 	unsigned int getUniqueID(void);
 
 private:
