@@ -19,6 +19,15 @@
     <Filter Include="VAOManager">
       <UniqueIdentifier>{095e7ca4-d0fc-478b-ae8d-7345f511d304}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ShaderManager\Shaders">
+      <UniqueIdentifier>{3e81b8db-1609-4237-81ad-4c3655c4cd37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{56eb4662-e7bf-4be8-b145-47ef17c9e0ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lights">
+      <UniqueIdentifier>{e3acfeea-70e6-418f-906e-a9d86cd00e79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,6 +48,15 @@
     <ClCompile Include="..\cVAOManager\sModelDrawInfo.cpp">
       <Filter>VAOManager</Filter>
     </ClCompile>
+    <ClCompile Include="cMesh.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="cLightHelper.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="cLightManager.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsCommon.h">
@@ -53,5 +71,22 @@
     <ClInclude Include="..\cVAOManager\sModelDrawInfo.h">
       <Filter>VAOManager</Filter>
     </ClInclude>
+    <ClInclude Include="cMesh.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="cLightHelper.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="cLightManager.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Assets\Shaders\fragmentshader.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\vertexshader.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -96,24 +96,13 @@ bool cShaderManager::m_loadSourceFromFile( cShader &shader )
 		return false;
 	}
 
-	//std::stringstream ssSource;
-	//std::string temp;
-
-	//while ( theFile >> temp )
-	//{	// Add it to the string stream
-	//	ssSource << temp << " ";
-	//}
-
 	shader.vecSource.clear();
 
 	char pLineTemp[MAXLINELENGTH] = {0};
 	while ( theFile.getline( pLineTemp, MAXLINELENGTH ) )
 	{
 		std::string tempString(pLineTemp);
-		//if ( tempString != "" )
-		//{	// Line isn't empty, so add
-			shader.vecSource.push_back( tempString );
-		//}
+		shader.vecSource.push_back(tempString);
 	}
 	
 	theFile.close();
