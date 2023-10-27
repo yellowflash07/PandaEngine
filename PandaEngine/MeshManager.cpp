@@ -141,26 +141,25 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
 
 void MeshManager::DrawAllObjects(GLuint shaderProgramID)
 {
-   // ImGui::Begin("Meshes");
-
+    ImGui::Begin("Meshes");
 
     for (unsigned int index = 0; index != meshList.size(); index++)
     {
         cMesh* pCurrentMesh = meshList[index];
 
-       /* if (ImGui::Button(pCurrentMesh->friendlyName.c_str(), ImVec2(10,10)))
+        if (ImGui::Button(pCurrentMesh->friendlyName.c_str(), ImVec2(100,25)))
         {
-
-        }*/
+            selectedMesh = pCurrentMesh;        
+        }
 
         if (pCurrentMesh->bIsVisible)
         {
             glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
             DrawObject(pCurrentMesh, matModel, shaderProgramID);
         }
-
     }
-
+    ImGui::End();
+    DrawTransformBox();
 }
 
 void MeshManager::SetBasePath(std::string basePath)
@@ -180,4 +179,29 @@ cMesh* MeshManager::FindMeshByFriendlyName(std::string friendlyNameToFind)
     }
     // Didn't find it
     return NULL;
+}
+
+void MeshManager::DrawTransformBox()
+{
+    if (selectedMesh == nullptr) return;
+    std::string boxName = "Transform " + selectedMesh->friendlyName;
+    ImGui::Begin(boxName.c_str());
+
+    ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("xP", &selectedMesh->drawPosition.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("yP", &selectedMesh->drawPosition.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("zP", &selectedMesh->drawPosition.z); 
+
+    ImGui::Text("Rotation"); ImGui::SetNextItemWidth(40);
+    glm::vec3 euler = selectedMesh->eulerRotation;
+    ImGui::InputFloat("xR", &euler.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("yR", &euler.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("zR", &euler.z);
+    selectedMesh->setRotationFromEuler(euler);
+
+    ImGui::Text("Scale"); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("xS", &selectedMesh->drawScale.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("yS", &selectedMesh->drawScale.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("zS", &selectedMesh->drawScale.z);
+    ImGui::End();
 }

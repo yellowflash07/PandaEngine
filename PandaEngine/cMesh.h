@@ -16,9 +16,11 @@ public:
 	std::string meshName;
 	std::string friendlyName;		
 	glm::vec3 drawPosition;
+	glm::vec3 eulerRotation;
 
 	void setRotationFromEuler(glm::vec3 newEulerAngleXYZ)
 	{
+		eulerRotation = newEulerAngleXYZ;
 		this->m_qOrientation = glm::quat(newEulerAngleXYZ);
 	}
 

@@ -1,6 +1,9 @@
 #include "Engine.h"
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp> 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 static void error_callback(int error, const char* description)
 {
@@ -40,6 +43,8 @@ bool Engine::Initialize()
     }
 
 
+
+
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
@@ -50,6 +55,17 @@ bool Engine::Initialize()
 void Engine::Update()
 {
     double lastTime = glfwGetTime();
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+    ImGui_ImplOpenGL3_Init();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -64,6 +80,11 @@ void Engine::Update()
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
 
         // While drawing a pixel, see if the pixel that's already there is closer or not?
         glEnable(GL_DEPTH_TEST);
@@ -100,11 +121,18 @@ void Engine::Update()
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
+        //render the frame
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);

@@ -20,6 +20,7 @@ public:
 	void LoadDefaultLights();
 	void TestRun();
 	double deltaTime;
+	bool IsRunning;
 private:
 	cShaderManager* shaderManager;
 	MeshManager* meshManager;

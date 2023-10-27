@@ -17,8 +17,10 @@ public:
 	void DrawAllObjects(GLuint shaderProgramID);
 	void SetBasePath(std::string basePath);
 	cMesh* FindMeshByFriendlyName(std::string friendlyNameToFind);
+	void DrawTransformBox();
 
 private:
 	cVAOManager* vaoManager;
 	std::vector< cMesh* > meshList;
+	cMesh* selectedMesh;
 };
