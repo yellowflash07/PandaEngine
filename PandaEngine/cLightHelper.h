@@ -42,6 +42,7 @@ public:
 										  float linearAttenuation, 
 										  float quadraticAttenuation,
 										  float zeroThreshold = DEFAULTZEROTHRESHOLD);
+
 };
 
 #endif // cLightHelper

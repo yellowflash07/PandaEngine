@@ -46,7 +46,9 @@ public:
     void UpdateUniformValues(GLuint shaderID);
 
     static const unsigned int NUMBER_OF_LIGHTS_IM_USING = 10;
-    cLight theLights[NUMBER_OF_LIGHTS_IM_USING];
-
+    cLight* theLights[NUMBER_OF_LIGHTS_IM_USING];
+    void DrawBox();
+private:
+    cLight* selectedLight;
 };
 
