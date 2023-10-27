@@ -1,6 +1,7 @@
 #include "MeshManager.h"
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
+#include <imgui.h>
 
 MeshManager::MeshManager()
 {
@@ -140,15 +141,21 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
 
 void MeshManager::DrawAllObjects(GLuint shaderProgramID)
 {
+   // ImGui::Begin("Meshes");
+
+
     for (unsigned int index = 0; index != meshList.size(); index++)
     {
         cMesh* pCurrentMesh = meshList[index];
 
-        if (pCurrentMesh->bIsVisible)
+       /* if (ImGui::Button(pCurrentMesh->friendlyName.c_str(), ImVec2(10,10)))
         {
 
-            glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
+        }*/
 
+        if (pCurrentMesh->bIsVisible)
+        {
+            glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
             DrawObject(pCurrentMesh, matModel, shaderProgramID);
         }
 
