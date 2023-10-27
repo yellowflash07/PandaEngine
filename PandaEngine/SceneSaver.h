@@ -1,7 +1,7 @@
 #pragma once
 #include "cMesh.h"
 #include <vector>
-#include "cLightManager.cpp"
+#include "cLightManager.h"
 
 class SceneSaver
 {
