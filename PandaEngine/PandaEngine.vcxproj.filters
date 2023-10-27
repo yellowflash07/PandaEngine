@@ -37,6 +37,9 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{abc09794-2d35-4465-877e-a963d2e5312d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SceneSaver">
+      <UniqueIdentifier>{4eeec474-2df8-4463-bcaa-ce977f4e3e90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -99,6 +102,9 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="SceneSaver.cpp">
+      <Filter>SceneSaver</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsCommon.h">
@@ -160,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSaver.h">
+      <Filter>SceneSaver</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
