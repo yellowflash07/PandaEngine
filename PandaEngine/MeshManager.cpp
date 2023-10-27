@@ -205,3 +205,15 @@ void MeshManager::DrawTransformBox()
     ImGui::InputFloat("zS", &selectedMesh->drawScale.z);
     ImGui::End();
 }
+
+void MeshManager::LoadSavedMeshes(unsigned int shaderProgramID)
+{
+    std::vector<cMesh*> meshes = saver.LoadMeshes();
+    for (size_t i = 0; i < meshes.size(); i++)
+    {
+        cMesh* mesh = AddMesh(meshes[i]->meshName, meshes[i]->friendlyName, shaderProgramID);
+        mesh->drawPosition = meshes[i]->drawPosition;
+        mesh->setRotationFromEuler(mesh->eulerRotation);
+        mesh->drawScale = meshes[i]->drawScale;
+    }
+}

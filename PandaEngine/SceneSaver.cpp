@@ -131,52 +131,64 @@ void SceneSaver::SaveLights(cLight* theLights[], int size)
     }
 }
 
-void SceneSaver::LoadLights(cLight* theLights[], int size) 
+std::vector<cLight> SceneSaver::LoadLights()
 {
+    std::vector<cLight> loadedLights;
     std::ifstream file("light_values.txt");
 
-    if (file.is_open()) {
+    if (file.is_open()) 
+    {
+        cLight currentLight; // Temporary storage for the current light
         std::string line;
-        int lightIndex = 0;
 
-        while (std::getline(file, line) && lightIndex < size) {
+        while (std::getline(file, line)) 
+        {
             std::istringstream iss(line);
             std::string token;
-            cLight* currentLight = theLights[lightIndex];
 
-            if (std::getline(iss, token, ':')) {
-                if (token == "Position") {
-                    iss >> currentLight->position.x >> currentLight->position.y >> currentLight->position.z >> currentLight->position.w;
+            if (std::getline(iss, token, ':')) 
+            {
+                if (token == "Position") 
+                {
+                    iss >> currentLight.position.x >> currentLight.position.y >> currentLight.position.z >> currentLight.position.w;
                 }
-                else if (token == "Diffuse") {
-                    iss >> currentLight->diffuse.x >> currentLight->diffuse.y >> currentLight->diffuse.z >> currentLight->diffuse.w;
+                else if (token == "Diffuse") 
+                {
+                    iss >> currentLight.diffuse.x >> currentLight.diffuse.y >> currentLight.diffuse.z >> currentLight.diffuse.w;
                 }
-                else if (token == "Specular") {
-                    iss >> currentLight->specular.x >> currentLight->specular.y >> currentLight->specular.z >> currentLight->specular.w;
+                else if (token == "Specular")
+                {
+                    iss >> currentLight.specular.x >> currentLight.specular.y >> currentLight.specular.z >> currentLight.specular.w;
                 }
-                else if (token == "Atten") {
-                    iss >> currentLight->atten.x >> currentLight->atten.y >> currentLight->atten.z >> currentLight->atten.w;
+                else if (token == "Atten") 
+                {
+                    iss >> currentLight.atten.x >> currentLight.atten.y >> currentLight.atten.z >> currentLight.atten.w;
                 }
-                else if (token == "Direction") {
-                    iss >> currentLight->direction.x >> currentLight->direction.y >> currentLight->direction.z >> currentLight->direction.w;
+                else if (token == "Direction")
+                {
+                    iss >> currentLight.direction.x >> currentLight.direction.y >> currentLight.direction.z >> currentLight.direction.w;
                 }
-                else if (token == "Param1") {
-                    iss >> currentLight->param1.x >> currentLight->param1.y >> currentLight->param1.z >> currentLight->param1.w;
+                else if (token == "Param1") 
+                {
+                    iss >> currentLight.param1.x >> currentLight.param1.y >> currentLight.param1.z >> currentLight.param1.w;
                 }
-                else if (token == "Param2") {
-                    iss >> currentLight->param2.x >> currentLight->param2.y >> currentLight->param2.z >> currentLight->param2.w;
+                else if (token == "Param2") 
+                {
+                    iss >> currentLight.param2.x >> currentLight.param2.y >> currentLight.param2.z >> currentLight.param2.w;
                 }
-                else if (line.empty()) {
-                    // Move to the next light
-                    lightIndex++;
-                }
+            }
+            else if (line.empty())
+            {
+                // An empty line indicates the end of a light's data, so add the current light to the vector
+                loadedLights.push_back(currentLight);
             }
         }
 
         file.close();
     }
-}
 
+    return loadedLights;
+}
 
 
 

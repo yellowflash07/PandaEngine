@@ -169,8 +169,10 @@ bool Engine::LoadDefaultShaders()
         return false;
     }
     shaderProgramID = shaderManager->getIDFromFriendlyName("shader01");
-
     std::cout << "Shader compliled! Program ID: " << shaderProgramID << std::endl;
+
+    meshManager->LoadSavedMeshes(shaderProgramID);
+    lightManager->LoadLights();
 
     return true;
 }

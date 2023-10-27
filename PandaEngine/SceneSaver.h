@@ -13,5 +13,5 @@ public:
 	std::vector<cMesh*> LoadMeshes();
 
 	void SaveLights(cLight* theLights[], int size);
-	void LoadLights(cLight* theLights[], int size);
+	std::vector<cLight> LoadLights();
 };
