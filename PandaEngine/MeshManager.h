@@ -20,6 +20,7 @@ public:
 	cMesh* FindMeshByFriendlyName(std::string friendlyNameToFind);
 	void DrawTransformBox();
 	void LoadSavedMeshes(unsigned int shaderProgramID);
+	bool GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo);
 private:
 	cVAOManager* vaoManager;
 	std::vector< cMesh* > meshList;

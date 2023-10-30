@@ -4,6 +4,7 @@
 #include "MeshManager.h"
 #include "cLightManager.h"
 #include "cLightHelper.h"
+#include "PhysicsManager.h"
 
 class Engine
 {
@@ -16,12 +17,16 @@ public:
 	void SetShaderPath(std::string filePath);
 	void SetModelPath(std::string filePath);
 	cMesh* LoadMesh(std::string filePath, std::string friendlyName);
+	PhysicsBody* AddPhysicsBody(std::string friendlyMeshName);
 	bool LoadDefaultShaders();
 	void LoadDefaultLights();
 	void TestRun();
 	double deltaTime;
 	bool IsRunning;
+	void ShutDown();
+	GLFWwindow* window;
 private:
+	PhysicsManager* physicsManager;
 	cShaderManager* shaderManager;
 	MeshManager* meshManager;
 	cLightManager* lightManager;
@@ -29,6 +34,5 @@ private:
 	glm::vec3 cameraEye;
 	glm::vec3 cameraTarget;
 	glm::vec3 upVector;
-	GLFWwindow* window;
-
+	double lastTime;
 };

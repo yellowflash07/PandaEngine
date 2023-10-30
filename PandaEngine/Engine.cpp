@@ -15,10 +15,12 @@ Engine::Engine()
 	shaderManager = new cShaderManager();
 	meshManager = new MeshManager();
 	lightManager = new cLightManager();
+    physicsManager = new PhysicsManager(meshManager);
     cameraEye = glm::vec3(0.0, 70.0, 181.0f);
     cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
     upVector = glm::vec3(0.0f, 1.0f, 0.0f);
     shaderProgramID = 1232;
+    lastTime = glfwGetTime();
 }
 
 Engine::~Engine()
@@ -42,19 +44,9 @@ bool Engine::Initialize()
         return false;
     }
 
-
-
-
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
-
-    return true;
-}
-
-void Engine::Update()
-{
-    double lastTime = glfwGetTime();
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -67,74 +59,74 @@ void Engine::Update()
     ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
     ImGui_ImplOpenGL3_Init();
 
-    while (!glfwWindowShouldClose(window))
-    {
-
-        float ratio;
-        int width, height;
-
-        glUseProgram(shaderProgramID);
-
-        glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float)height;
-
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
 
 
-        // While drawing a pixel, see if the pixel that's already there is closer or not?
-        glEnable(GL_DEPTH_TEST);
-        // (Usually) the default - does NOT draw "back facing" triangles
-        glCullFace(GL_BACK);
+    return true;
+}
 
-        lightManager->UpdateUniformValues(shaderProgramID);
+void Engine::Update()
+{
+    float ratio;
+    int width, height;
 
-        GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
-        glUniform4f(eyeLocation_UL,
-            cameraEye.x, cameraEye.y, cameraEye.z, 1.0f);
+    glUseProgram(shaderProgramID);
 
-        glm::mat4 matProjection = glm::perspective(0.6f,
-            ratio,
-            0.1f,
-            1000.0f);
+    glfwGetFramebufferSize(window, &width, &height);
+    ratio = width / (float)height;
 
-        glm::mat4 matView = glm::lookAt(cameraEye,
-            cameraTarget,
-            upVector);
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
-        glUniformMatrix4fv(matProjection_UL, 1, GL_FALSE, glm::value_ptr(matProjection));
-
-        GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
-        glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
 
 
-        // *********************************************************************       
-        meshManager->DrawAllObjects(shaderProgramID);
+    // While drawing a pixel, see if the pixel that's already there is closer or not?
+    glEnable(GL_DEPTH_TEST);
+    // (Usually) the default - does NOT draw "back facing" triangles
+    glCullFace(GL_BACK);
 
-        // Time per frame (more or less)
-        double currentTime = glfwGetTime();
-        deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
-        //render the frame
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    lightManager->UpdateUniformValues(shaderProgramID);
+
+    GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
+    glUniform4f(eyeLocation_UL,
+        cameraEye.x, cameraEye.y, cameraEye.z, 1.0f);
+
+    glm::mat4 matProjection = glm::perspective(0.6f,
+        ratio,
+        0.1f,
+        1000.0f);
+
+    glm::mat4 matView = glm::lookAt(cameraEye,
+        cameraTarget,
+        upVector);
+
+    GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
+    glUniformMatrix4fv(matProjection_UL, 1, GL_FALSE, glm::value_ptr(matProjection));
+
+    GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
+    glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
 
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+    // *********************************************************************       
+    meshManager->DrawAllObjects(shaderProgramID);
 
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    exit(EXIT_SUCCESS);
+    // Time per frame (more or less)
+    double currentTime = glfwGetTime();
+    deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+
+    physicsManager->Update(deltaTime);
+
+    //render the frame
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+
 }
 
 void Engine::SetShaderPath(std::string filePath)
@@ -154,6 +146,16 @@ cMesh* Engine::LoadMesh(std::string filePath, std::string friendlyName)
     return mesh;
 }
 
+PhysicsBody* Engine::AddPhysicsBody(std::string friendlyMeshName)
+{
+    cMesh* mesh = meshManager->FindMeshByFriendlyName(friendlyMeshName);
+    PhysicsBody* pb = new PhysicsBody();
+    pb->mesh = mesh;
+    physicsManager->AddMesh(pb);
+    return pb;
+}
+
+
 bool Engine::LoadDefaultShaders()
 {
     cShaderManager::cShader vertexShader;
@@ -171,8 +173,10 @@ bool Engine::LoadDefaultShaders()
     shaderProgramID = shaderManager->getIDFromFriendlyName("shader01");
     std::cout << "Shader compliled! Program ID: " << shaderProgramID << std::endl;
 
-    meshManager->LoadSavedMeshes(shaderProgramID);
-    lightManager->LoadLights();
+    lightManager->theLights[0]->param2.x = 1; //on
+    lightManager->theLights[0]->param1.x = 2; //directional
+   // meshManager->LoadSavedMeshes(shaderProgramID);
+  //  lightManager->LoadLights();
 
     return true;
 }
@@ -180,4 +184,17 @@ bool Engine::LoadDefaultShaders()
 void Engine::LoadDefaultLights()
 {
     lightManager->SetUniformLocations(shaderProgramID);
+}
+
+void Engine::ShutDown()
+{
+    delete shaderManager;
+    delete meshManager;
+    delete lightManager;
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    exit(EXIT_SUCCESS);
 }

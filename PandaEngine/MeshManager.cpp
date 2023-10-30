@@ -217,3 +217,8 @@ void MeshManager::LoadSavedMeshes(unsigned int shaderProgramID)
         mesh->drawScale = meshes[i]->drawScale;
     }
 }
+
+bool MeshManager::GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo)
+{  
+    return vaoManager->FindDrawInfoByModelName(FindMeshByFriendlyName(friendlyName)->meshName, drawInfo);
+}
