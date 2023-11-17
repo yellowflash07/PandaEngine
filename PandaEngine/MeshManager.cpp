@@ -3,9 +3,11 @@
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 #include <imgui.h>
 
+
 MeshManager::MeshManager()
 {
    vaoManager = new cVAOManager();
+   saver = new SceneSaver();
 }
 
 MeshManager::~MeshManager()
@@ -16,13 +18,17 @@ MeshManager::~MeshManager()
 cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyName, unsigned int shaderProgramID)
 {
     sModelDrawInfo drawInfo;
-    vaoManager->LoadModelIntoVAO(modelNameAtPath, drawInfo, shaderProgramID);
-    std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
+
+    if (!vaoManager->LoadModelIntoVAOAI(modelNameAtPath, drawInfo, shaderProgramID))
+    {
+		//  DoTheErrorLogging("Didn't load model");
+		return nullptr;
+	}
 
     cMesh* mesh = new cMesh();
     mesh->meshName = modelNameAtPath;
     mesh->friendlyName = friendlyName;
-  //  mesh->drawPosition = glm::vec3(0.0f, -30.0f, 0.0f);
+    std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
     meshList.push_back(mesh);
     return mesh;
 }
@@ -104,7 +110,12 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
         glUniform1f(bUseDebugColour_UL, (GLfloat)GL_FALSE);
     }
 
-
+    GLint colour_UL = glGetUniformLocation(shaderProgramID, "color");
+    glUniform4f(colour_UL,
+        pCurrentMesh->color.r,
+        pCurrentMesh->color.g,
+        pCurrentMesh->color.b,
+        pCurrentMesh->color.a);
 
     sModelDrawInfo modelInfo;
     if (vaoManager->FindDrawInfoByModelName(pCurrentMesh->meshName, modelInfo))
@@ -165,6 +176,7 @@ void MeshManager::DrawAllObjects(GLuint shaderProgramID)
 void MeshManager::SetBasePath(std::string basePath)
 {
     vaoManager->setBasePath(basePath);
+    this->basePath = basePath;
 }
 
 cMesh* MeshManager::FindMeshByFriendlyName(std::string friendlyNameToFind)
@@ -202,19 +214,25 @@ void MeshManager::DrawTransformBox()
     ImGui::Text("Scale"); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("xS", &selectedMesh->drawScale.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("yS", &selectedMesh->drawScale.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
-    ImGui::InputFloat("zS", &selectedMesh->drawScale.z);
+    ImGui::InputFloat("zS", &selectedMesh->drawScale.z); ImGui::SetNextItemWidth(100);
+
+    if (ImGui::Button("Save"))
+    {
+        saver->SaveMeshes(meshList);
+    }
     ImGui::End();
 }
 
 void MeshManager::LoadSavedMeshes(unsigned int shaderProgramID)
 {
-    std::vector<cMesh*> meshes = saver.LoadMeshes();
+    std::vector<cMesh*> meshes = saver->LoadMeshes();
     for (size_t i = 0; i < meshes.size(); i++)
     {
         cMesh* mesh = AddMesh(meshes[i]->meshName, meshes[i]->friendlyName, shaderProgramID);
         mesh->drawPosition = meshes[i]->drawPosition;
-        mesh->setRotationFromEuler(mesh->eulerRotation);
+        mesh->setRotationFromEuler(meshes[i]->eulerRotation);
         mesh->drawScale = meshes[i]->drawScale;
+        mesh->color = meshes[i]->color;
     }
 }
 
@@ -222,3 +240,12 @@ bool MeshManager::GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& dra
 {  
     return vaoManager->FindDrawInfoByModelName(FindMeshByFriendlyName(friendlyName)->meshName, drawInfo);
 }
+
+void MeshManager::ToggleWireframe(bool wireframe)
+{
+    for (size_t i = 0; i < meshList.size(); i++)
+    {
+        meshList[i]->bIsWireframe = wireframe;
+    }
+}
+

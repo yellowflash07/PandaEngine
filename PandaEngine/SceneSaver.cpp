@@ -24,6 +24,7 @@ void SceneSaver::SaveMeshes(std::vector<cMesh*> meshes)
             file << "Position:" << mesh->drawPosition.x << " " << mesh->drawPosition.y << " " << mesh->drawPosition.z << "\n";
             file << "Rotation:" << mesh->eulerRotation.x << " " << mesh->eulerRotation.y << " " << mesh->eulerRotation.z << "\n";
             file << "Scale:" << mesh->drawScale.x << " " << mesh->drawScale.y << " " << mesh->drawScale.z << "\n";
+            file << "Color:" << mesh->color.x << " " << mesh->color.y << " " << mesh->color.z << " " << mesh->color.w << "\n";
             // Separate meshes with an empty line
             file << "\n";
         }
@@ -61,6 +62,7 @@ std::vector<cMesh*> SceneSaver::LoadMeshes()
                         newMesh->drawPosition = currentMesh.drawPosition;
                         newMesh->eulerRotation = currentMesh.eulerRotation;
                         newMesh->drawScale = currentMesh.drawScale;
+                        newMesh->color = currentMesh.color;
                         loadedMeshes.push_back(newMesh);
                     }
 
@@ -82,6 +84,10 @@ std::vector<cMesh*> SceneSaver::LoadMeshes()
                 {
                     iss >> currentMesh.drawScale.x >> currentMesh.drawScale.y >> currentMesh.drawScale.z;
                 }
+                else if (token == "Color")
+                {
+					iss >> currentMesh.color.x >> currentMesh.color.y >> currentMesh.color.z >> currentMesh.color.w;
+				}
             }
             else if (line.empty()) 
             {
@@ -99,6 +105,7 @@ std::vector<cMesh*> SceneSaver::LoadMeshes()
             newMesh->drawPosition = currentMesh.drawPosition;
             newMesh->eulerRotation = currentMesh.eulerRotation;
             newMesh->drawScale = currentMesh.drawScale;
+            newMesh->color = currentMesh.color;
             loadedMeshes.push_back(newMesh);
         }
 

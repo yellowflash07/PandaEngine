@@ -41,7 +41,7 @@ public:
 
 	bool bUseDebugColours;
 	glm::vec4 wholeObjectDebugColourRGBA;
-
+	glm::vec4 color;
 	bool bIsWireframe;
 	bool bDoNotLight;
 

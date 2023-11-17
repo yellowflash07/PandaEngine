@@ -4,11 +4,14 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include "GLFWCallbacks.h"
 
 static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
+
+
 
 Engine::Engine()
 {
@@ -21,6 +24,8 @@ Engine::Engine()
     upVector = glm::vec3(0.0f, 1.0f, 0.0f);
     shaderProgramID = 1232;
     lastTime = glfwGetTime();
+    near = 0.1f;
+    far = 1000.0f;
 }
 
 Engine::~Engine()
@@ -44,6 +49,7 @@ bool Engine::Initialize()
         return false;
     }
 
+    glfwSetKeyCallback(window, key_callback);
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
@@ -58,8 +64,6 @@ bool Engine::Initialize()
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
     ImGui_ImplOpenGL3_Init();
-
-
 
     return true;
 }
@@ -89,14 +93,44 @@ void Engine::Update()
 
     lightManager->UpdateUniformValues(shaderProgramID);
 
+    ImGui::Begin("Camera Controls");
+
+    if (ImGui::SliderFloat("Camera X", &cameraEye.x, -1000, 1000))
+    {
+
+    }
+    if (ImGui::SliderFloat("Camera Y", &cameraEye.y, -1000, 1000))
+    {
+
+    }
+    if (ImGui::SliderFloat("Camera Z", &cameraEye.z, -1000, 1000))
+    {
+
+    }
+
+    if (ImGui::SliderFloat("Camera Target X", &cameraTarget.x, -1000, 1000))
+    {
+
+    }
+    if (ImGui::SliderFloat("Camera Target Y", &cameraTarget.y, -1000, 1000))
+    {
+
+    }
+    if (ImGui::SliderFloat("Camera Target Z", &cameraTarget.z, -1000, 1000))
+    {
+
+    }
+
+    ImGui::End();
+
     GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
     glUniform4f(eyeLocation_UL,
         cameraEye.x, cameraEye.y, cameraEye.z, 1.0f);
 
     glm::mat4 matProjection = glm::perspective(0.6f,
         ratio,
-        0.1f,
-        1000.0f);
+        near,
+        far);
 
     glm::mat4 matView = glm::lookAt(cameraEye,
         cameraTarget,
@@ -173,8 +207,7 @@ bool Engine::LoadDefaultShaders()
     shaderProgramID = shaderManager->getIDFromFriendlyName("shader01");
     std::cout << "Shader compliled! Program ID: " << shaderProgramID << std::endl;
 
-    lightManager->theLights[0]->param2.x = 1; //on
-    lightManager->theLights[0]->param1.x = 2; //directional
+ 
    // meshManager->LoadSavedMeshes(shaderProgramID);
   //  lightManager->LoadLights();
 
@@ -184,6 +217,15 @@ bool Engine::LoadDefaultShaders()
 void Engine::LoadDefaultLights()
 {
     lightManager->SetUniformLocations(shaderProgramID);
+    lightManager->theLights[0]->param2.x = 1; //on
+    lightManager->theLights[0]->param1.x = 2; //directional
+    lightManager->theLights[0]->direction = glm::vec4(-1.0,1.0,-1.0,1); //directional
+}
+
+void Engine::LoadSave()
+{
+    meshManager->LoadSavedMeshes(shaderProgramID);
+	//lightManager->LoadLights();
 }
 
 void Engine::ShutDown()
@@ -196,5 +238,19 @@ void Engine::ShutDown()
     ImGui::DestroyContext();
     glfwDestroyWindow(window);
     glfwTerminate();
-    exit(EXIT_SUCCESS);
+    //exit(EXIT_SUCCESS);
+}
+
+void Engine::SetCameraDefaults(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float far, float near)
+{
+    cameraEye = position;
+	cameraTarget = target;
+	this->upVector = upVector;
+    this->near = near;
+    this->far = far;
+}
+
+void Engine::SetCameraTarget(glm::vec3 target)
+{
+    cameraTarget = target;
 }

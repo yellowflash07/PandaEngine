@@ -16,162 +16,6 @@ PhysicsManager::~PhysicsManager()
 
 void PhysicsManager::Update(float deltaTime)
 {
-#pragma region  OLD
-	//for (size_t i = 0; i < bodies.size(); i++)
-	//{
-	//	PhysicsBody* pb = bodies[i];
-
-	//	glm::vec3 deltaVelocityThisFrame = pb->acceleration * (float)deltaTime;
-
-	//	// Update the velocity based on this delta velocity
-	//	// Then this part: NewVelocity = LastVel + ...
-	//	pb->velocity += deltaVelocityThisFrame;
-
-
-	//	// Position change is based on the velocity over this time frame
-	//	// This part: (Vel * DeltaTime)	
-	//	glm::vec3 deltaPosition = pb->velocity * (float)deltaTime;
-
-	//	// ...then this part: NewPosition = LastPos + ...
-	//	// Upatate the position based on this delta position
-	//	pb->mesh->drawPosition.x += deltaPosition.x;
-	//	pb->mesh->drawPosition.y += deltaPosition.y;
-	//	pb->mesh->drawPosition.z += deltaPosition.z;
-
-	//	if (pb->mesh->friendlyName == "Sphere")
-	//	{
-
-	//		glm::vec3 closestPointToTriangle = glm::vec3(FLT_MAX, FLT_MAX, FLT_MAX);
-	//		float closestDistanceSoFar = FLT_MAX;
-	//		glm::vec3 closestTriangleVertices[3] = { glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f) };
-	//		unsigned int indexOfClosestTriangle = INT_MAX;
-	//		sModelDrawInfo groundMeshInfo;
-	//		
-	//		cMesh* groundMesh = meshManager->FindMeshByFriendlyName("Ground");
-	//		float sphereRadius = 1.0f;
-
-	//		if (meshManager->GetModelDrawInfo("Ground", groundMeshInfo))
-	//		{
-	//			// Which triangle is closest to this sphere (right now)
-	//			for (unsigned int index = 0; index != groundMeshInfo.numberOfIndices; index += 3)
-	//			{
-	//				glm::vec3 verts[3];
-
-	//				verts[0].x = groundMeshInfo.pVertices[groundMeshInfo.pIndices[index]].x;
-	//				verts[0].y = groundMeshInfo.pVertices[groundMeshInfo.pIndices[index]].y;
-	//				verts[0].z = groundMeshInfo.pVertices[groundMeshInfo.pIndices[index]].z;
-
-	//				verts[1].x = groundMeshInfo.pVertices[groundMeshInfo.pIndices[index + 1]].x;
-	//				verts[1].y = groundMeshInfo.pVertices[groundMeshInfo.pIndices[index + 1]].y;
-	//				verts[1].z = groundMeshInfo.pVertices[groundMeshInfo.pIndices[index + 1]].z;
-
-	//				verts[2].x = groundMeshInfo.pVertices[groundMeshInfo.pIndices[index + 2]].x;
-	//				verts[2].y = groundMeshInfo.pVertices[groundMeshInfo.pIndices[index + 2]].y;
-	//				verts[2].z = groundMeshInfo.pVertices[groundMeshInfo.pIndices[index + 2]].z;
-
-	//				glm::mat4 matModel = glm::mat4(1.0f);
-
-	//				// Translation
-	//				glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
-	//					glm::vec3(groundMesh->drawPosition.x,
-	//						groundMesh->drawPosition.y,
-	//						groundMesh->drawPosition.z));
-
-	//				// Rotation matrix generation
-	//				glm::mat4 matRotateX = glm::rotate(glm::mat4(1.0f),
-	//					groundMesh->eulerRotation.x, // (float)glfwGetTime(),
-	//					glm::vec3(1.0f, 0.0, 0.0f));
-
-
-	//				glm::mat4 matRotateY = glm::rotate(glm::mat4(1.0f),
-	//					groundMesh->eulerRotation.y, // (float)glfwGetTime(),
-	//					glm::vec3(0.0f, 1.0, 0.0f));
-
-	//				glm::mat4 matRotateZ = glm::rotate(glm::mat4(1.0f),
-	//					groundMesh->eulerRotation.z, // (float)glfwGetTime(),
-	//					glm::vec3(0.0f, 0.0, 1.0f));
-
-	//				// Scaling matrix
-	//				glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
-	//												glm::vec3(1,1,1));
-	//				//--------------------------------------------------------------
-
-	//				// Combine all these transformation
-	//				matModel = matModel * matTranslate;
-
-	//				matModel = matModel * matRotateX;
-	//				matModel = matModel * matRotateY;
-	//				matModel = matModel * matRotateZ;
-
-	//				matModel = matModel * matScale;
-
-
-	//				// vertexWorldPos = matModel * vec4(vPos.xyz, 1.0f);
-
-	//				glm::vec4 vertsWorld[3];
-	//				vertsWorld[0] = (matModel * glm::vec4(verts[0], 1.0f));
-	//				vertsWorld[1] = (matModel * glm::vec4(verts[1], 1.0f));
-	//				vertsWorld[2] = (matModel * glm::vec4(verts[2], 1.0f));
-
-	//				// And make sure you multiply the normal by the inverse transpose
-	//				// OR recalculate it right here! 
-
-	//				// ******************************************************
-
-	//				glm::vec3 thisTriangleClosestPoint = ClosestPtPointTriangle(pb->mesh->drawPosition,
-	//					vertsWorld[0], vertsWorld[1], vertsWorld[2]);
-
-	//				// Is this the closest so far
-	//				float distanceToThisTriangle = glm::distance(thisTriangleClosestPoint, pb->mesh->drawPosition);
-
-	//				if (distanceToThisTriangle < closestDistanceSoFar)
-	//				{
-	//					// this one is closer
-	//					closestDistanceSoFar = distanceToThisTriangle;
-	//					// Make note of the triangle index
-	//					indexOfClosestTriangle = index;
-	//					// 
-	//					closestTriangleVertices[0] = vertsWorld[0];
-	//					closestTriangleVertices[1] = vertsWorld[1];
-	//					closestTriangleVertices[2] = vertsWorld[2];
-	//				}
-	//			}
-
-	//			std::cout << closestDistanceSoFar << std::endl;
-	//			if (closestDistanceSoFar < sphereRadius)
-	//			{
-	//				// Hit it!
-	//				// Take the normal of that triangle and bounce the sphere along it
-	//				// Calculate the current "direction" vector 
-	//				// We're using the velocity
-	//				glm::vec3 sphereDirection = pb->velocity;
-	//				// Normalize... 
-	//				sphereDirection = glm::normalize(sphereDirection);
-
-	//				// Calcualte the current normal from the TRANSFORMED vertices
-	//				glm::vec3 edgeA = closestTriangleVertices[1] - closestTriangleVertices[0];
-	//				glm::vec3 edgeB = closestTriangleVertices[2] - closestTriangleVertices[0];
-
-	//				glm::vec3 triNormal = glm::normalize(glm::cross(edgeA, edgeB));
-
-	//				// Calculate the reflection vector from the normal	
-	//				// https://registry.khronos.org/OpenGL-Refpages/gl4/html/reflect.xhtml
-	//				// 1st parameter is the "incident" vector
-	//				// 2nd parameter is the "normal" vector
-	//				glm::vec3 reflectionVec = glm::reflect(sphereDirection, triNormal);
-
-	//				// Update the  velocity based on this reflection vector
-	//				float sphereSpeed = glm::length(pb->velocity);
-	//				glm::vec3 newVelocity = reflectionVec * sphereSpeed;
-
-	//				pb->velocity = newVelocity;
-	//			}
-
-	//		}
-	//	}
-
-	//}
-#pragma endregion
 	CheckIntersections(deltaTime);
 }
 
@@ -221,6 +65,7 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 					{
 						case PhysicsShapes::SPHERE:
 							// Sphere - Sphere
+							this->m_Sphere_Sphere_IntersectionTest(pObjectA, pObjectB);
 							break;
 						case PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT:
 							// Sphere - Mesh triangle (indirect)
@@ -237,19 +82,7 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 			}
 
 		}
-
 	}
-
-
-	//for (PhysicsBody* pObject : this->bodies)
-	//{
-	//	if (pObject->mesh)
-	//	{
-	//		pObject->pTheAssociatedMesh->setDrawPosition(pObject->position);
-	//		pObject->pTheAssociatedMesh->setDrawOrientation(pObject->orientation);
-	//	}
-	//}
-
 	return;
 }
 
@@ -311,6 +144,57 @@ glm::vec3 PhysicsManager::ClosestPtPointTriangle(glm::vec3 p, glm::vec3 a, glm::
 	return u * a + v * b + w * c;
 }
 
+bool PhysicsManager::m_Sphere_Sphere_IntersectionTest(PhysicsBody* pSphereA, PhysicsBody* pShpereB)
+{
+	// Do we have a mesh manager? 
+	if (!this->meshManager)
+	{
+		return false;
+	}
+
+	// Does the physics object have a mesh object associated? 
+	if (!pSphereA->mesh || !pShpereB->mesh)
+	{
+		return false;
+	}
+
+	PhysicsShapes::sSphere* sphereA = (PhysicsShapes::sSphere*)(pSphereA->shape);
+	PhysicsShapes::sSphere* sphereB = (PhysicsShapes::sSphere*)(pShpereB->shape);
+
+
+	float distance = glm::distance(pSphereA->mesh->drawPosition, pShpereB->mesh->drawPosition);
+	float radiusSum = sphereA->radius + sphereB->radius;
+
+	if (distance < radiusSum)
+	{
+
+		// impact speed
+		glm::vec3 v = (pSphereA->velocity - pShpereB->velocity);
+		glm::vec3 normal = (pSphereA->mesh->drawPosition - pShpereB->mesh->drawPosition);
+		
+		normal = glm::normalize(normal);
+
+		float vn = glm::dot(v, normal);
+
+		//// sphere intersecting but moving away from each other already
+		if (vn > 0.0f)
+			return false;
+
+		// collision impulse
+		float i = (-(1.0f) * vn) / (pSphereA->inverseMass + pShpereB->inverseMass);
+		glm::vec3 impulse = normal * i;
+
+		// change in momentum
+		pSphereA->velocity += impulse * pSphereA->inverseMass;
+		pShpereB->velocity -= impulse * pShpereB->inverseMass;
+		pSphereA->mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		pShpereB->mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+		return true;
+	}
+
+}
+
 bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphere, PhysicsBody* triMesh)
 {
 	// Do we have a mesh manager? 
@@ -348,7 +232,7 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 
 
 	// We now have the mesh object location and the detailed mesh information 
-					// Which triangle is closest to this sphere (right now)
+	// Which triangle is closest to this sphere (right now)
 	for (unsigned int index = 0; index != theMeshDrawInfo.numberOfIndices; index += 3)
 	{
 		glm::vec3 verts[3];
@@ -382,25 +266,19 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 					triMesh->mesh->drawPosition.z));
 
 		// Rotation matrix generation
-		glm::mat4 matRotateX = glm::rotate(glm::mat4(1.0f),
-			triMesh->mesh->eulerRotation.x,
-			glm::vec3(1.0f, 0.0, 0.0f));
+		glm::mat4 matRotation = glm::mat4(triMesh->mesh->get_qOrientation());
 
-
-		glm::mat4 matRotateY = glm::rotate(glm::mat4(1.0f),
-			triMesh->mesh->eulerRotation.y,
-			glm::vec3(0.0f, 1.0, 0.0f));
-
-		glm::mat4 matRotateZ = glm::rotate(glm::mat4(1.0f),
-			triMesh->mesh->eulerRotation.z,
-			glm::vec3(0.0f, 0.0, 1.0f));
+		glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
+			glm::vec3(triMesh->mesh->drawScale.x,
+					triMesh->mesh->drawScale.y,
+					triMesh->mesh->drawScale.z));
 
 				// Combine all these transformation
 		matModel = matModel * matTranslate;
 
-		matModel = matModel * matRotateX;
-		matModel = matModel * matRotateY;
-		matModel = matModel * matRotateZ;
+		matModel = matModel * matRotation;
+
+		matModel = matModel * matScale;
 
 		glm::vec4 vertsWorld[3];
 		vertsWorld[0] = (matModel * glm::vec4(verts[0], 1.0f));

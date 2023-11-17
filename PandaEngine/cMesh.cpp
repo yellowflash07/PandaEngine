@@ -15,7 +15,7 @@ cMesh::cMesh()
 
 	this->bUseDebugColours = false;
 	this->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
+	this->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	// Set uniqueID
 	this->m_UniqueID = cMesh::m_nextUniqueID;
 	cMesh::m_nextUniqueID++;

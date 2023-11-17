@@ -21,9 +21,11 @@ public:
 	void DrawTransformBox();
 	void LoadSavedMeshes(unsigned int shaderProgramID);
 	bool GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo);
+	void ToggleWireframe(bool wireframe);
 private:
 	cVAOManager* vaoManager;
 	std::vector< cMesh* > meshList;
 	cMesh* selectedMesh;
-	SceneSaver saver;
+	SceneSaver* saver;
+	std::string basePath;
 };
