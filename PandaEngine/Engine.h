@@ -5,6 +5,8 @@
 #include "cLightManager.h"
 #include "cLightHelper.h"
 #include "PhysicsManager.h"
+#include "Camera.h"
+#include "AudioManager.h"
 
 class Engine
 {
@@ -16,6 +18,7 @@ public:
 	void Update();
 	void SetShaderPath(std::string filePath);
 	void SetModelPath(std::string filePath);
+	void SetAudioPath(std::string filePath);
 	cMesh* LoadMesh(std::string filePath, std::string friendlyName);
 	PhysicsBody* AddPhysicsBody(std::string friendlyMeshName);
 	bool LoadDefaultShaders();
@@ -29,6 +32,7 @@ public:
 	GLFWwindow* window;
 	cLightManager* lightManager;
 	MeshManager* meshManager;
+	cAudioManager* audioManager;
 private:
 	PhysicsManager* physicsManager;
 	cShaderManager* shaderManager;
@@ -39,4 +43,5 @@ private:
 	float near;
 	float far;
 	double lastTime;
+	//Camera* camera;
 };

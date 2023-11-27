@@ -11,7 +11,12 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
+Camera* camera;
 
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    	camera->ProcessMouseMovement(xpos, ypos);
+}
 
 Engine::Engine()
 {
@@ -19,13 +24,10 @@ Engine::Engine()
 	meshManager = new MeshManager();
 	lightManager = new cLightManager();
     physicsManager = new PhysicsManager(meshManager);
-    cameraEye = glm::vec3(0.0, 70.0, 181.0f);
-    cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
-    upVector = glm::vec3(0.0f, 1.0f, 0.0f);
-    shaderProgramID = 1232;
-    lastTime = glfwGetTime();
-    near = 0.1f;
-    far = 1000.0f;
+    audioManager = new cAudioManager(meshManager);
+    camera = new Camera(glm::vec3(-20.0, 8.6f,106.0f),
+        		        glm::vec3(0.0f, 0.0f, -1.0f),
+        		        glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 Engine::~Engine()
@@ -50,6 +52,7 @@ bool Engine::Initialize()
     }
 
     glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
@@ -64,6 +67,8 @@ bool Engine::Initialize()
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
     ImGui_ImplOpenGL3_Init();
+
+    audioManager->Initialize();
 
     return true;
 }
@@ -91,59 +96,13 @@ void Engine::Update()
     // (Usually) the default - does NOT draw "back facing" triangles
     glCullFace(GL_BACK);
 
+    //update lights
     lightManager->UpdateUniformValues(shaderProgramID);
 
-    ImGui::Begin("Camera Controls");
+    //update camera
+    camera->Update(window, deltaTime);
 
-    if (ImGui::SliderFloat("Camera X", &cameraEye.x, -1000, 1000))
-    {
-
-    }
-    if (ImGui::SliderFloat("Camera Y", &cameraEye.y, -1000, 1000))
-    {
-
-    }
-    if (ImGui::SliderFloat("Camera Z", &cameraEye.z, -1000, 1000))
-    {
-
-    }
-
-    if (ImGui::SliderFloat("Camera Target X", &cameraTarget.x, -1000, 1000))
-    {
-
-    }
-    if (ImGui::SliderFloat("Camera Target Y", &cameraTarget.y, -1000, 1000))
-    {
-
-    }
-    if (ImGui::SliderFloat("Camera Target Z", &cameraTarget.z, -1000, 1000))
-    {
-
-    }
-
-    ImGui::End();
-
-    GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
-    glUniform4f(eyeLocation_UL,
-        cameraEye.x, cameraEye.y, cameraEye.z, 1.0f);
-
-    glm::mat4 matProjection = glm::perspective(0.6f,
-        ratio,
-        near,
-        far);
-
-    glm::mat4 matView = glm::lookAt(cameraEye,
-        cameraTarget,
-        upVector);
-
-    GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
-    glUniformMatrix4fv(matProjection_UL, 1, GL_FALSE, glm::value_ptr(matProjection));
-
-    GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
-    glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
-
-
-    // *********************************************************************       
+    //draw meshes
     meshManager->DrawAllObjects(shaderProgramID);
 
     // Time per frame (more or less)
@@ -151,7 +110,16 @@ void Engine::Update()
     deltaTime = currentTime - lastTime;
     lastTime = currentTime;
 
+    //update physics
     physicsManager->Update(deltaTime);
+
+    //update audio
+    audioManager->Update();
+
+    audioManager->SetListenerAttributes(camera->cameraEye, 
+                                        glm::vec3(0,0,0), 
+                                        camera->GetCameraRotation() * glm::vec3(0, 0, 1),
+                                        camera->upVector);
 
     //render the frame
     ImGui::Render();
@@ -172,6 +140,11 @@ void Engine::SetShaderPath(std::string filePath)
 void Engine::SetModelPath(std::string filePath)
 {
     meshManager->SetBasePath(filePath);
+}
+
+void Engine::SetAudioPath(std::string filePath)
+{
+    audioManager->SetBasePath(filePath);
 }
 
 cMesh* Engine::LoadMesh(std::string filePath, std::string friendlyName)
@@ -207,9 +180,7 @@ bool Engine::LoadDefaultShaders()
     shaderProgramID = shaderManager->getIDFromFriendlyName("shader01");
     std::cout << "Shader compliled! Program ID: " << shaderProgramID << std::endl;
 
- 
-   // meshManager->LoadSavedMeshes(shaderProgramID);
-  //  lightManager->LoadLights();
+    camera->shaderProgramID = shaderProgramID;
 
     return true;
 }
@@ -233,6 +204,8 @@ void Engine::ShutDown()
     delete shaderManager;
     delete meshManager;
     delete lightManager;
+    delete physicsManager;
+    delete audioManager;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -241,16 +214,9 @@ void Engine::ShutDown()
     //exit(EXIT_SUCCESS);
 }
 
-void Engine::SetCameraDefaults(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float far, float near)
-{
-    cameraEye = position;
-	cameraTarget = target;
-	this->upVector = upVector;
-    this->near = near;
-    this->far = far;
-}
+//void Engine::SetCamera(Camera* camera)
+//{
+//  //  this->camera = camera;
+//   // this->camera->shaderProgramID = shaderProgramID;
+//}
 
-void Engine::SetCameraTarget(glm::vec3 target)
-{
-    cameraTarget = target;
-}
