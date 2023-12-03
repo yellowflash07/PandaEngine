@@ -16,3 +16,8 @@ float Random::GetRandomFloat(float min, float max)
     float r = random * diff;
     return min + r;
 }
+
+int Random::GetRandomInt(int min, int max)
+{
+	return rand() % max + min;
+}

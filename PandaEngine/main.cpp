@@ -1,5 +1,6 @@
 
 #include "Engine.h"
+#include "Random.h"
 #include <iostream>
 
 int keyHit = 0;

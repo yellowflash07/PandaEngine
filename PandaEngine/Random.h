@@ -5,5 +5,6 @@ class Random
 public:
 	Random();
 	~Random();
-	float GetRandomFloat(float min, float max);
+	static float GetRandomFloat(float min, float max);
+	static int GetRandomInt(int min, int max);
 };
