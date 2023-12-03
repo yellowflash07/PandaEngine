@@ -8,15 +8,15 @@
 #include <map>
 
 #include "sModelDrawInfo.h"
-
+#include <assimp/scene.h> 
 class cVAOManager
 {
 public:
 
-	bool LoadModelIntoVAO(std::string fileName, 
-						  sModelDrawInfo &drawInfo, 
-						  unsigned int shaderProgramID,
-						  bool bIsDynamicBuffer = false);
+	bool LoadModelIntoVAOAI(std::string fileName,
+		sModelDrawInfo& drawInfo,
+		unsigned int shaderProgramID,
+		bool bIsDynamicBuffer = false);
 
 	// We don't want to return an int, likely
 	bool FindDrawInfoByModelName(std::string filename,
@@ -41,8 +41,7 @@ public:
 
 
 private:
-
-	bool m_LoadTheFile_Ply_XYZ_N_RGBA(std::string theFileName, sModelDrawInfo& drawInfo);
+	bool m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo);
 
 	std::map< std::string /*model name*/,
 		      sModelDrawInfo /* info needed to draw*/ >

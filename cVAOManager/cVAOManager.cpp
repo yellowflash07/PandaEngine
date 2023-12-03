@@ -9,7 +9,11 @@
 
 #include <sstream>
 #include <fstream>
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
 
+#include <iostream>
 
 void cVAOManager::setBasePath(std::string basePathWithoutSlash)
 {
@@ -17,103 +21,94 @@ void cVAOManager::setBasePath(std::string basePathWithoutSlash)
     return;
 }
 
-bool cVAOManager::LoadModelIntoVAO(
-		std::string fileName, 
-		sModelDrawInfo &drawInfo,
-	    unsigned int shaderProgramID,
-        bool bIsDynamicBuffer /*=false*/)
+bool cVAOManager::LoadModelIntoVAOAI(
+    std::string fileName,
+    sModelDrawInfo& drawInfo,
+    unsigned int shaderProgramID,
+    bool bIsDynamicBuffer /*=false*/)
 
 {
-	// Load the model from file
-
-	drawInfo.meshName = fileName;
-
-    std::string fileAndPath = this->m_basePathWithoutSlash + "/" + fileName;
-
-    if ( ! this->m_LoadTheFile_Ply_XYZ_N_RGBA(fileAndPath, drawInfo) )
+    // Load the model from file
+        // Create an instance of the Importer class
+ 
+    if (!this->m_LoadTheFile(fileName, drawInfo))
     {
         return false;
     };
 
-	// TODO: Load the model from file
+    // Create a VAO (Vertex Array Object), which will 
+    //	keep track of all the 'state' needed to draw 
+    //	from this buffer...
+
+    // Ask OpenGL for a new buffer ID...
+    glGenVertexArrays(1, &(drawInfo.VAO_ID));
+    // "Bind" this buffer:
+    // - aka "make this the 'current' VAO buffer
+    glBindVertexArray(drawInfo.VAO_ID);
+
+    // Now ANY state that is related to vertex or index buffer
+    //	and vertex attribute layout, is stored in the 'state' 
+    //	of the VAO... 
+
+    glGenBuffers(1, &(drawInfo.VertexBufferID));
+
+    glBindBuffer(GL_ARRAY_BUFFER, drawInfo.VertexBufferID);
+
+    glBufferData(GL_ARRAY_BUFFER,
+        sizeof(sVertex) * drawInfo.numberOfVertices,
+        (GLvoid*)drawInfo.pVertices,
+        (bIsDynamicBuffer ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
 
 
-	// Create a VAO (Vertex Array Object), which will 
-	//	keep track of all the 'state' needed to draw 
-	//	from this buffer...
+    // Copy the index buffer into the video card, too
+    // Create an index buffer.
+    glGenBuffers(1, &(drawInfo.IndexBufferID));
 
-	// Ask OpenGL for a new buffer ID...
-	glGenVertexArrays( 1, &(drawInfo.VAO_ID) );
-	// "Bind" this buffer:
-	// - aka "make this the 'current' VAO buffer
-	glBindVertexArray(drawInfo.VAO_ID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drawInfo.IndexBufferID);
 
-	// Now ANY state that is related to vertex or index buffer
-	//	and vertex attribute layout, is stored in the 'state' 
-	//	of the VAO... 
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,			// Type: Index element array
+        sizeof(unsigned int) * drawInfo.numberOfIndices,
+        (GLvoid*)drawInfo.pIndices,
+        GL_STATIC_DRAW);
 
-	glGenBuffers(1, &(drawInfo.VertexBufferID) );
+    // Set the vertex attributes.
 
-	glBindBuffer(GL_ARRAY_BUFFER, drawInfo.VertexBufferID);
+    GLint vpos_location = glGetAttribLocation(shaderProgramID, "vPos");	// program
+    GLint vcol_location = glGetAttribLocation(shaderProgramID, "vCol");	// program;
+    GLint vNormal_location = glGetAttribLocation(shaderProgramID, "vNormal");	// program;
 
-	glBufferData( GL_ARRAY_BUFFER, 
-				  sizeof(sVertex) * drawInfo.numberOfVertices,	
-				  (GLvoid*) drawInfo.pVertices,							
-				  (bIsDynamicBuffer ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW ) );
+    // Set the vertex attributes for this shader
+    glEnableVertexAttribArray(vpos_location);	    // vPos
+    glVertexAttribPointer(vpos_location, 4,		// vPos
+        GL_FLOAT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, x));
 
+    glEnableVertexAttribArray(vcol_location);	    // vCol
+    glVertexAttribPointer(vcol_location, 4,		// vCol
+        GL_FLOAT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, r));
 
-	// Copy the index buffer into the video card, too
-	// Create an index buffer.
-	glGenBuffers( 1, &(drawInfo.IndexBufferID) );
+    glEnableVertexAttribArray(vNormal_location);	// vNormal
+    glVertexAttribPointer(vNormal_location, 4,		// vNormal
+        GL_FLOAT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, nx));
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drawInfo.IndexBufferID);
+    // Now that all the parts are set up, set the VAO to zero
+    glBindVertexArray(0);
 
-	glBufferData( GL_ELEMENT_ARRAY_BUFFER,			// Type: Index element array
-	              sizeof( unsigned int ) * drawInfo.numberOfIndices, 
-	              (GLvoid*) drawInfo.pIndices,
-                  GL_STATIC_DRAW );
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	// Set the vertex attributes.
+    glDisableVertexAttribArray(vpos_location);
+    glDisableVertexAttribArray(vcol_location);
+    glDisableVertexAttribArray(vNormal_location);
 
-	GLint vpos_location = glGetAttribLocation(shaderProgramID, "vPos");	// program
-	GLint vcol_location = glGetAttribLocation(shaderProgramID, "vCol");	// program;
-	GLint vNormal_location = glGetAttribLocation(shaderProgramID, "vNormal");	// program;
-
-	// Set the vertex attributes for this shader
-	glEnableVertexAttribArray(vpos_location);	    // vPos
-	glVertexAttribPointer( vpos_location, 4,		// vPos
-						   GL_FLOAT, GL_FALSE,
-						   sizeof(sVertex), 
-						   ( void* ) offsetof(sVertex, x));
-
-	glEnableVertexAttribArray(vcol_location);	    // vCol
-	glVertexAttribPointer( vcol_location, 4,		// vCol
-						   GL_FLOAT, GL_FALSE,
-                          sizeof(sVertex),
-						   ( void* ) offsetof(sVertex, r));
-
-	glEnableVertexAttribArray(vNormal_location);	// vNormal
-	glVertexAttribPointer(vNormal_location, 4,		// vNormal
-						   GL_FLOAT, GL_FALSE,
-                           sizeof(sVertex),
-						   ( void* ) offsetof(sVertex, nx));
-
-	// Now that all the parts are set up, set the VAO to zero
-	glBindVertexArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	glDisableVertexAttribArray(vpos_location);
-	glDisableVertexAttribArray(vcol_location);
-	glDisableVertexAttribArray(vNormal_location);
-
-
-	// Store the draw information into the map
-	this->m_map_ModelName_to_VAOID[ drawInfo.meshName ] = drawInfo;
-
-
-	return true;
+    // Store the draw information into the map
+    this->m_map_ModelName_to_VAOID[drawInfo.meshName] = drawInfo;
+    return true;
 }
 
 
@@ -140,145 +135,68 @@ bool cVAOManager::FindDrawInfoByModelName(
 
 
 
-bool cVAOManager::m_LoadTheFile_Ply_XYZ_N_RGBA(std::string theFileName, sModelDrawInfo& drawInfo)
+bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 {
 
-    std::ifstream theFile( theFileName.c_str() );
-    if (!theFile.is_open())
+    Assimp::Importer importer;
+    std::string filePath = this->m_basePathWithoutSlash + "/" + fileName;
+    const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+    if (!scene)
     {
+        // Error loading the model
+        // Handle the error as needed
         return false;
     }
 
-    std::string temp;
-    while (theFile >> temp)
-    {
-        if (temp == "vertex")
-        {
-            break;
-        }
-    };
+    const aiMesh* mesh = scene->mMeshes[0]; // Assuming there's only one mesh in the scene
 
-    theFile >> drawInfo.numberOfVertices;
+    drawInfo.meshName = fileName; // You can change this as needed
 
-
-    while (theFile >> temp)
-    {
-        if (temp == "face")
-        {
-            break;
-        }
-    };
-
-    theFile >> drawInfo.numberOfTriangles;
-
-    drawInfo.numberOfIndices = drawInfo.numberOfTriangles * 3;
-
-    while (theFile >> temp)
-    {
-        if (temp == "end_header")
-        {
-            break;
-        }
-    };
-
-
-    // This most closely matches the ply file
-    struct sVertexPlyFile
-    {
-        float x;
-        float y;
-        float z;
-        float nx, ny, nz;
-        float r, g, b, a;
-    };
-
-    struct sTrianglePlyFile
-    {
-        unsigned int v0, v1, v2;
-    };
-
-    sVertexPlyFile* pTheVerticesFile = new sVertexPlyFile[drawInfo.numberOfVertices];
-
-
-    for (unsigned int index = 0; index != drawInfo.numberOfVertices; index++)
-    {
-        sVertexPlyFile tempVertex;
-        theFile >> tempVertex.x;                //std::cin >> a.x;
-        theFile >> tempVertex.y;                //std::cin >> a.y;
-        theFile >> tempVertex.z;                //std::cin >> a.z;
-
-        theFile >> tempVertex.nx;
-        theFile >> tempVertex.ny;
-        theFile >> tempVertex.nz;
-
-        theFile >> tempVertex.r;       tempVertex.r /= 255.0f;
-        theFile >> tempVertex.g;       tempVertex.g /= 255.0f;
-        theFile >> tempVertex.b;       tempVertex.b /= 255.0f;
-        theFile >> tempVertex.a;       tempVertex.a /= 255.0f;
-
-
-        pTheVerticesFile[index] = tempVertex;
-    }
-
-
-    sTrianglePlyFile* pTheTriangles = new sTrianglePlyFile[drawInfo.numberOfTriangles];
-
-    // 3 3495 3549 3548 
-    for (unsigned int index = 0; index != drawInfo.numberOfTriangles; index++)
-    {
-        sTrianglePlyFile tempTriangle;
-
-        unsigned int discard;
-        theFile >> discard;            // 3
-        theFile >> tempTriangle.v0;                //std::cin >> a.x;
-        theFile >> tempTriangle.v1;                //std::cin >> a.y;
-        theFile >> tempTriangle.v2;                //std::cin >> a.z;
-
-        pTheTriangles[index] = tempTriangle;
-    }
-
-    // ... now we just copy the vertices from the file as is (unchanged)
+    // Allocate memory for vertices and indices
+    drawInfo.numberOfVertices = mesh->mNumVertices;
     drawInfo.pVertices = new sVertex[drawInfo.numberOfVertices];
-    for (unsigned int vertIndex = 0; vertIndex != drawInfo.numberOfVertices; vertIndex++)
+
+    for (unsigned int i = 0; i < drawInfo.numberOfVertices; ++i)
     {
-        // 3 1582 1581 2063 
-        drawInfo.pVertices[vertIndex].x = pTheVerticesFile[vertIndex].x;
-        drawInfo.pVertices[vertIndex].y = pTheVerticesFile[vertIndex].y;
-        drawInfo.pVertices[vertIndex].z = pTheVerticesFile[vertIndex].z;
-        drawInfo.pVertices[vertIndex].w = 1.0f;
+        const aiVector3D& vertex = mesh->mVertices[i];
+        const aiVector3D& normal = mesh->mNormals[i];
+        const aiColor4D& color = mesh->mColors[0][i]; // Assuming there's only one color
 
+        drawInfo.pVertices[i].x = vertex.x;
+        drawInfo.pVertices[i].y = vertex.y;
+        drawInfo.pVertices[i].z = vertex.z;
 
-        drawInfo.pVertices[vertIndex].nx = pTheVerticesFile[vertIndex].nx;
-        drawInfo.pVertices[vertIndex].ny = pTheVerticesFile[vertIndex].ny;
-        drawInfo.pVertices[vertIndex].nz = pTheVerticesFile[vertIndex].nz;
-        drawInfo.pVertices[vertIndex].nw = 1.0f;
-
-        drawInfo.pVertices[vertIndex].r = pTheVerticesFile[vertIndex].r;
-        drawInfo.pVertices[vertIndex].g = pTheVerticesFile[vertIndex].g;
-        drawInfo.pVertices[vertIndex].b = pTheVerticesFile[vertIndex].b;
-        drawInfo.pVertices[vertIndex].a = pTheVerticesFile[vertIndex].a;
+        if (mesh->HasVertexColors(0))
+        {
+            drawInfo.pVertices[i].r = color.r;
+            drawInfo.pVertices[i].g = color.g;
+            drawInfo.pVertices[i].b = color.b;
+            drawInfo.pVertices[i].a = color.a;
+        }
+      
+        if (mesh->HasNormals())
+        {
+            drawInfo.pVertices[i].nx = normal.x;
+            drawInfo.pVertices[i].ny = normal.y;
+            drawInfo.pVertices[i].nz = normal.z;
+        }
+       
     }
 
-    // Allocate an array for all the indices (which is 3x the number of triangles)
-    // Element array is an 1D array of integers
+    drawInfo.numberOfIndices = mesh->mNumFaces * 3; // Triangles assumed
     drawInfo.pIndices = new unsigned int[drawInfo.numberOfIndices];
 
-    unsigned int elementIndex = 0;
-    for (unsigned int triIndex = 0; triIndex != drawInfo.numberOfTriangles; triIndex++)
+    for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
     {
-    
-        drawInfo.pIndices[elementIndex + 0] = pTheTriangles[triIndex].v0;
-        drawInfo.pIndices[elementIndex + 1] = pTheTriangles[triIndex].v1;
-        drawInfo.pIndices[elementIndex + 2] = pTheTriangles[triIndex].v2;
-
-        elementIndex += 3;    
+        const aiFace& face = mesh->mFaces[i];
+        drawInfo.pIndices[i * 3] = face.mIndices[0];
+        drawInfo.pIndices[i * 3 + 1] = face.mIndices[1];
+        drawInfo.pIndices[i * 3 + 2] = face.mIndices[2];
     }
-
 
     return true;
 }
-
-
 
 bool cVAOManager::UpdateVAOBuffers(std::string fileName,
                       sModelDrawInfo& updatedDrawInfo,
