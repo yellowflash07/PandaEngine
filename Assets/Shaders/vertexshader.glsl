@@ -13,10 +13,12 @@ uniform mat4 matModel_IT;		// Inverse transpose of the model matrix
 in vec4 vCol;		// was vec3
 in vec4 vPos;		// was vec3
 in vec4 vNormal;	// NEW for 2023!
+in vec2 vTexCoord;
 
 out vec4 colour;
 out vec4 vertexWorldPos;	
 out vec4 vertexWorldNormal;
+out vec2 texCoord;
 
 void main()
 {
@@ -36,4 +38,5 @@ void main()
 	vertexWorldPos = matModel * vec4( vPos.xyz, 1.0f);
 	
 	colour = vCol;
+	texCoord = vTexCoord;
 }

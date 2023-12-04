@@ -49,6 +49,9 @@
     <Filter Include="Audio">
       <UniqueIdentifier>{2a364f50-56cf-4d0f-8aff-6925e28ac807}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TextureManager">
+      <UniqueIdentifier>{2bede983-fb67-43d4-b079-82f1cda1957b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -125,6 +128,15 @@
     </ClCompile>
     <ClCompile Include="AudioUtils.cpp">
       <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TextureManager\C24BitBMPpixel.cpp">
+      <Filter>TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TextureManager\cBasicTextureManager.cpp">
+      <Filter>TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TextureManager\CTextureFromBMP.cpp">
+      <Filter>TextureManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +220,15 @@
     </ClInclude>
     <ClInclude Include="AudioUtils.h">
       <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextureManager\CTextureFromBMP.h">
+      <Filter>TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextureManager\C24BitBMPpixel.h">
+      <Filter>TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextureManager\cBasicTextureManager.h">
+      <Filter>TextureManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

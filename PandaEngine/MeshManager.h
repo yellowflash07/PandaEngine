@@ -2,6 +2,7 @@
 
 #include "../cVAOManager/cVAOManager.h"
 #include "../PandaEngine/GraphicsCommon.h"
+#include "../TextureManager/cBasicTextureManager.h"
 #include "cMesh.h"
 #include <string>
 #include <vector>
@@ -17,15 +18,19 @@ public:
 	void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProgramID);
 	void DrawAllObjects(GLuint shaderProgramID);
 	void SetBasePath(std::string basePath);
+	void SetTexturePath(std::string texturePath);
 	cMesh* FindMeshByFriendlyName(std::string friendlyNameToFind);
 	void DrawTransformBox();
 	void LoadSavedMeshes(unsigned int shaderProgramID);
 	bool GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo);
 	void ToggleWireframe(bool wireframe);
+	bool LoadTexture(std::string textureFileName);
+	std::string texture;
 private:
 	cVAOManager* vaoManager;
 	std::vector< cMesh* > meshList;
 	cMesh* selectedMesh;
 	SceneSaver* saver;
+	cBasicTextureManager* textureManager;
 	std::string basePath;
 };

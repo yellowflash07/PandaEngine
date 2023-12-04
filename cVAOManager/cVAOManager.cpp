@@ -76,6 +76,7 @@ bool cVAOManager::LoadModelIntoVAOAI(
     GLint vpos_location = glGetAttribLocation(shaderProgramID, "vPos");	// program
     GLint vcol_location = glGetAttribLocation(shaderProgramID, "vCol");	// program;
     GLint vNormal_location = glGetAttribLocation(shaderProgramID, "vNormal");	// program;
+    GLint vTexureCoord_location = glGetAttribLocation(shaderProgramID, "vTexCoord");	// program;
 
     // Set the vertex attributes for this shader
     glEnableVertexAttribArray(vpos_location);	    // vPos
@@ -95,6 +96,12 @@ bool cVAOManager::LoadModelIntoVAOAI(
         GL_FLOAT, GL_FALSE,
         sizeof(sVertex),
         (void*)offsetof(sVertex, nx));
+
+    glEnableVertexAttribArray(vTexureCoord_location);	// vTexCoord
+    glVertexAttribPointer(vTexureCoord_location, 2,		// vTexCoord
+        		GL_FLOAT, GL_FALSE,
+        		sizeof(sVertex),
+        		(void*)offsetof(sVertex, u));
 
     // Now that all the parts are set up, set the VAO to zero
     glBindVertexArray(0);
@@ -181,6 +188,12 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
             drawInfo.pVertices[i].ny = normal.y;
             drawInfo.pVertices[i].nz = normal.z;
         }
+
+        if (mesh->HasTextureCoords(0))
+        {
+			drawInfo.pVertices[i].u = mesh->mTextureCoords[0][i].x;
+			drawInfo.pVertices[i].v = mesh->mTextureCoords[0][i].y;
+		}
        
     }
 

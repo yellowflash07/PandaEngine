@@ -14,6 +14,7 @@ struct sVertex
 	float x, y, z, w;		// w 'cause math
 	float r, g, b, a;
 	float nx, ny, nz, nw;	// Won't use nw
+	float u, v;				// Texture coordinates
 };
 
 struct sModelDrawInfo

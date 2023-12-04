@@ -157,6 +157,9 @@
     <ClCompile Include="..\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\TextureManager\C24BitBMPpixel.cpp" />
+    <ClCompile Include="..\TextureManager\cBasicTextureManager.cpp" />
+    <ClCompile Include="..\TextureManager\CTextureFromBMP.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="AudioUtils.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -185,6 +188,9 @@
     <ClInclude Include="..\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\imgui\imstb_textedit.h" />
     <ClInclude Include="..\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\TextureManager\C24BitBMPpixel.h" />
+    <ClInclude Include="..\TextureManager\cBasicTextureManager.h" />
+    <ClInclude Include="..\TextureManager\CTextureFromBMP.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="AudioUtils.h" />
     <ClInclude Include="Camera.h" />

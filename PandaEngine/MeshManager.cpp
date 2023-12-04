@@ -7,12 +7,15 @@
 MeshManager::MeshManager()
 {
    vaoManager = new cVAOManager();
+   textureManager = new cBasicTextureManager();
    saver = new SceneSaver();
 }
 
 MeshManager::~MeshManager()
 {
-
+	delete vaoManager;
+	delete textureManager;
+	delete saver;
 }
 
 cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyName, unsigned int shaderProgramID)
@@ -117,6 +120,21 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
         pCurrentMesh->color.b,
         pCurrentMesh->color.a);
 
+    if (textureManager->getTextureIDFromName(pCurrentMesh->texture) == 0)
+    {
+        textureManager->Create2DTextureFromBMPFile(pCurrentMesh->texture, true);
+	}
+
+    GLuint textureNumber = textureManager->getTextureIDFromName(pCurrentMesh->texture);
+
+    // We are just going to pick texture unit 5 (for no reason, just as an example)
+    glActiveTexture(GL_TEXTURE5);       // #5
+    glBindTexture(GL_TEXTURE_2D, textureNumber);
+
+    //uniform sampler2D texture_00;
+    GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
+    glUniform1i(texture_00_UL, 5);     // <- 5, an integer, because it's "Texture Unit #5"
+
     sModelDrawInfo modelInfo;
     if (vaoManager->FindDrawInfoByModelName(pCurrentMesh->meshName, modelInfo))
     {
@@ -177,6 +195,11 @@ void MeshManager::SetBasePath(std::string basePath)
 {
     vaoManager->setBasePath(basePath);
     this->basePath = basePath;
+}
+
+void MeshManager::SetTexturePath(std::string texturePath)
+{
+    textureManager->SetBasePath(texturePath);
 }
 
 cMesh* MeshManager::FindMeshByFriendlyName(std::string friendlyNameToFind)
@@ -247,5 +270,10 @@ void MeshManager::ToggleWireframe(bool wireframe)
     {
         meshList[i]->bIsWireframe = wireframe;
     }
+}
+
+bool MeshManager::LoadTexture(std::string textureFileName)
+{
+    return textureManager->Create2DTextureFromBMPFile(textureFileName, true);
 }
 

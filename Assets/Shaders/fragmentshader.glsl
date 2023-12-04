@@ -4,6 +4,7 @@
 in vec4 colour;
 in vec4 vertexWorldPos;			// vertex in "world space"
 in vec4 vertexWorldNormal;	
+in vec2 texCoord;
 
 out vec4 outputColour;		// To the frame buffer (aka screen)
 
@@ -18,7 +19,9 @@ uniform bool bDoNotLight;		// Really a float (0.0 or not zero)
 uniform vec4 eyeLocation;
 
 uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour
-uniform vec4 debugColourRGBA;		
+uniform vec4 debugColourRGBA;	
+
+uniform sampler2D texture_00;
 
 struct sLight
 {
@@ -55,8 +58,11 @@ void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
 
+	vec4 texColour = texture( texture_00, texCoord.xy );
 	vec4 vertexRGBA = colour;
 	
+	vertexRGBA *= texColour;
+
 	if ( bUseDebugColour )
 	{	
 		vertexRGBA = debugColourRGBA;

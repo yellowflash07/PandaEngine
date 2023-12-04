@@ -31,7 +31,6 @@ bool cBasicTextureManager::Create2DTextureFromBMPFile( std::string textureFileNa
 	return true;
 }
 
-
 void cBasicTextureManager::m_appendErrorString( std::string nextErrorText )
 {
 	std::stringstream ss;

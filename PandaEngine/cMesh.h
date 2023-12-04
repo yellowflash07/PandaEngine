@@ -44,7 +44,7 @@ public:
 	glm::vec4 color;
 	bool bIsWireframe;
 	bool bDoNotLight;
-
+	std::string texture;
 	std::vector<cMesh*> vec_pChildMeshes;
 	unsigned int getUniqueID(void);
 
