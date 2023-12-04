@@ -45,6 +45,7 @@ public:
 	bool bIsWireframe;
 	bool bDoNotLight;
 	std::string texture;
+	float transperancy;
 	std::vector<cMesh*> vec_pChildMeshes;
 	unsigned int getUniqueID(void);
 

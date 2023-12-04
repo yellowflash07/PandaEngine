@@ -15,12 +15,12 @@ out vec4 outputColour;		// To the frame buffer (aka screen)
 
 // If true, then passes the colour without calculating lighting
 uniform bool bDoNotLight;		// Really a float (0.0 or not zero)
-
+uniform bool hasTexture;
 uniform vec4 eyeLocation;
 
 uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour
 uniform vec4 debugColourRGBA;	
-
+uniform float transparency;
 uniform sampler2D texture_00;
 
 struct sLight
@@ -59,9 +59,12 @@ void main()
 //	gl_FragColor = vec4(color, 1.0);
 
 	vec4 texColour = texture( texture_00, texCoord.xy );
-	vec4 vertexRGBA = colour;
-	
-	vertexRGBA *= texColour;
+	vec4 vertexRGBA = colour;	
+
+	if(hasTexture)
+	{
+		vertexRGBA *= texColour;
+	}
 
 	if ( bUseDebugColour )
 	{	
@@ -90,7 +93,7 @@ void main()
 	// Real gamma correction is a curve, but we'll Rock-n-Roll it here
 	outputColour.rgb *= 1.35f;
 	
-	outputColour.a = 1.0f;
+	outputColour.a = transparency;
 }
 
 

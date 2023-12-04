@@ -120,6 +120,17 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
         pCurrentMesh->color.b,
         pCurrentMesh->color.a);
 
+    GLint textureBool_UL = glGetUniformLocation(shaderProgramID, "hasTexture");
+
+    if (pCurrentMesh->texture.empty())
+    {
+        glUniform1f(textureBool_UL, (GLfloat)GL_FALSE);
+    }
+    else
+    {
+        glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
+    }
+
     if (textureManager->getTextureIDFromName(pCurrentMesh->texture) == 0)
     {
         textureManager->Create2DTextureFromBMPFile(pCurrentMesh->texture, true);
@@ -134,6 +145,20 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     //uniform sampler2D texture_00;
     GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
     glUniform1i(texture_00_UL, 5);     // <- 5, an integer, because it's "Texture Unit #5"
+
+    if (pCurrentMesh->transperancy < 1.0f)
+    {
+        glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else
+    {
+		glDisable(GL_BLEND);
+	}
+
+    //uniform float transparency;
+    GLint transparency_UL = glGetUniformLocation(shaderProgramID, "transparency");
+    glUniform1f(transparency_UL, pCurrentMesh->transperancy);
 
     sModelDrawInfo modelInfo;
     if (vaoManager->FindDrawInfoByModelName(pCurrentMesh->meshName, modelInfo))
@@ -238,6 +263,8 @@ void MeshManager::DrawTransformBox()
     ImGui::InputFloat("xS", &selectedMesh->drawScale.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("yS", &selectedMesh->drawScale.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("zS", &selectedMesh->drawScale.z); ImGui::SetNextItemWidth(100);
+
+    ImGui::SliderFloat("Transparency", &selectedMesh->transperancy, 0.0f, 1.0f); ImGui::SameLine();
 
     if (ImGui::Button("Save"))
     {

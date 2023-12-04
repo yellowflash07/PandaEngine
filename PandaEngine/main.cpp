@@ -23,20 +23,13 @@ int main(void)
     {
         return 1;
     }
-    engine.SetShaderPath("../Assets/Shaders");
-    engine.SetModelPath("../Assets/Models");
-    engine.SetAudioPath("../Assets/Audio");
-    engine.meshManager->SetTexturePath("../Assets/Textures");
 
-    if (!engine.LoadDefaultShaders())
-    {
-        return 2;
-    }
-   // engine.meshManager->LoadTexture("TaylorSwift_Eras_Poster.bmp");
-
-    cMesh* groundMesh = engine.LoadMesh("Terrain_xyz_n_rgba_uv.ply", "bathtub");
-    groundMesh->texture = "Water_Texture_01.bmp";
-    groundMesh->bDoNotLight = true;
+    //bathtub_xyz_n_rgba
+    //Terrain_xyz_n_rgba_uv
+    cMesh* groundMesh = engine.LoadMesh("bathtub_xyz_n_rgba.ply", "bathtub");
+   // groundMesh->texture = "Water_Texture_01.bmp";
+    groundMesh->transperancy = 0.03f;
+    groundMesh->bDoNotLight = false;
     groundMesh->drawPosition = glm::vec3(0.0f, -30.0f, 0.0f);
     PhysicsBody* body1 = engine.AddPhysicsBody("bathtub");
     body1->inverseMass = 0;

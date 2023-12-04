@@ -70,6 +70,18 @@ bool Engine::Initialize()
 
     audioManager->Initialize();
 
+    SetShaderPath("../Assets/Shaders");
+    SetModelPath("../Assets/Models");
+    SetAudioPath("../Assets/Audio");
+    meshManager->SetTexturePath("../Assets/Textures");
+
+    if (!LoadDefaultShaders())
+    {
+        return false;
+    }
+
+    LoadDefaultLights();
+
     return true;
 }
 
