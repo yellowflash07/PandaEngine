@@ -33,4 +33,5 @@ private:
 	SceneSaver* saver;
 	cBasicTextureManager* textureManager;
 	std::string basePath;
+	void SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID);
 };

@@ -22,6 +22,11 @@ uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for t
 uniform vec4 debugColourRGBA;	
 uniform float transparency;
 uniform sampler2D texture_00;
+uniform sampler2D texture_01;
+uniform sampler2D texture_02;
+uniform sampler2D texture_03;
+
+uniform vec4 textureMixRatio_0_3;
 
 struct sLight
 {
@@ -58,11 +63,15 @@ void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
 
-	vec4 texColour = texture( texture_00, texCoord.xy );
+
 	vec4 vertexRGBA = colour;	
 
 	if(hasTexture)
 	{
+		vec4 texColour = texture( texture_00, texCoord.st ).rgba * textureMixRatio_0_3.x 	
+					+ texture( texture_01, texCoord.st ).rgba * textureMixRatio_0_3.y
+					+ texture( texture_02, texCoord.st ).rgba * textureMixRatio_0_3.z
+					+ texture( texture_03, texCoord.st ).rgba * textureMixRatio_0_3.w;
 		vertexRGBA *= texColour;
 	}
 

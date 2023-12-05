@@ -120,31 +120,7 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
         pCurrentMesh->color.b,
         pCurrentMesh->color.a);
 
-    GLint textureBool_UL = glGetUniformLocation(shaderProgramID, "hasTexture");
-
-    if (pCurrentMesh->texture.empty())
-    {
-        glUniform1f(textureBool_UL, (GLfloat)GL_FALSE);
-    }
-    else
-    {
-        glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
-    }
-
-    if (textureManager->getTextureIDFromName(pCurrentMesh->texture) == 0)
-    {
-        textureManager->Create2DTextureFromBMPFile(pCurrentMesh->texture, true);
-	}
-
-    GLuint textureNumber = textureManager->getTextureIDFromName(pCurrentMesh->texture);
-
-    // We are just going to pick texture unit 5 (for no reason, just as an example)
-    glActiveTexture(GL_TEXTURE5);       // #5
-    glBindTexture(GL_TEXTURE_2D, textureNumber);
-
-    //uniform sampler2D texture_00;
-    GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
-    glUniform1i(texture_00_UL, 5);     // <- 5, an integer, because it's "Texture Unit #5"
+	SetUpTextures(pCurrentMesh, shaderProgramID);
 
     if (pCurrentMesh->transperancy < 1.0f)
     {
@@ -304,3 +280,55 @@ bool MeshManager::LoadTexture(std::string textureFileName)
     return textureManager->Create2DTextureFromBMPFile(textureFileName, true);
 }
 
+void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
+{
+    GLint textureBool_UL = glGetUniformLocation(shaderProgramID, "hasTexture");
+    glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
+    for (int i = 0; i < cMesh::NUM_OF_TEXTURES; i++)
+    {
+        if (pCurrentMesh->texture[i].empty())
+        {
+           // glUniform1f(textureBool_UL, (GLfloat)GL_FALSE);
+            continue;
+        }
+        glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
+        std::string texture_UL_name = "texture_0" + std::to_string(i);
+        GLint texture_UL = glGetUniformLocation(shaderProgramID, texture_UL_name.c_str());
+
+        glActiveTexture(GL_TEXTURE0 + i);
+        GLuint textureNumber = textureManager->getTextureIDFromName(pCurrentMesh->texture[i]);
+        glBindTexture(GL_TEXTURE_2D, textureNumber);
+        glUniform1i(texture_UL, i);
+    }
+
+    GLint textureMixRatio_0_3_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_0_3");
+
+    glUniform4f(textureMixRatio_0_3_UL,
+        pCurrentMesh->textureRatio[0],
+        pCurrentMesh->textureRatio[1],
+        pCurrentMesh->textureRatio[2],
+        pCurrentMesh->textureRatio[3]);
+}
+
+
+
+
+#pragma region TEST_CODE
+//glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
+//
+//GLuint textureNumber = textureManager->getTextureIDFromName(pCurrentMesh->texture[0]);
+//glActiveTexture(GL_TEXTURE0 + 5);
+//glBindTexture(GL_TEXTURE_2D, textureNumber);
+////uniform sampler2D texture_00;
+//
+//GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
+//glUniform1i(texture_00_UL, 5);     // 
+//
+//GLint textureMixRatio_0_3_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_0_3");
+//
+//glUniform4f(textureMixRatio_0_3_UL,
+//    1.0f,
+//    0,
+//    0,
+//    0);
+#pragma endregion
