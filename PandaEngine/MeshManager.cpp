@@ -308,6 +308,21 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
         pCurrentMesh->textureRatio[1],
         pCurrentMesh->textureRatio[2],
         pCurrentMesh->textureRatio[3]);
+
+    if (!pCurrentMesh->maskTexture.empty())
+    {
+        GLint maskBool_UL = glGetUniformLocation(shaderProgramID, "hasMask");
+        glUniform1f(maskBool_UL, (GLfloat)GL_TRUE);
+
+        GLint mask_UL = glGetUniformLocation(shaderProgramID, "maskTexture");
+        GLint textureUnitNumber = 25;
+        GLuint stencilMaskID = textureManager->getTextureIDFromName(pCurrentMesh->maskTexture);
+        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+        glBindTexture(GL_TEXTURE_2D, stencilMaskID);
+
+        GLint bUseDiscardMaskTexture_UL = glGetUniformLocation(shaderProgramID, "maskTexture");
+        glUniform1i(bUseDiscardMaskTexture_UL, textureUnitNumber);
+    }
 }
 
 

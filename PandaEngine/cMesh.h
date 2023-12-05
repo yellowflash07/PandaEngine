@@ -44,9 +44,12 @@ public:
 	glm::vec4 color;
 	bool bIsWireframe;
 	bool bDoNotLight;
+
 	static const int NUM_OF_TEXTURES = 4;
 	std::string texture[NUM_OF_TEXTURES];
 	float textureRatio[NUM_OF_TEXTURES];
+	std::string maskTexture;
+
 	float transperancy;
 	std::vector<cMesh*> vec_pChildMeshes;
 	unsigned int getUniqueID(void);

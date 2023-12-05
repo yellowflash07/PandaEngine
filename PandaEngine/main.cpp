@@ -26,12 +26,13 @@ int main(void)
 
     engine.meshManager->LoadTexture("Water_Texture_01.bmp");
     engine.meshManager->LoadTexture("TaylorSwift_Eras_Poster.bmp");
-
+    engine.meshManager->LoadTexture("FAKE_Stencil_Texture_612x612.bmp");
     //bathtub_xyz_n_rgba
     //Terrain_xyz_n_rgba_uv
     cMesh* groundMesh = engine.LoadMesh("Terrain_xyz_n_rgba_uv.ply", "bathtub");
     groundMesh->texture[0] = "Water_Texture_01.bmp";
     groundMesh->texture[1] = "TaylorSwift_Eras_Poster.bmp";
+    groundMesh->maskTexture = "FAKE_Stencil_Texture_612x612.bmp";
     groundMesh->textureRatio[0] = 0.5f;
     groundMesh->textureRatio[1] = 0.5f;
 

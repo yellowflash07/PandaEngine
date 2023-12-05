@@ -16,6 +16,7 @@ out vec4 outputColour;		// To the frame buffer (aka screen)
 // If true, then passes the colour without calculating lighting
 uniform bool bDoNotLight;		// Really a float (0.0 or not zero)
 uniform bool hasTexture;
+uniform bool hasMask;
 uniform vec4 eyeLocation;
 
 uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour
@@ -25,6 +26,7 @@ uniform sampler2D texture_00;
 uniform sampler2D texture_01;
 uniform sampler2D texture_02;
 uniform sampler2D texture_03;
+uniform sampler2D maskTexture;
 
 uniform vec4 textureMixRatio_0_3;
 
@@ -73,6 +75,15 @@ void main()
 					+ texture( texture_02, texCoord.st ).rgba * textureMixRatio_0_3.z
 					+ texture( texture_03, texCoord.st ).rgba * textureMixRatio_0_3.w;
 		vertexRGBA *= texColour;
+	}
+
+	if(hasMask)
+	{
+		float maskValue = texture( maskTexture, texCoord.st ).r;
+		if(maskValue < 0.1f)
+		{
+			discard;
+		}
 	}
 
 	if ( bUseDebugColour )
