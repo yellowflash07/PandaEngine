@@ -17,6 +17,7 @@ out vec4 outputColour;		// To the frame buffer (aka screen)
 uniform bool bDoNotLight;		// Really a float (0.0 or not zero)
 uniform bool hasTexture;
 uniform bool hasMask;
+uniform bool bIsSkyBox;
 uniform vec4 eyeLocation;
 
 uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour
@@ -27,6 +28,8 @@ uniform sampler2D texture_01;
 uniform sampler2D texture_02;
 uniform sampler2D texture_03;
 uniform sampler2D maskTexture;
+
+uniform samplerCube skyBoxCubeMap;
 
 uniform vec4 textureMixRatio_0_3;
 
@@ -65,6 +68,13 @@ void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
 
+	if ( bIsSkyBox )
+	{
+		vec4 skyBoxSampleColour = texture( skyBoxCubeMap, vertexWorldNormal.xyz ).rgba;
+		outputColour.rgb = skyBoxSampleColour.rgb;
+		outputColour.a = 1.0f;
+		return;
+	}
 
 	vec4 vertexRGBA = colour;	
 

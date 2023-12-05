@@ -2,7 +2,9 @@
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 #include <imgui.h>
+#include "Camera.h"
 
+extern Camera* camera;
 
 MeshManager::MeshManager()
 {
@@ -280,6 +282,44 @@ bool MeshManager::LoadTexture(std::string textureFileName)
     return textureManager->Create2DTextureFromBMPFile(textureFileName, true);
 }
 
+bool MeshManager::LoadCubeMap(std::string cubeMapName, std::string posX_fileName, std::string negX_fileName, std::string posY_fileName, std::string negY_fileName, std::string posZ_fileName, std::string negZ_fileName, bool bIsSeamless)
+{
+    std::string errorString;
+    return textureManager->CreateCubeTextureFromBMPFiles(cubeMapName, 
+        posX_fileName, negX_fileName, 
+        posY_fileName, negY_fileName,
+        posZ_fileName, negZ_fileName,
+        bIsSeamless, errorString);
+
+}
+
+void MeshManager::DrawSkyBox(GLuint shaderProgramID)
+{
+    cMesh* theSkyBox = FindMeshByFriendlyName("skybox");
+
+    if (!theSkyBox)
+    {
+        theSkyBox = AddMesh("skybox.ply", "skybox", shaderProgramID);
+        theSkyBox->setUniformDrawScale(10.0f);
+        theSkyBox->setUniformDrawScale(5'000.0f);
+    } 
+
+    theSkyBox->drawPosition = camera->cameraEye;
+
+    GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");
+    glUniform1f(bIsSkyBox_UL, (GLfloat)GL_TRUE);
+
+    // The normals for this sphere are facing "out" but we are inside the sphere
+    glCullFace(GL_FRONT);
+
+    DrawObject(theSkyBox, glm::mat4(1.0f), shaderProgramID);
+
+    glUniform1f(bIsSkyBox_UL, (GLfloat)GL_FALSE);
+
+    // Put the culling back to "normal" (back facing are not drawn)
+    glCullFace(GL_BACK);
+}
+
 void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
 {
     GLint textureBool_UL = glGetUniformLocation(shaderProgramID, "hasTexture");
@@ -288,7 +328,6 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
     {
         if (pCurrentMesh->texture[i].empty())
         {
-           // glUniform1f(textureBool_UL, (GLfloat)GL_FALSE);
             continue;
         }
         glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
@@ -323,27 +362,13 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
         GLint bUseDiscardMaskTexture_UL = glGetUniformLocation(shaderProgramID, "maskTexture");
         glUniform1i(bUseDiscardMaskTexture_UL, textureUnitNumber);
     }
+
+    GLint textureUnit30 = 30;
+    GLuint skyBoxID = textureManager->getTextureIDFromName("space");
+    glActiveTexture(GL_TEXTURE0 + textureUnit30);
+    // NOTE: Binding is NOT to GL_TEXTURE_2D
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxID);
+    GLint skyBoxSampler_UL = glGetUniformLocation(shaderProgramID, "skyBoxCubeMap");
+    glUniform1i(skyBoxSampler_UL, textureUnit30);
 }
 
-
-
-
-#pragma region TEST_CODE
-//glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
-//
-//GLuint textureNumber = textureManager->getTextureIDFromName(pCurrentMesh->texture[0]);
-//glActiveTexture(GL_TEXTURE0 + 5);
-//glBindTexture(GL_TEXTURE_2D, textureNumber);
-////uniform sampler2D texture_00;
-//
-//GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
-//glUniform1i(texture_00_UL, 5);     // 
-//
-//GLint textureMixRatio_0_3_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_0_3");
-//
-//glUniform4f(textureMixRatio_0_3_UL,
-//    1.0f,
-//    0,
-//    0,
-//    0);
-#pragma endregion

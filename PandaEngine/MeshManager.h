@@ -25,6 +25,10 @@ public:
 	bool GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo);
 	void ToggleWireframe(bool wireframe);
 	bool LoadTexture(std::string textureFileName);
+	bool LoadCubeMap(std::string cubeMapName, std::string posX_fileName, std::string negX_fileName,
+				std::string posY_fileName, std::string negY_fileName,
+				std::string posZ_fileName, std::string negZ_fileName, bool bIsSeamless);
+	void DrawSkyBox(GLuint shaderProgramID);
 	std::string texture;
 private:
 	cVAOManager* vaoManager;

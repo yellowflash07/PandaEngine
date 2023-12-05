@@ -27,6 +27,21 @@ int main(void)
     engine.meshManager->LoadTexture("Water_Texture_01.bmp");
     engine.meshManager->LoadTexture("TaylorSwift_Eras_Poster.bmp");
     engine.meshManager->LoadTexture("FAKE_Stencil_Texture_612x612.bmp");
+    bool loaded = engine.meshManager->LoadCubeMap("space",
+                                    "CubeMaps/TropicalSunnyDayLeft2048.bmp",
+                                    "CubeMaps/TropicalSunnyDayRight2048.bmp",
+                                    "CubeMaps/TropicalSunnyDayUp2048.bmp",
+                                    "CubeMaps/TropicalSunnyDayDown2048.bmp",
+                                    "CubeMaps/TropicalSunnyDayFront2048.bmp",
+                                    "CubeMaps/TropicalSunnyDayBack2048.bmp",
+                                    true);
+
+    if (loaded)
+    {
+		std::cout << "Loaded" << std::endl;
+	}
+
+
     //bathtub_xyz_n_rgba
     //Terrain_xyz_n_rgba_uv
     cMesh* groundMesh = engine.LoadMesh("Terrain_xyz_n_rgba_uv.ply", "bathtub");
