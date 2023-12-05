@@ -117,9 +117,7 @@ void Engine::Update()
     //draw meshes
     meshManager->DrawAllObjects(shaderProgramID);
 
-    meshManager->DrawSkyBox(shaderProgramID);
-
-    // Time per frame (more or less)
+    // Time per frame
     double currentTime = glfwGetTime();
     deltaTime = currentTime - lastTime;
     lastTime = currentTime;

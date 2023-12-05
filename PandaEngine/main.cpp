@@ -3,6 +3,7 @@
 #include "Random.h"
 #include <iostream>
 
+extern Camera* camera;
 int keyHit = 0;
 int action = 0;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -35,12 +36,10 @@ int main(void)
                                     "CubeMaps/TropicalSunnyDayFront2048.bmp",
                                     "CubeMaps/TropicalSunnyDayBack2048.bmp",
                                     true);
-
-    if (loaded)
-    {
-		std::cout << "Loaded" << std::endl;
-	}
-
+    
+    cMesh* skyBoxMesh = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "skybox");
+    skyBoxMesh->isSkyBox = true;
+    skyBoxMesh->setUniformDrawScale(5000.0f);
 
     //bathtub_xyz_n_rgba
     //Terrain_xyz_n_rgba_uv
@@ -73,6 +72,7 @@ int main(void)
     while (!glfwWindowShouldClose(engine.window))
     {
         engine.Update();
+        skyBoxMesh->drawPosition = camera->cameraEye;
     }
 
     engine.ShutDown();
