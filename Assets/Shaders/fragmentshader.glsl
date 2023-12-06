@@ -18,6 +18,7 @@ uniform bool bDoNotLight;		// Really a float (0.0 or not zero)
 uniform bool hasTexture;
 uniform bool hasMask;
 uniform bool bIsSkyBox;
+uniform bool hasVertexColor;
 uniform vec4 eyeLocation;
 
 uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour
@@ -30,7 +31,7 @@ uniform sampler2D texture_03;
 uniform sampler2D maskTexture;
 
 uniform samplerCube skyBoxCubeMap;
-
+uniform vec2 UV_Offset;
 uniform vec4 textureMixRatio_0_3;
 
 struct sLight
@@ -76,15 +77,19 @@ void main()
 		return;
 	}
 
-	vec4 vertexRGBA = colour;	
+	vec4 vertexRGBA = colour;
+	if(hasVertexColor)
+	{
+		//vertexRGBA = colour;
+	}		
 
 	if(hasTexture)
 	{
 		vec4 texColour = texture( texture_00, texCoord.st ).rgba * textureMixRatio_0_3.x 	
-					+ texture( texture_01, texCoord.st ).rgba * textureMixRatio_0_3.y
-					+ texture( texture_02, texCoord.st ).rgba * textureMixRatio_0_3.z
-					+ texture( texture_03, texCoord.st ).rgba * textureMixRatio_0_3.w;
-		vertexRGBA *= texColour;
+						+ texture( texture_01, texCoord.st ).rgba * textureMixRatio_0_3.y
+						+ texture( texture_02, texCoord.st ).rgba * textureMixRatio_0_3.z
+						+ texture( texture_03, texCoord.st ).rgba * textureMixRatio_0_3.w;
+		vertexRGBA = texColour;
 	}
 
 	if(hasMask)

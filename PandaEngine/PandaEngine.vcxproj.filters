@@ -230,6 +230,9 @@
     <ClInclude Include="..\TextureManager\cBasicTextureManager.h">
       <Filter>TextureManager</Filter>
     </ClInclude>
+    <ClInclude Include="cAABB.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Assets\Shaders\fragmentshader.glsl">

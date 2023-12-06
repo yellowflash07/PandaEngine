@@ -77,7 +77,7 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 						case PhysicsShapes::MESH_OF_TRIANGLES_LOCAL_VERTICES:
 							// Shpere - Mesh (local vertices)
 							break;
-						}//switch (pObjectB->shapeType)
+					}//switch (pObjectB->shapeType)
 					break;
 			}
 
@@ -89,6 +89,21 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 void PhysicsManager::AddMesh(PhysicsBody* physicsBody)
 {
 	bodies.push_back(physicsBody);
+}
+
+void PhysicsManager::GenerateAABBs(PhysicsBody* body)
+{
+	sModelDrawInfo theMeshDrawInfo;
+	meshManager->GetModelDrawInfo(body->mesh->meshName, theMeshDrawInfo);
+
+	for (int i = 0; i < theMeshDrawInfo.numberOfVertices; i++)
+	{
+		cAABB* aabb = new cAABB();
+		//aabb->minXYZ = theMeshDrawInfo.pVertices[i];
+		//aabb->maxXYZ = theMeshDrawInfo.pVertices[i];
+		body->aabbs.push_back(aabb);
+	}
+
 }
 
 glm::vec3 PhysicsManager::ClosestPtPointTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c)

@@ -25,9 +25,10 @@ int main(void)
         return 1;
     }
 
-    engine.meshManager->LoadTexture("Water_Texture_01.bmp");
-    engine.meshManager->LoadTexture("TaylorSwift_Eras_Poster.bmp");
-    engine.meshManager->LoadTexture("FAKE_Stencil_Texture_612x612.bmp");
+  //  engine.meshManager->LoadTexture("Water_Texture_01.bmp");
+  //  engine.meshManager->LoadTexture("TaylorSwift_Eras_Poster.bmp");
+  //  engine.meshManager->LoadTexture("FAKE_Stencil_Texture_612x612.bmp");
+    engine.meshManager->LoadTexture("PaletteV1.bmp");
     bool loaded = engine.meshManager->LoadCubeMap("space",
                                     "CubeMaps/TropicalSunnyDayLeft2048.bmp",
                                     "CubeMaps/TropicalSunnyDayRight2048.bmp",
@@ -41,22 +42,31 @@ int main(void)
     skyBoxMesh->isSkyBox = true;
     skyBoxMesh->setUniformDrawScale(5000.0f);
 
+    cMesh*  house = engine.LoadMesh("cartoonCity_Showcase.fbx", "house");
+   // house->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    house->transperancy = 1.0f;
+    house->bDoNotLight = true;
+    house->texture[0] = "PaletteV1.bmp";
+    house->textureRatio[0] = 1.0f;
+    house->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+
     //bathtub_xyz_n_rgba
     //Terrain_xyz_n_rgba_uv
-    cMesh* groundMesh = engine.LoadMesh("Terrain_xyz_n_rgba_uv.ply", "bathtub");
-    groundMesh->texture[0] = "Water_Texture_01.bmp";
-    groundMesh->texture[1] = "TaylorSwift_Eras_Poster.bmp";
-    groundMesh->maskTexture = "FAKE_Stencil_Texture_612x612.bmp";
-    groundMesh->textureRatio[0] = 0.5f;
-    groundMesh->textureRatio[1] = 0.5f;
+  //  cMesh* groundMesh = engine.LoadMesh("Terrain_xyz_n_rgba_uv.ply", "bathtub");
+   // groundMesh->color = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+   // groundMesh->texture[0] = "Water_Texture_01.bmp";
+ //   groundMesh->texture[0] = "TaylorSwift_Eras_Poster.bmp";
+   // groundMesh->maskTexture = "FAKE_Stencil_Texture_612x612.bmp";
+  //  groundMesh->textureRatio[0] = 1.0f;
+    //groundMesh->textureRatio[1] = 0.5f;
 
-    groundMesh->transperancy = 1.0f;
+   /* groundMesh->transperancy = 1.0f;
     groundMesh->bDoNotLight = true;
     groundMesh->drawPosition = glm::vec3(0.0f, -30.0f, 0.0f);
     PhysicsBody* body1 = engine.AddPhysicsBody("bathtub");
     body1->inverseMass = 0;
     body1->shapeType = PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT;
-    body1->setShape(new PhysicsShapes::sMeshOfTriangles_Indirect("bathtub"));
+    body1->setShape(new PhysicsShapes::sMeshOfTriangles_Indirect("bathtub"));*/
 
     //cMesh* sphereMesh = engine.LoadMesh("Sphere_1_unit_Radius.ply", "Sphere");
     //sphereMesh->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);

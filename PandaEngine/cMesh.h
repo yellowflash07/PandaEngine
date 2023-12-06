@@ -21,7 +21,7 @@ public:
 	void setRotationFromEuler(glm::vec3 newEulerAngleXYZ)
 	{
 		eulerRotation = newEulerAngleXYZ;
-		this->m_qOrientation = glm::quat(newEulerAngleXYZ);
+		this->m_qOrientation = glm::quat(eulerRotation);
 	}
 
 	void Rotate(glm::vec3 EulerAngleXYZ_Adjust)
@@ -45,6 +45,7 @@ public:
 	bool bIsWireframe;
 	bool bDoNotLight;
 	bool isSkyBox;
+	bool hasVertexColors;
 	static const int NUM_OF_TEXTURES = 4;
 	std::string texture[NUM_OF_TEXTURES];
 	float textureRatio[NUM_OF_TEXTURES];

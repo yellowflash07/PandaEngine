@@ -193,6 +193,7 @@
     <ClInclude Include="..\TextureManager\CTextureFromBMP.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="AudioUtils.h" />
+    <ClInclude Include="cAABB.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cLightHelper.h" />
     <ClInclude Include="cLightManager.h" />

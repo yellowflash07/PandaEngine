@@ -25,7 +25,7 @@ Engine::Engine()
 	lightManager = new cLightManager();
     physicsManager = new PhysicsManager(meshManager);
     audioManager = new cAudioManager(meshManager);
-    camera = new Camera(glm::vec3(-20.0, 8.6f,106.0f),
+    camera = new Camera(glm::vec3(0.0,0.0f,0.0f),
         		        glm::vec3(0.0f, 0.0f, -1.0f),
         		        glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 10000.0f);
 }

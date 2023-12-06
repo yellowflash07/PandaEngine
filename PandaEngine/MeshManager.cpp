@@ -115,12 +115,24 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
         glUniform1f(bUseDebugColour_UL, (GLfloat)GL_FALSE);
     }
 
-    GLint colour_UL = glGetUniformLocation(shaderProgramID, "color");
-    glUniform4f(colour_UL,
-        pCurrentMesh->color.r,
-        pCurrentMesh->color.g,
-        pCurrentMesh->color.b,
-        pCurrentMesh->color.a);
+    GLint bhasVertexColors_UL = glGetUniformLocation(shaderProgramID, "hasVertexColor");
+    if (pCurrentMesh->hasVertexColors)
+    {
+		glUniform1f(bhasVertexColors_UL, (GLfloat)GL_TRUE);
+        GLint colour_UL = glGetUniformLocation(shaderProgramID, "color");
+        glUniform4f(colour_UL,
+            pCurrentMesh->color.r,
+            pCurrentMesh->color.g,
+            pCurrentMesh->color.b,
+            pCurrentMesh->color.a);
+	}
+    else
+    {
+		glUniform1f(bhasVertexColors_UL, (GLfloat)GL_FALSE);
+	}
+
+
+  
 
     GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");
     if (pCurrentMesh->isSkyBox)
@@ -320,14 +332,23 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
     }
 
     GLint textureBool_UL = glGetUniformLocation(shaderProgramID, "hasTexture");
-    glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
+    glUniform1f(textureBool_UL, (GLfloat)GL_FALSE);
+
+    for (int i = 0; i < cMesh::NUM_OF_TEXTURES; i++)
+    {
+        if (!pCurrentMesh->texture[i].empty())
+        {
+            glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
+            break;
+        }
+    }
+
     for (int i = 0; i < cMesh::NUM_OF_TEXTURES; i++)
     {
         if (pCurrentMesh->texture[i].empty())
         {
             continue;
         }
-        glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
         std::string texture_UL_name = "texture_0" + std::to_string(i);
         GLint texture_UL = glGetUniformLocation(shaderProgramID, texture_UL_name.c_str());
 

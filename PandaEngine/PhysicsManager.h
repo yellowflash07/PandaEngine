@@ -2,6 +2,7 @@
 #include <vector>
 #include "MeshManager.h"
 #include "PhysicsShapes.h"
+#include "cAABB.h"
 
 struct PhysicsBody
 {
@@ -17,6 +18,10 @@ struct PhysicsBody
 	void setShape(PhysicsShapes::sMeshOfTriangles_Indirect* pTriangleMeshProps);
 	void setShape(PhysicsShapes::sMeshOfTriangles_LocalVertices* pTriangleMeshProps);
 
+	std::vector<cAABB*> aabbs;
+
+//	std::vector<
+
 	PhysicsShapes::eShape shapeType;
 	void* shape = NULL;
 };
@@ -31,6 +36,7 @@ public:
 	void Update(float deltaTime);
 	void CheckIntersections(float deltaTime);
 	void AddMesh(PhysicsBody* physicsBody);
+	void GenerateAABBs(PhysicsBody* body);
 private:
 	MeshManager* meshManager;
 	std::vector<PhysicsBody*> bodies;
@@ -44,5 +50,6 @@ private:
 	bool m_Sphere_Capsule_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pCapsule);
 	bool m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pTriMesh);
 	bool m_Sphere_TriMeshLocal_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pTriMesh);
+
 };
 
