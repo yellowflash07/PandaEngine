@@ -55,7 +55,7 @@ int main(void)
     body1->shapeType = PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT;
     body1->setShape(new PhysicsShapes::sMeshOfTriangles_Indirect("city"));
     
-    std::vector<cAABB*> aabbs = engine.physicsManager->GenerateAABBs(body1);
+    std::vector<cAABB*> aabbs = engine.physicsManager->GenerateAABBs(body1,10);
 
    // city->calcExtents();
 
@@ -69,7 +69,7 @@ int main(void)
 
     for (size_t i = 0; i < aabbs.size(); i++)
     {
-        cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "cube" + std::to_string(i));
+        cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "AABB" + std::to_string(i));
         mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
         mesh->drawScale = aabbs[i]->getExtentsXYZ();
         mesh->drawPosition = aabbs[i]->getCentreXYZ();

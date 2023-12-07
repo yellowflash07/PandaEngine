@@ -248,6 +248,7 @@ void MeshManager::DrawTransformBox()
 {
     if (selectedMesh == nullptr) return;
     std::string boxName = "Transform " + selectedMesh->friendlyName;
+    selectedMesh->bIsWireframe = false;
     ImGui::Begin(boxName.c_str());
 
     ImGui::Text("Position"); ImGui::SetNextItemWidth(40);

@@ -35,7 +35,7 @@ public:
 	void Update(float deltaTime);
 	void CheckIntersections(float deltaTime);
 	void AddMesh(PhysicsBody* physicsBody);
-	std::vector<cAABB*> GenerateAABBs(PhysicsBody* body);
+	std::vector<cAABB*> GenerateAABBs(PhysicsBody* body,int numberOfAABBs);
 private:
 	MeshManager* meshManager;
 	std::vector<PhysicsBody*> bodies;

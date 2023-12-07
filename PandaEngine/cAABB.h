@@ -7,9 +7,6 @@
 #include <string>
 #include <iostream>
 
-// These would also store triangle info, 
-//	either the actual vertices of the triangle, or the index to the triangle...
-
 class cAABB
 {
 public:
@@ -17,6 +14,7 @@ public:
 	glm::vec3 minXYZ;
 	glm::vec3 maxXYZ;	// AKA the "lengths" or whatever
 	glm::vec3 position;
+
 	glm::vec3 getCentreXYZ(void)
 	{
 		return (this->minXYZ + this->maxXYZ) / 2.0f;
