@@ -6,6 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <string>
 #include <vector>
+#include "../cVAOManager/sModelDrawInfo.h"
 
 class cMesh
 {
@@ -51,9 +52,16 @@ public:
 	float textureRatio[NUM_OF_TEXTURES];
 	std::string maskTexture;
 
-	float transperancy;
+	float transperancy = 1.0f;
 	std::vector<cMesh*> vec_pChildMeshes;
 	unsigned int getUniqueID(void);
+
+	glm::vec3 maxExtents_XYZ;	// bounding box maximums
+	glm::vec3 minExtents_XYZ;	// bounding box minimums
+
+	void calcExtents(void);
+
+	sModelDrawInfo modelDrawInfo;
 
 private:
 	unsigned int m_UniqueID;

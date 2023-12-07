@@ -42,40 +42,39 @@ int main(void)
     skyBoxMesh->isSkyBox = true;
     skyBoxMesh->setUniformDrawScale(5000.0f);
 
-    cMesh*  house = engine.LoadMesh("cartoonCity_Showcase.fbx", "house");
-   // house->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    house->transperancy = 1.0f;
-    house->bDoNotLight = true;
-    house->texture[0] = "PaletteV1.bmp";
-    house->textureRatio[0] = 1.0f;
-    house->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    cMesh* city = engine.LoadMesh("cartoonCity_Showcase_rgba.ply", "city");
+    city->transperancy = 1.0f;
+    city->bDoNotLight = true;
+    city->texture[0] = "PaletteV1.bmp";
+    city->textureRatio[0] = 1.0f;
+    city->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    city->setRotationFromEuler(glm::vec3(-1.6f, 0.0f, 0.0f));
 
-    //bathtub_xyz_n_rgba
-    //Terrain_xyz_n_rgba_uv
-  //  cMesh* groundMesh = engine.LoadMesh("Terrain_xyz_n_rgba_uv.ply", "bathtub");
-   // groundMesh->color = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-   // groundMesh->texture[0] = "Water_Texture_01.bmp";
- //   groundMesh->texture[0] = "TaylorSwift_Eras_Poster.bmp";
-   // groundMesh->maskTexture = "FAKE_Stencil_Texture_612x612.bmp";
-  //  groundMesh->textureRatio[0] = 1.0f;
-    //groundMesh->textureRatio[1] = 0.5f;
-
-   /* groundMesh->transperancy = 1.0f;
-    groundMesh->bDoNotLight = true;
-    groundMesh->drawPosition = glm::vec3(0.0f, -30.0f, 0.0f);
-    PhysicsBody* body1 = engine.AddPhysicsBody("bathtub");
+    PhysicsBody* body1 = engine.AddPhysicsBody("city");
     body1->inverseMass = 0;
     body1->shapeType = PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT;
-    body1->setShape(new PhysicsShapes::sMeshOfTriangles_Indirect("bathtub"));*/
+    body1->setShape(new PhysicsShapes::sMeshOfTriangles_Indirect("city"));
+    
+    std::vector<cAABB*> aabbs = engine.physicsManager->GenerateAABBs(body1);
 
-    //cMesh* sphereMesh = engine.LoadMesh("Sphere_1_unit_Radius.ply", "Sphere");
-    //sphereMesh->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+   // city->calcExtents();
 
-    //PhysicsBody* body = engine.AddPhysicsBody("Sphere");
-    //body->shapeType = PhysicsShapes::SPHERE;
-    //body->setShape(new PhysicsShapes::sSphere(1.0));
-    //body->acceleration = glm::vec3(0, -9.8f/5, 0);
-    //body->inverseMass = 1.0f/10.0f;
+    cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "min");
+    mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    glm::vec3 extents = city->maxExtents_XYZ - city->minExtents_XYZ;
+    mesh->drawScale = extents;
+    mesh->drawPosition = (city->minExtents_XYZ + city->maxExtents_XYZ) * 0.5f;
+    mesh->bIsWireframe = true;
+
+
+    for (size_t i = 0; i < aabbs.size(); i++)
+    {
+        cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "cube" + std::to_string(i));
+        mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+        mesh->drawScale = aabbs[i]->getExtentsXYZ();
+        mesh->drawPosition = aabbs[i]->getCentreXYZ();
+        mesh->bIsWireframe = true;
+    }
 
     engine.LoadDefaultLights();
 

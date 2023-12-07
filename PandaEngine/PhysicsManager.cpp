@@ -91,18 +91,69 @@ void PhysicsManager::AddMesh(PhysicsBody* physicsBody)
 	bodies.push_back(physicsBody);
 }
 
-void PhysicsManager::GenerateAABBs(PhysicsBody* body)
+std::vector<cAABB*> PhysicsManager::GenerateAABBs(PhysicsBody* body)
 {
-	sModelDrawInfo theMeshDrawInfo;
-	meshManager->GetModelDrawInfo(body->mesh->meshName, theMeshDrawInfo);
+	std::vector<cAABB*> aabbs;
+	
+	body->mesh->calcExtents();
 
-	for (int i = 0; i < theMeshDrawInfo.numberOfVertices; i++)
+	//populate the aabb map with it's id
+	glm::vec3 extent = body->mesh->maxExtents_XYZ - body->mesh->minExtents_XYZ;
+	glm::vec3 center = (body->mesh->maxExtents_XYZ + body->mesh->minExtents_XYZ) * 0.5f;
+
+	glm::vec3 boxDimensions = extent / glm::vec3(10,10,10);
+	for (int x =0; x != 10; x++)
 	{
-		cAABB* aabb = new cAABB();
-		//aabb->minXYZ = theMeshDrawInfo.pVertices[i];
-		//aabb->maxXYZ = theMeshDrawInfo.pVertices[i];
-		body->aabbs.push_back(aabb);
+		for (int y = 0; y != 10; y++)
+		{
+			for (int z = 0; z != 10; z++)
+			{
+				cAABB* pAABB = new cAABB();
+
+				pAABB->minXYZ.x = body->mesh->minExtents_XYZ.x + x * boxDimensions.x;
+				pAABB->minXYZ.y = body->mesh->minExtents_XYZ.y + y * boxDimensions.y;
+				pAABB->minXYZ.z = body->mesh->minExtents_XYZ.z + z * boxDimensions.z;
+
+				pAABB->maxXYZ.x = pAABB->minXYZ.x + boxDimensions.x;
+				pAABB->maxXYZ.y = pAABB->minXYZ.y + boxDimensions.y;
+				pAABB->maxXYZ.z = pAABB->minXYZ.z + boxDimensions.z;
+
+				aabbs.push_back(pAABB);
+
+			/*	glm::vec3 extents = glm::vec3(extent, extent, extent);
+
+				unsigned int AABB_ID = cAABB::static_getLocationIndex(pAABB->minXYZ, extents);
+
+				body->aabbs[AABB_ID] = pAABB;*/
+
+			}
+		}
 	}
+
+	return aabbs;
+	//for (int i = 0; i < theMeshDrawInfo.numberOfVertices; i++)
+	//{
+	//	sVertex vert = theMeshDrawInfo.pVertices[i];
+	//	glm::vec3 vTestVert = glm::vec3(vert.x, vert.y, vert.z);		
+	//	glm::vec3 extents = glm::vec3(100, 100, 100);
+	//	unsigned int AABB_ID = cAABB::static_getLocationIndex(vTestVert, extents);
+
+	//	body->aabbs[AABB_ID]->vecVerticesInside.push_back(vTestVert);	
+	//}
+
+	//draw the aabb
+	//for (std::map< unsigned int, cAABB* >::iterator itAABB = body->aabbs.begin();
+	//	itAABB != body->aabbs.end(); itAABB++)
+	//{
+	//	if (!itAABB->second->vecVerticesInside.empty())
+	//	{
+	//		glm::vec3 extents = glm::vec3(100, 100, 100);
+	//		glm::vec3 location = cAABB::static_getLocationFromIndex(itAABB->second->getLocationIndex(), extents);
+	//		std::cout << location.x << " " << location.y << " " << location.z
+	//			<< " has " << itAABB->second->vecVerticesInside.size()
+	//			<< " vertices inside it." << std::endl;
+	//	}
+	//}
 
 }
 

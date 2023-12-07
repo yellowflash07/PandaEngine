@@ -33,6 +33,7 @@ cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyNam
     cMesh* mesh = new cMesh();
     mesh->meshName = modelNameAtPath;
     mesh->friendlyName = friendlyName;
+    mesh->modelDrawInfo = drawInfo;
     std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
     meshList.push_back(mesh);
     return mesh;

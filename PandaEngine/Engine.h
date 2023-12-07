@@ -33,8 +33,9 @@ public:
 	cLightManager* lightManager;
 	MeshManager* meshManager;
 	cAudioManager* audioManager;
-private:
 	PhysicsManager* physicsManager;
+
+private:
 	cShaderManager* shaderManager;
 	GLuint shaderProgramID;
 	glm::vec3 cameraEye;

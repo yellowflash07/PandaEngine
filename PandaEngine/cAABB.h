@@ -5,6 +5,7 @@
 #include <math.h>
 #include <map>
 #include <string>
+#include <iostream>
 
 // These would also store triangle info, 
 //	either the actual vertices of the triangle, or the index to the triangle...
@@ -15,12 +16,18 @@ public:
 	unsigned int uniqueID;
 	glm::vec3 minXYZ;
 	glm::vec3 maxXYZ;	// AKA the "lengths" or whatever
-	glm::vec3 getCentreXYZ(void);
+	glm::vec3 position;
+	glm::vec3 getCentreXYZ(void)
+	{
+		return (this->minXYZ + this->maxXYZ) / 2.0f;
+	}
 	glm::vec3 getExtentsXYZ(void)
 	{
 		// TODO: Calculate the extent
 		return maxXYZ - minXYZ;	// Does this work?? 
 	}
+
+
 
 	// I'll place the index calculation here 
 	// It's based on the lowest point on the AABB
@@ -102,6 +109,27 @@ public:
 		return theIndex;
 	}
 
+	static glm::vec3 static_getLocationFromIndex(unsigned int theIndex, glm::vec3 extentXYZ)
+	{
+		// Extract the sign information from the index
+		int xSign = (theIndex / 100'000'000) % 10 == 1 ? -1 : 1;
+		int ySign = (theIndex / 100'000) % 10 == 1 ? -1 : 1;
+		int zSign = (theIndex / 100) % 10 == 1 ? -1 : 1;
+
+		// Extract the indices without the sign information
+		unsigned int xIndex = (theIndex % 100'000'000) / (1000 * 1000);
+		unsigned int yIndex = (theIndex % (1000 * 1000)) / 1000;
+		unsigned int zIndex = theIndex % 1000;
+
+		// Calculate the actual (x, y, z) values
+		float x = xSign * xIndex * extentXYZ.x;
+		float y = ySign * yIndex * extentXYZ.y;
+		float z = zSign * zIndex * extentXYZ.z;
+
+		return glm::vec3(x, y, z);
+	}
+
+	std::vector< glm::vec3 > vecVerticesInside;
 };
 
 
