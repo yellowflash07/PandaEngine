@@ -59,8 +59,19 @@ void cMesh::calcExtents(void)
 		modelDrawInfo.pVertices[i].x = vert.x;
 		modelDrawInfo.pVertices[i].y = vert.y;
 		modelDrawInfo.pVertices[i].z = vert.z;
-
 	}
+
+	for (size_t i = 0; i < modelDrawInfo.numberOfTriangles; i++)
+	{
+
+		glm::vec3 v1 = modelDrawInfo.pTriangles[i].v1;
+		glm::vec3 v2 = modelDrawInfo.pTriangles[i].v2;
+		glm::vec3 v3 = modelDrawInfo.pTriangles[i].v3;
+		modelDrawInfo.pTriangles[i].v1 = (matModel * glm::vec4(v1, 1.0f));
+		modelDrawInfo.pTriangles[i].v2 = (matModel * glm::vec4(v2, 1.0f));
+		modelDrawInfo.pTriangles[i].v3 = (matModel * glm::vec4(v3, 1.0f));
+	}
+
 	modelDrawInfo.calcExtents();
 
 	maxExtents_XYZ = modelDrawInfo.maxExtents_XYZ;

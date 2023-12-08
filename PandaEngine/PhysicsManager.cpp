@@ -45,38 +45,16 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 			pObject->mesh->drawPosition.z += deltaPosition.z;
 
 			// Update the AABBs
-		/*	for (cAABB* pAABB : pObject->aabbs)
+			for (cAABB* pAABB : pObject->aabbs)
 			{
 				pAABB->minXYZ += deltaPosition;
 				pAABB->maxXYZ += deltaPosition;
-			}*/
+			}
 		}
 
 	}
 
 	//broad phase
-	//for (PhysicsBody* pObjectA : this->bodies)
-	//{
-
-	//	for (PhysicsBody* pObjectB : this->bodies)
-	//	{
-	//		// Are "A" and "B" the same object
-	//		if (pObjectA == pObjectB)
-	//		{
-	//			// Yup, so skip this
-	//			continue;
-	//		}
-
-	//		// Check if the two AABBs overlap
-	//		if (CheckAABBOverlap(pObjectA->aabbs, pObjectB->aabbs))
-	//		{
-	//			// Narrow phase
-	//			
-	//		}
-	//	}
-	//}
-
-	// See which object is colliding with which object...
 	for (PhysicsBody* pObjectA : this->bodies)
 	{
 
@@ -88,32 +66,77 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 				// Yup, so skip this
 				continue;
 			}
-			// What's the collision? 
-			switch (pObjectA->shapeType)
-			{
-				case PhysicsShapes::SPHERE:
-					switch (pObjectB->shapeType)
-					{
-						case PhysicsShapes::SPHERE:
-							// Sphere - Sphere
-							this->m_Sphere_Sphere_IntersectionTest(pObjectA, pObjectB);
-							break;
-						case PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT:
-							// Sphere - Mesh triangle (indirect)
-							if (this->m_Sphere_TriMeshIndirect_IntersectionTest(pObjectA, pObjectB))
-							{
-								std::cout << "Hazzah!" << std::endl;
-							}
-							break;
-						case PhysicsShapes::MESH_OF_TRIANGLES_LOCAL_VERTICES:
-							// Shpere - Mesh (local vertices)
-							break;
-					}//switch (pObjectB->shapeType)
-					break;
-			}
 
+			// Check if the two AABBs overlap
+			if (CheckAABBOverlap(pObjectA, pObjectB))
+			{
+				/*std::cout << "Overlapping" << std::endl;
+				std::cout << pObjectA->mesh->friendlyName << std::endl;
+				std::cout << pObjectA->activeAABB->vecTrianglesInside.size() << std::endl;
+				std::cout << pObjectB->mesh->friendlyName << std::endl;
+				std::cout << pObjectB->activeAABB->vecTrianglesInside.size() << std::endl;*/
+				// Narrow phase
+				switch (pObjectA->shapeType)
+				{
+					case PhysicsShapes::SPHERE:
+						switch (pObjectB->shapeType)
+						{
+							case PhysicsShapes::SPHERE:
+								// Sphere - Sphere
+								this->m_Sphere_Sphere_IntersectionTest(pObjectA, pObjectB);
+								break;
+							case PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT:
+								// Sphere - Mesh triangle (indirect)
+								if (this->m_Sphere_TriMeshIndirect_IntersectionTest(pObjectA, pObjectB))
+								{
+									std::cout << "Hazzah!" << std::endl;
+								}
+								break;
+						}
+						break;
+				}
+			}
 		}
 	}
+
+	// See which object is colliding with which object...
+	//for (PhysicsBody* pObjectA : this->bodies)
+	//{
+
+	//	for (PhysicsBody* pObjectB : this->bodies)
+	//	{
+	//		// Are "A" and "B" the same object
+	//		if (pObjectA == pObjectB)
+	//		{
+	//			// Yup, so skip this
+	//			continue;
+	//		}
+	//		// What's the collision? 
+	//		switch (pObjectA->shapeType)
+	//		{
+	//			case PhysicsShapes::SPHERE:
+	//				switch (pObjectB->shapeType)
+	//				{
+	//					case PhysicsShapes::SPHERE:
+	//						// Sphere - Sphere
+	//						this->m_Sphere_Sphere_IntersectionTest(pObjectA, pObjectB);
+	//						break;
+	//					case PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT:
+	//						// Sphere - Mesh triangle (indirect)
+	//						if (this->m_Sphere_TriMeshIndirect_IntersectionTest(pObjectA, pObjectB))
+	//						{
+	//							std::cout << "Hazzah!" << std::endl;
+	//						}
+	//						break;
+	//					case PhysicsShapes::MESH_OF_TRIANGLES_LOCAL_VERTICES:
+	//						// Shpere - Mesh (local vertices)
+	//						break;
+	//				}//switch (pObjectB->shapeType)
+	//				break;
+	//		}
+
+	//	}
+	//}
 	return;
 }
 
@@ -158,22 +181,22 @@ void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs)
 				body->aabbsMap[AABB_ID] = pAABB;
 
 				// Count the number of vertices within this AABB
-				//for(int i = 0; i < drawInfo.numberOfVertices; i++)
-				//{
-				//	glm::vec3 vertex = glm::vec3(drawInfo.pVertices[i].x, drawInfo.pVertices[i].y, drawInfo.pVertices[i].z);
-				//	if (vertex.x >= pAABB->minXYZ.x && vertex.x <= pAABB->maxXYZ.x &&
-				//		vertex.y >= pAABB->minXYZ.y && vertex.y <= pAABB->maxXYZ.y &&
-				//		vertex.z >= pAABB->minXYZ.z && vertex.z <= pAABB->maxXYZ.z) 
-				//	{
-				//		pAABB->vecVerticesInside.push_back(vertex);
-				//	}
-				//}
+			/*	for(int i = 0; i < drawInfo.numberOfVertices; i++)
+				{
+					glm::vec3 vertex = glm::vec3(drawInfo.pVertices[i].x, drawInfo.pVertices[i].y, drawInfo.pVertices[i].z);
+					if (vertex.x >= pAABB->minXYZ.x && vertex.x <= pAABB->maxXYZ.x &&
+						vertex.y >= pAABB->minXYZ.y && vertex.y <= pAABB->maxXYZ.y &&
+						vertex.z >= pAABB->minXYZ.z && vertex.z <= pAABB->maxXYZ.z) 
+					{
+						pAABB->vecVerticesInside.push_back(vertex);
+					}
+				}*/
 				//store the triangles that are inside the aabb
 				for (int i = 0; i < drawInfo.numberOfTriangles; i ++)
 				{
 					glm::vec3 v1 = drawInfo.pTriangles[i].v1;
 					glm::vec3 v2 = drawInfo.pTriangles[i].v2;
-					glm::vec3 v3 = drawInfo.pTriangles[i].v3;
+					glm::vec3 v3 = drawInfo.pTriangles[i].v3;					
 
 					//if any of the vertices are inside the aabb, add the triangle to the aabb
 					if (pAABB->IsPointInside(v1) || pAABB->IsPointInside(v2) || pAABB->IsPointInside(v3))
@@ -181,19 +204,18 @@ void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs)
 						pAABB->vecTrianglesInside.push_back(drawInfo.pTriangles[i]);
 					}
 				}
-
 				body->aabbs.push_back(pAABB);
 			}
 		}
 	}
 }
 
-bool PhysicsManager::CheckAABBOverlap(const std::vector<cAABB*>& aabbs1, const std::vector<cAABB*>& aabbs2)
+bool PhysicsManager::CheckAABBOverlap(PhysicsBody* pBodyA, PhysicsBody* pBodyB)
 {
-	int count = 0;
-	for (cAABB* pAABB1 : aabbs1)
+	//int count = 0;
+	for (cAABB* pAABB1 : pBodyA->aabbs)
 	{
-		for (cAABB* pAABB2 : aabbs2)
+		for (cAABB* pAABB2 : pBodyB->aabbs)
 		{	
 
 			// Check for overlap along each axis
@@ -211,24 +233,17 @@ bool PhysicsManager::CheckAABBOverlap(const std::vector<cAABB*>& aabbs1, const s
 				continue;
 			}
 
+			pBodyA->activeAABB = pAABB1;
+			pBodyB->activeAABB = pAABB2;
 			// Overlap on all axes means AABBs are intersecting
-			count++;
+			//count++;
 			pAABB1->isOverlapping = true;
 			pAABB2->isOverlapping = true;
 
-			std::cout << "Overlapping: " << count << std::endl;
+			//std::cout << "Overlapping: " << count << std::endl;
 
 			// If execution reaches this point, there is an overlap
 			return true;
-		}
-	}
-
-	for (cAABB* pAABB1 : aabbs1)
-	{
-		for (cAABB* pAABB2 : aabbs2)
-		{
-			pAABB1->isOverlapping = false;
-			pAABB2->isOverlapping = false;
 		}
 	}
 
@@ -369,6 +384,7 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 		return false;
 	}
 
+	int numberOfTriangles = triMesh->activeAABB->vecTrianglesInside.size();
 
 	//	glm::vec3 closestPointToTriangle = glm::vec3(FLT_MAX, FLT_MAX, FLT_MAX);
 	float closestDistanceSoFar = FLT_MAX;
@@ -378,48 +394,48 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 
 	// We now have the mesh object location and the detailed mesh information 
 	// Which triangle is closest to this sphere (right now)
-	for (unsigned int index = 0; index != theMeshDrawInfo.numberOfTriangles; index ++)
+	for (unsigned int index = 0; index != numberOfTriangles; index ++)
 	{
 		glm::vec3 verts[3];
 
-		verts[0] = theMeshDrawInfo.pTriangles[index].v1;
-		verts[1] = theMeshDrawInfo.pTriangles[index].v2;
-		verts[2] = theMeshDrawInfo.pTriangles[index].v3;
+		glm::vec3 v1 = triMesh->activeAABB->vecTrianglesInside[index].v1;
+		glm::vec3 v2 = triMesh->activeAABB->vecTrianglesInside[index].v2;
+		glm::vec3 v3 = triMesh->activeAABB->vecTrianglesInside[index].v3;
 
-		glm::mat4 matModel = glm::mat4(1.0f);
+		//glm::mat4 matModel = glm::mat4(1.0f);
 
-		// Translation
-		glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
-								glm::vec3(	triMesh->mesh->drawPosition.x,
-											triMesh->mesh->drawPosition.y,
-											triMesh->mesh->drawPosition.z));
+		//// Translation
+		//glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
+		//						glm::vec3(	triMesh->mesh->drawPosition.x,
+		//									triMesh->mesh->drawPosition.y,
+		//									triMesh->mesh->drawPosition.z));
 
-		// Rotation matrix generation
-		glm::mat4 matRotation = glm::mat4(triMesh->mesh->get_qOrientation());
+		//// Rotation matrix generation
+		//glm::mat4 matRotation = glm::mat4(triMesh->mesh->get_qOrientation());
 
-		glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
-			glm::vec3(triMesh->mesh->drawScale.x,
-					triMesh->mesh->drawScale.y,
-					triMesh->mesh->drawScale.z));
+		//glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
+		//	glm::vec3(triMesh->mesh->drawScale.x,
+		//			triMesh->mesh->drawScale.y,
+		//			triMesh->mesh->drawScale.z));
 
-				// Combine all these transformation
-		matModel = matModel * matTranslate;
+		//		// Combine all these transformation
+		//matModel = matModel * matTranslate;
 
-		matModel = matModel * matRotation;
+		//matModel = matModel * matRotation;
 
-		matModel = matModel * matScale;
+		//matModel = matModel * matScale;
 
-		glm::vec4 vertsWorld[3];
-		vertsWorld[0] = (matModel * glm::vec4(verts[0], 1.0f));
-		vertsWorld[1] = (matModel * glm::vec4(verts[1], 1.0f));
-		vertsWorld[2] = (matModel * glm::vec4(verts[2], 1.0f));
+		//glm::vec4 vertsWorld[3];
+		//vertsWorld[0] = (matModel * glm::vec4(verts[0], 1.0f));
+		//vertsWorld[1] = (matModel * glm::vec4(verts[1], 1.0f));
+		//vertsWorld[2] = (matModel * glm::vec4(verts[2], 1.0f));
 
 		// And make sure you multiply the normal by the inverse transpose
 		// OR recalculate it right here! 
 
 		// ******************************************************
 
-		glm::vec3 thisTriangleClosestPoint = this->ClosestPtPointTriangle(sphere->mesh->drawPosition,vertsWorld[0], vertsWorld[1], vertsWorld[2]);
+		glm::vec3 thisTriangleClosestPoint = this->ClosestPtPointTriangle(sphere->mesh->drawPosition,v1, v2, v3);
 
 		// Is this the closest so far
 		float distanceToThisTriangle = glm::distance(thisTriangleClosestPoint, sphere->mesh->drawPosition);
@@ -431,9 +447,9 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 			// Make note of the triangle index
 			indexOfClosestTriangle = index;
 			// 
-			closestTriangleVertices[0] = vertsWorld[0];
-			closestTriangleVertices[1] = vertsWorld[1];
-			closestTriangleVertices[2] = vertsWorld[2];
+			closestTriangleVertices[0] = v1;
+			closestTriangleVertices[1] = v2;
+			closestTriangleVertices[2] = v3;
 		}
 
 
@@ -441,22 +457,22 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 
 	if (closestDistanceSoFar < pSphere->radius)
 	{
-		glm::vec3 sphereDirection = sphere->velocity;
-		// Normalize... 
-		sphereDirection = glm::normalize(sphereDirection);
+		//glm::vec3 sphereDirection = sphere->velocity;
+		//// Normalize... 
+		//sphereDirection = glm::normalize(sphereDirection);
 
-		// Calcualte the current normal from the TRANSFORMED vertices
-		glm::vec3 edgeA = closestTriangleVertices[1] - closestTriangleVertices[0];
-		glm::vec3 edgeB = closestTriangleVertices[2] - closestTriangleVertices[0];
+		//// Calcualte the current normal from the TRANSFORMED vertices
+		//glm::vec3 edgeA = closestTriangleVertices[1] - closestTriangleVertices[0];
+		//glm::vec3 edgeB = closestTriangleVertices[2] - closestTriangleVertices[0];
 
-		glm::vec3 triNormal = glm::normalize(glm::cross(edgeA, edgeB));
-		glm::vec3 reflectionVec = glm::reflect(sphereDirection, triNormal);
+		//glm::vec3 triNormal = glm::normalize(glm::cross(edgeA, edgeB));
+		//glm::vec3 reflectionVec = glm::reflect(sphereDirection, triNormal);
 
-		// Update the  velocity based on this reflection vector
-		float sphereSpeed = glm::length(sphere->velocity);
-		glm::vec3 newVelocity = reflectionVec * sphereSpeed;
+		//// Update the  velocity based on this reflection vector
+		//float sphereSpeed = glm::length(sphere->velocity);
+		//glm::vec3 newVelocity = reflectionVec * sphereSpeed;
 
-		sphere->velocity = newVelocity;
+		sphere->velocity = glm::vec3(0,0,0);
 
 		return true;
 	}

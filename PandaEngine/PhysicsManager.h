@@ -21,6 +21,8 @@ struct PhysicsBody
 
 	std::map<unsigned int, cAABB*> aabbsMap;
 	std::vector<cAABB*> aabbs;
+//	std::pair<cAABB*, cAABB*> aabbPair;
+	cAABB* activeAABB;
 	PhysicsShapes::eShape shapeType;
 	void* shape = NULL;
 };
@@ -40,7 +42,7 @@ private:
 	MeshManager* meshManager;
 	std::vector<PhysicsBody*> bodies;
 	glm::vec3 ClosestPtPointTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);
-	bool CheckAABBOverlap(const std::vector<cAABB*>& aabbs1, const std::vector<cAABB*>& aabbs2);
+	bool CheckAABBOverlap(PhysicsBody* pBodyA, PhysicsBody* pBodyB);
 	
 
 	//intersection tests
