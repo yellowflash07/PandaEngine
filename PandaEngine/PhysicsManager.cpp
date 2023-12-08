@@ -16,6 +16,8 @@ PhysicsManager::~PhysicsManager()
 
 void PhysicsManager::Update(float deltaTime)
 {
+
+
 	CheckIntersections(deltaTime);
 }
 
@@ -24,7 +26,7 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 	for (PhysicsBody* pObject : this->bodies)
 	{
 		// Infinite mass? 
-		if (pObject->inverseMass >= 0.0f)
+		if (pObject->inverseMass > 0.0f)
 		{
 			// Velocity change is based on the acceleration over this time frame 
 			// This part: (Accel * DeltaTime)
@@ -41,9 +43,38 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 			pObject->mesh->drawPosition.x += deltaPosition.x;
 			pObject->mesh->drawPosition.y += deltaPosition.y;
 			pObject->mesh->drawPosition.z += deltaPosition.z;
+
+			// Update the AABBs
+		/*	for (cAABB* pAABB : pObject->aabbs)
+			{
+				pAABB->minXYZ += deltaPosition;
+				pAABB->maxXYZ += deltaPosition;
+			}*/
 		}
 
 	}
+
+	//broad phase
+	//for (PhysicsBody* pObjectA : this->bodies)
+	//{
+
+	//	for (PhysicsBody* pObjectB : this->bodies)
+	//	{
+	//		// Are "A" and "B" the same object
+	//		if (pObjectA == pObjectB)
+	//		{
+	//			// Yup, so skip this
+	//			continue;
+	//		}
+
+	//		// Check if the two AABBs overlap
+	//		if (CheckAABBOverlap(pObjectA->aabbs, pObjectB->aabbs))
+	//		{
+	//			// Narrow phase
+	//			
+	//		}
+	//	}
+	//}
 
 	// See which object is colliding with which object...
 	for (PhysicsBody* pObjectA : this->bodies)
@@ -91,7 +122,7 @@ void PhysicsManager::AddMesh(PhysicsBody* physicsBody)
 	bodies.push_back(physicsBody);
 }
 
-std::vector<cAABB*> PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs)
+void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs)
 {
 	std::vector<cAABB*> aabbs;
 	
@@ -124,51 +155,85 @@ std::vector<cAABB*> PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberO
 
 				unsigned int AABB_ID = cAABB::static_getLocationIndex(pAABB->minXYZ, extent);
 
-				body->aabbs[AABB_ID] = pAABB;
+				body->aabbsMap[AABB_ID] = pAABB;
 
 				// Count the number of vertices within this AABB
-				for(int i = 0; i < drawInfo.numberOfVertices; i++)
+				//for(int i = 0; i < drawInfo.numberOfVertices; i++)
+				//{
+				//	glm::vec3 vertex = glm::vec3(drawInfo.pVertices[i].x, drawInfo.pVertices[i].y, drawInfo.pVertices[i].z);
+				//	if (vertex.x >= pAABB->minXYZ.x && vertex.x <= pAABB->maxXYZ.x &&
+				//		vertex.y >= pAABB->minXYZ.y && vertex.y <= pAABB->maxXYZ.y &&
+				//		vertex.z >= pAABB->minXYZ.z && vertex.z <= pAABB->maxXYZ.z) 
+				//	{
+				//		pAABB->vecVerticesInside.push_back(vertex);
+				//	}
+				//}
+				//store the triangles that are inside the aabb
+				for (int i = 0; i < drawInfo.numberOfTriangles; i ++)
 				{
-					glm::vec3 vertex = glm::vec3(drawInfo.pVertices[i].x, drawInfo.pVertices[i].y, drawInfo.pVertices[i].z);
-					if (vertex.x >= pAABB->minXYZ.x && vertex.x <= pAABB->maxXYZ.x &&
-						vertex.y >= pAABB->minXYZ.y && vertex.y <= pAABB->maxXYZ.y &&
-						vertex.z >= pAABB->minXYZ.z && vertex.z <= pAABB->maxXYZ.z) 
+					glm::vec3 v1 = drawInfo.pTriangles[i].v1;
+					glm::vec3 v2 = drawInfo.pTriangles[i].v2;
+					glm::vec3 v3 = drawInfo.pTriangles[i].v3;
+
+					//if any of the vertices are inside the aabb, add the triangle to the aabb
+					if (pAABB->IsPointInside(v1) || pAABB->IsPointInside(v2) || pAABB->IsPointInside(v3))
 					{
-						pAABB->vecVerticesInside.push_back(vertex);
+						pAABB->vecTrianglesInside.push_back(drawInfo.pTriangles[i]);
 					}
 				}
 
-				aabbs.push_back(pAABB);
-
+				body->aabbs.push_back(pAABB);
 			}
 		}
 	}
+}
 
-	//int totalVertices = 0;
-	//for (size_t i = 0; i < aabbs.size(); i++)
-	//{
-	//	if (aabbs[i]->vecVerticesInside.empty())
-	//	{
-	//		continue;
-	//	}
+bool PhysicsManager::CheckAABBOverlap(const std::vector<cAABB*>& aabbs1, const std::vector<cAABB*>& aabbs2)
+{
+	int count = 0;
+	for (cAABB* pAABB1 : aabbs1)
+	{
+		for (cAABB* pAABB2 : aabbs2)
+		{	
 
-	//	std::cout << "AABB " << i << " has " << aabbs[i]->vecVerticesInside.size() << " vertices inside it." << std::endl;
-	//	totalVertices += aabbs[i]->vecVerticesInside.size();
-	//}
+			// Check for overlap along each axis
+			if (pAABB1->maxXYZ.x < pAABB2->minXYZ.x || pAABB1->minXYZ.x > pAABB2->maxXYZ.x) 
+			{
+				// No overlap on the x-axis
+				continue;
+			}
+			if (pAABB1->maxXYZ.y < pAABB2->minXYZ.y || pAABB1->minXYZ.y > pAABB2->maxXYZ.y) 
+			{
+				continue;
+			}
+			if (pAABB1->maxXYZ.z < pAABB2->minXYZ.z || pAABB1->minXYZ.z > pAABB2->maxXYZ.z) 
+			{
+				continue;
+			}
 
-	//std::cout << "Total vertices: " << totalVertices << std::endl;
-	//std::cout << "Total vertices in mesh: " << drawInfo.numberOfVertices << std::endl;
+			// Overlap on all axes means AABBs are intersecting
+			count++;
+			pAABB1->isOverlapping = true;
+			pAABB2->isOverlapping = true;
 
-	//for (std::map< unsigned int, cAABB* >::iterator itAABB = body->aabbs.begin();
-	//	itAABB != body->aabbs.end(); itAABB++)
-	//{
-	//	glm::vec3 location = cAABB::static_getLocationFromIndex(itAABB->second->getLocationIndex(), extent);
-	//	std::cout << location.x << " " << location.y << " " << location.z
-	//		<< " has " << itAABB->second->vecVerticesInside.size()
-	//		<< " vertices inside it." << std::endl;
-	//}
-	return aabbs;
+			std::cout << "Overlapping: " << count << std::endl;
 
+			// If execution reaches this point, there is an overlap
+			return true;
+		}
+	}
+
+	for (cAABB* pAABB1 : aabbs1)
+	{
+		for (cAABB* pAABB2 : aabbs2)
+		{
+			pAABB1->isOverlapping = false;
+			pAABB2->isOverlapping = false;
+		}
+	}
+
+	// No overlap found
+	return false;
 }
 
 glm::vec3 PhysicsManager::ClosestPtPointTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c)
@@ -313,37 +378,21 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 
 	// We now have the mesh object location and the detailed mesh information 
 	// Which triangle is closest to this sphere (right now)
-	for (unsigned int index = 0; index != theMeshDrawInfo.numberOfIndices; index += 3)
+	for (unsigned int index = 0; index != theMeshDrawInfo.numberOfTriangles; index ++)
 	{
 		glm::vec3 verts[3];
 
-		verts[0].x = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index]].x;
-		verts[0].y = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index]].y;
-		verts[0].z = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index]].z;
-
-		verts[1].x = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index + 1]].x;
-		verts[1].y = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index + 1]].y;
-		verts[1].z = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index + 1]].z;
-
-		verts[2].x = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index + 2]].x;
-		verts[2].y = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index + 2]].y;
-		verts[2].z = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index + 2]].z;
-
-		// Transform this object in world space using the same technique we did to render it
-		// 
-		// Here's the key line: 	
-		// 
-		//		vertexWorldPos = matModel * vec4( vPos.xyz, 1.0f);
-		// 
-		// THIS BLOCK OF CODE IS FROM DrawObject()
+		verts[0] = theMeshDrawInfo.pTriangles[index].v1;
+		verts[1] = theMeshDrawInfo.pTriangles[index].v2;
+		verts[2] = theMeshDrawInfo.pTriangles[index].v3;
 
 		glm::mat4 matModel = glm::mat4(1.0f);
 
 		// Translation
 		glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
-			glm::vec3(triMesh->mesh->drawPosition.x,
-					triMesh->mesh->drawPosition.y,
-					triMesh->mesh->drawPosition.z));
+								glm::vec3(	triMesh->mesh->drawPosition.x,
+											triMesh->mesh->drawPosition.y,
+											triMesh->mesh->drawPosition.z));
 
 		// Rotation matrix generation
 		glm::mat4 matRotation = glm::mat4(triMesh->mesh->get_qOrientation());

@@ -13,7 +13,6 @@ public:
 	unsigned int uniqueID;
 	glm::vec3 minXYZ;
 	glm::vec3 maxXYZ;	// AKA the "lengths" or whatever
-	glm::vec3 position;
 
 	glm::vec3 getCentreXYZ(void)
 	{
@@ -25,7 +24,7 @@ public:
 		return maxXYZ - minXYZ;	// Does this work?? 
 	}
 
-
+	bool isOverlapping ;
 
 	// I'll place the index calculation here 
 	// It's based on the lowest point on the AABB
@@ -128,6 +127,18 @@ public:
 	}
 
 	std::vector< glm::vec3 > vecVerticesInside;
+	std::vector< sTriangle > vecTrianglesInside;
+
+	bool IsPointInside(glm::vec3 point)
+	{
+		if (point.x > minXYZ.x && point.x < maxXYZ.x &&
+			point.y > minXYZ.y && point.y < maxXYZ.y &&
+			point.z > minXYZ.z && point.z < maxXYZ.z)
+		{
+			return true;
+		}
+
+	}
 };
 
 

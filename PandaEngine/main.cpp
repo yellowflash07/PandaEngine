@@ -42,39 +42,80 @@ int main(void)
     skyBoxMesh->isSkyBox = true;
     skyBoxMesh->setUniformDrawScale(5000.0f);
 
-    cMesh* city = engine.LoadMesh("cartoonCity_Showcase_rgba.ply", "city");
-    city->transperancy = 1.0f;
-    city->bDoNotLight = true;
-    city->texture[0] = "PaletteV1.bmp";
-    city->textureRatio[0] = 1.0f;
-    city->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-    city->setRotationFromEuler(glm::vec3(-1.6f, 0.0f, 0.0f));
+    cMesh* sphere = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "sphere");
+    sphere->drawPosition = glm::vec3(0.0f, 60.0f, 0.0f);
+    camera->cameraEye = glm::vec3(0.0f, 60.0f, 0.0f);
+    PhysicsBody* body = engine.AddPhysicsBody("sphere");
+    body->inverseMass = 1.0f/10.0f;
+  //  body->inverseMass = 0.0f;
+    body->acceleration = glm::vec3(0.0f, -9.8f/10.0f, 0.0f);
+    body->shapeType = PhysicsShapes::SPHERE;
+    body->setShape(new PhysicsShapes::sSphere(1.0f));
 
-    PhysicsBody* body1 = engine.AddPhysicsBody("city");
+    cMesh* ground = engine.LoadMesh("bathtub_xyz_n_rgba.ply", "ground");
+    ground->transperancy = 1.0f;
+    ground->bDoNotLight = true;
+    ground->texture[0] = "PaletteV1.bmp";
+    ground->textureRatio[0] = 1.0f;
+    ground->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+ //   ground->setRotationFromEuler(glm::vec3(-1.6f, 0.0f, 0.0f));
+
+    PhysicsBody* body1 = engine.AddPhysicsBody("ground");
     body1->inverseMass = 0;
     body1->shapeType = PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT;
-    body1->setShape(new PhysicsShapes::sMeshOfTriangles_Indirect("city"));
+    body1->setShape(new PhysicsShapes::sMeshOfTriangles_Indirect("ground"));
+
+
+   // engine.physicsManager->GenerateAABBs(body, 1);
+
+    //cMesh* city = engine.LoadMesh("cartoonCity_Showcase_rgba.ply", "city");
+    //city->transperancy = 1.0f;
+    //city->bDoNotLight = true;
+    //city->texture[0] = "PaletteV1.bmp";
+    //city->textureRatio[0] = 1.0f;
+    //city->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    //city->setRotationFromEuler(glm::vec3(-1.6f, 0.0f, 0.0f));
+
+    //PhysicsBody* body1 = engine.AddPhysicsBody("city");
+    //body1->inverseMass = 0;
+    //body1->shapeType = PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT;
+    //body1->setShape(new PhysicsShapes::sMeshOfTriangles_Indirect("city"));
     
-    std::vector<cAABB*> aabbs = engine.physicsManager->GenerateAABBs(body1,10);
-
-   // city->calcExtents();
-
-    cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "min");
-    mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    glm::vec3 extents = city->maxExtents_XYZ - city->minExtents_XYZ;
-    mesh->drawScale = extents;
-    mesh->drawPosition = (city->minExtents_XYZ + city->maxExtents_XYZ) * 0.5f;
-    mesh->bIsWireframe = true;
+   // engine.physicsManager->GenerateAABBs(body1,10);
 
 
-    for (size_t i = 0; i < aabbs.size(); i++)
-    {
-        cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "AABB" + std::to_string(i));
-        mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-        mesh->drawScale = aabbs[i]->getExtentsXYZ();
-        mesh->drawPosition = aabbs[i]->getCentreXYZ();
-        mesh->bIsWireframe = true;
-    }
+    //std::vector<cMesh*> sphereAABBmeshes;
+    //std::vector<cMesh*> meshes;
+
+    //for (size_t i = 0; i < body->aabbs.size(); i++)
+    //{
+    //    cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "SPHEREAABB" + std::to_string(i));
+    //    //mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    //    mesh->drawScale = body->aabbs[i]->getExtentsXYZ();
+    //    mesh->drawPosition = body->aabbs[i]->getCentreXYZ();
+    //    mesh->bDoNotLight = true;
+    //    mesh->bUseDebugColours = true;
+    //    mesh->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    //    mesh->drawPosition = body->aabbs[i]->getCentreXYZ();
+    //    mesh->bIsWireframe = true;
+    //    sphereAABBmeshes.push_back(mesh);
+    //}
+
+    //for (size_t i = 0; i < body1->aabbs.size(); i++)
+    //{
+    //    cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "AABB" + std::to_string(i));
+    //    //mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    //    mesh->drawScale = body1->aabbs[i]->getExtentsXYZ();
+    //    mesh->drawPosition = body1->aabbs[i]->getCentreXYZ();
+    //    mesh->bIsVisible = false;
+    //    mesh->bDoNotLight = true;
+    //    mesh->bUseDebugColours = true;
+    //    mesh->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    //    mesh->bIsWireframe = true;
+    //    meshes.push_back(mesh);
+    //}
+
+
 
     engine.LoadDefaultLights();
 
@@ -82,6 +123,31 @@ int main(void)
     {
         engine.Update();
         skyBoxMesh->drawPosition = camera->cameraEye;
+
+   //     for (size_t i = 0; i < body->aabbs.size(); i++)
+   //     {
+   //         sphereAABBmeshes[i]->drawPosition = body->aabbs[i]->getCentreXYZ();
+   //         if(body->aabbs[i]->isOverlapping)
+   //             sphereAABBmeshes[i]->wholeObjectDebugColourRGBA = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+			//else
+   //             sphereAABBmeshes[i]->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+   //     }
+   //     for (size_t i = 0; i < body1->aabbs.size(); i++)
+   //     {
+   //         if (body1->aabbs[i]->isOverlapping)
+   //         {
+   //             meshes[i]->wholeObjectDebugColourRGBA = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+   //             meshes[i]->bIsVisible = true;
+   //         //    std::cout << "Overlapping" << meshes[i]->friendlyName << std::endl;
+   //         }             
+   //         else
+   //         {
+   //             meshes[i]->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+			//	meshes[i]->bIsVisible = false;
+   //         }
+
+   //     }
     }
 
     engine.ShutDown();

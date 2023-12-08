@@ -17,6 +17,13 @@ struct sVertex
 	float u, v;				// Texture coordinates
 };
 
+struct sTriangle
+{
+	glm::vec3 v1;
+	glm::vec3 v2;
+	glm::vec3 v3;
+};
+
 struct sModelDrawInfo
 {
 	sModelDrawInfo();
@@ -38,6 +45,8 @@ struct sModelDrawInfo
 	sVertex* pVertices;	//  = 0;
 	// The index buffer (CPU side)
 	unsigned int* pIndices;	// Triangles
+
+	sTriangle* pTriangles;
 
 	glm::vec3 maxExtents_XYZ;	// bounding box maximums
 	glm::vec3 minExtents_XYZ;	// bounding box minimums

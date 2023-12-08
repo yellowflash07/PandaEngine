@@ -199,6 +199,8 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 
     drawInfo.numberOfIndices = mesh->mNumFaces * 3; // Triangles assumed
     drawInfo.pIndices = new unsigned int[drawInfo.numberOfIndices];
+    drawInfo.numberOfTriangles = mesh->mNumFaces;
+    drawInfo.pTriangles = new sTriangle[drawInfo.numberOfTriangles];
 
     for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
     {
@@ -206,6 +208,20 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
         drawInfo.pIndices[i * 3] = face.mIndices[0];
         drawInfo.pIndices[i * 3 + 1] = face.mIndices[1];
         drawInfo.pIndices[i * 3 + 2] = face.mIndices[2];
+
+        drawInfo.pTriangles[i].v1.x = mesh->mVertices[face.mIndices[0]].x;
+        drawInfo.pTriangles[i].v1.y = mesh->mVertices[face.mIndices[0]].y;
+        drawInfo.pTriangles[i].v1.z = mesh->mVertices[face.mIndices[0]].z;
+
+        drawInfo.pTriangles[i].v2.x = mesh->mVertices[face.mIndices[1]].x;
+        drawInfo.pTriangles[i].v2.y = mesh->mVertices[face.mIndices[1]].y;
+        drawInfo.pTriangles[i].v2.z = mesh->mVertices[face.mIndices[1]].z;
+
+        drawInfo.pTriangles[i].v3.x = mesh->mVertices[face.mIndices[2]].x;
+        drawInfo.pTriangles[i].v3.y = mesh->mVertices[face.mIndices[2]].y;
+        drawInfo.pTriangles[i].v3.z = mesh->mVertices[face.mIndices[2]].z;
+
+
     }
 
     return true;

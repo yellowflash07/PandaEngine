@@ -19,8 +19,8 @@ struct PhysicsBody
 	void setShape(PhysicsShapes::sMeshOfTriangles_Indirect* pTriangleMeshProps);
 	void setShape(PhysicsShapes::sMeshOfTriangles_LocalVertices* pTriangleMeshProps);
 
-	std::map<unsigned int, cAABB*> aabbs;
-
+	std::map<unsigned int, cAABB*> aabbsMap;
+	std::vector<cAABB*> aabbs;
 	PhysicsShapes::eShape shapeType;
 	void* shape = NULL;
 };
@@ -35,11 +35,13 @@ public:
 	void Update(float deltaTime);
 	void CheckIntersections(float deltaTime);
 	void AddMesh(PhysicsBody* physicsBody);
-	std::vector<cAABB*> GenerateAABBs(PhysicsBody* body,int numberOfAABBs);
+	void GenerateAABBs(PhysicsBody* body,int numberOfAABBs);
 private:
 	MeshManager* meshManager;
 	std::vector<PhysicsBody*> bodies;
 	glm::vec3 ClosestPtPointTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);
+	bool CheckAABBOverlap(const std::vector<cAABB*>& aabbs1, const std::vector<cAABB*>& aabbs2);
+	
 
 	//intersection tests
 	bool m_Sphere_Sphere_IntersectionTest(PhysicsBody* pSphereA, PhysicsBody* pShpereB);
@@ -49,6 +51,8 @@ private:
 	bool m_Sphere_Capsule_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pCapsule);
 	bool m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pTriMesh);
 	bool m_Sphere_TriMeshLocal_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pTriMesh);
+
+	//aabb intersection tests
 
 };
 
