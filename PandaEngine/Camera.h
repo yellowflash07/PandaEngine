@@ -3,7 +3,6 @@
 #include <glm/vec3.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp> 
-
 class Camera
 {
 public:
@@ -16,9 +15,10 @@ public:
 
 	void Update(GLFWwindow* window, double deltaTime);
 	void ProcessMouseMovement(double xpos, double ypos);
+	void ProcessKeyboardInput(GLFWwindow* window, double deltaTime);
 	GLuint shaderProgramID;
 	void SetPosition(glm::vec3 position) { cameraEye = position; }
-
+	void Follow(glm::vec3 followPos, glm::vec3 followTarget);
 	glm::vec3 GetCameraRotation();
 
 	glm::vec3 cameraEye;
@@ -33,5 +33,9 @@ private:
 	float speed;
 	bool stopUpdates; 
 	glm::mat4 matView;
+
+	bool isFollowing = false;
+	glm::vec3 followPos;
+	glm::vec3 followTarget;
 };
 

@@ -31,36 +31,30 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     ImGui::Text("Camera Up Vector: (%f, %f, %f)", upVector.x, upVector.y, upVector.z);
     ImGui::End();
 
-    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-    {
-        stopUpdates = !stopUpdates;
-    }
-    if (stopUpdates)
-    {
-        return;
-    }
     float ratio;
     int width, height;
 
     glfwGetFramebufferSize(window, &width, &height);
     ratio = width / (float)height;
 
-
-
+    if (isFollowing)
+    {
+		cameraEye = followPos;
+		cameraTarget = followTarget;
+	}
 
     GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
     glUniform4f(eyeLocation_UL,
         cameraEye.x, cameraEye.y, cameraEye.z, 1.0f);
 
     glm::mat4 matProjection = glm::perspective(0.6f,
-        ratio,
-        near,
-        far);
+                                                ratio,
+                                                near,
+                                                far);
 
     matView = glm::lookAt(cameraEye,
-        cameraEye + cameraTarget,
-        upVector);
-
+                        cameraEye + cameraTarget,
+                        upVector);
 
 
     GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
@@ -69,28 +63,16 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
     glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
 
-
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    {
-        cameraEye += speed * (float)deltaTime * cameraTarget;
-    }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    {
-        cameraEye -= speed * (float)deltaTime * cameraTarget;
-    }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    {
-        cameraEye -= speed * (float)deltaTime * glm::normalize(glm::cross(cameraTarget, upVector));
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    {
-        cameraEye += speed * (float)deltaTime * glm::normalize(glm::cross(cameraTarget, upVector));
-    }
+    ProcessKeyboardInput(window, deltaTime);
 
 }
 
 void Camera::ProcessMouseMovement(double xpos, double ypos)
 {
+    if (isFollowing)
+    {
+		return;
+	}
     if (stopUpdates)
     {
 		return;
@@ -120,11 +102,49 @@ void Camera::ProcessMouseMovement(double xpos, double ypos)
     this->yaw += xoffset;
     this->pitch += yoffset;
 
-    glm::vec3 front;
     cameraTarget.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
     cameraTarget.y = sin(glm::radians(this->pitch));
     cameraTarget.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
     cameraTarget = glm::normalize(cameraTarget);
+}
+
+void Camera::ProcessKeyboardInput(GLFWwindow* window, double deltaTime)
+{
+    if (isFollowing)
+    {
+        return;
+    }
+    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+    {
+        stopUpdates = !stopUpdates;
+    }
+    if (stopUpdates)
+    {
+        return;
+    }
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        cameraEye += speed * (float)deltaTime * cameraTarget;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        cameraEye -= speed * (float)deltaTime * cameraTarget;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        cameraEye -= speed * (float)deltaTime * glm::normalize(glm::cross(cameraTarget, upVector));
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        cameraEye += speed * (float)deltaTime * glm::normalize(glm::cross(cameraTarget, upVector));
+    }
+}
+
+void Camera::Follow(glm::vec3 followPos, glm::vec3 followTarget)
+{
+    this->followPos = followPos;
+    this->followTarget = followTarget;
+    isFollowing = true;
 }
 
 glm::vec3 Camera::GetCameraRotation()
