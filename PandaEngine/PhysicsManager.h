@@ -5,6 +5,12 @@
 #include "cAABB.h"
 #include <map>
 
+struct Plane
+{
+	glm::vec3 n;  // Normal vector
+	float d;      // Distance from the origin along the normal vector
+};
+
 struct PhysicsBody
 {
 	cMesh* mesh;
@@ -18,9 +24,12 @@ struct PhysicsBody
 	void setShape(PhysicsShapes::sCapsule* pCapsuleProps);
 	void setShape(PhysicsShapes::sMeshOfTriangles_Indirect* pTriangleMeshProps);
 	void setShape(PhysicsShapes::sMeshOfTriangles_LocalVertices* pTriangleMeshProps);
+	void setShape(PhysicsShapes::sAABB* aabb);
 
 	std::map<unsigned int, cAABB*> aabbsMap;
 	std::vector<cAABB*> aabbs;
+	std::vector<cAABB*> activeAABBs;
+	std::vector<std::pair<cAABB*, cAABB*>> aabbPairs;
 //	std::pair<cAABB*, cAABB*> aabbPair;
 	cAABB* activeAABB;
 	PhysicsShapes::eShape shapeType;
@@ -53,8 +62,11 @@ private:
 	bool m_Sphere_Capsule_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pCapsule);
 	bool m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pTriMesh);
 	bool m_Sphere_TriMeshLocal_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pTriMesh);
+	bool m_AABB_TriMeshIndirect_IntersectionTest(PhysicsBody* pAABB, PhysicsBody* pTriMesh);
 
-	//aabb intersection tests
+	bool PointInAABB(glm::vec3 point, cAABB* aabb);
+	int TestTriangleAABB(glm::vec3 v0, glm::vec3  v1, glm::vec3  v2, cAABB* b);
+	int TestAABBPlane(cAABB* b, Plane p);
 
 };
 

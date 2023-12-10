@@ -131,16 +131,10 @@ public:
 
 	bool IsPointInside(glm::vec3 point)
 	{
-		if (point.x > minXYZ.x && point.x < maxXYZ.x &&
+		return (point.x > minXYZ.x && point.x < maxXYZ.x &&
 			point.y > minXYZ.y && point.y < maxXYZ.y &&
-			point.z > minXYZ.z && point.z < maxXYZ.z)
-		{
-			return true;
-		}
-		/*std::cout << "Point:" << point.x << "," << point.y << "," << point.z  <<
-			      "is not min in " << minXYZ.x << "," << minXYZ.y << "," << minXYZ.z <<
-			      "is not max in " << maxXYZ.x << "," << maxXYZ.y << "," << maxXYZ.z << std::endl;*/
-		return false;
+			point.z > minXYZ.z && point.z < maxXYZ.z);
+
 	}
 };
 

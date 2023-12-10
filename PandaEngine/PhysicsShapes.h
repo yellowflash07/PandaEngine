@@ -151,6 +151,7 @@ struct PhysicsShapes
 	void setShape(sCapsule* pCapsuleProps);
 	void setShape(sMeshOfTriangles_Indirect* pTriangleMeshProps);
 	void setShape(sMeshOfTriangles_LocalVertices* pTriangleMeshProps);
+	void setShape(sAABB* aabb);
 
 	eShape shapeType;
 };
