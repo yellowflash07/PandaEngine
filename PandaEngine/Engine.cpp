@@ -13,10 +13,10 @@ static void error_callback(int error, const char* description)
 
 Camera* camera;
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    	camera->ProcessMouseMovement(xpos, ypos);
-}
+//void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+//{
+//    camera->ProcessMouseMovement(xpos, ypos);
+//}
 
 Engine::Engine()
 {
@@ -121,6 +121,17 @@ void Engine::Update()
     double currentTime = glfwGetTime();
     deltaTime = currentTime - lastTime;
     lastTime = currentTime;
+
+    frameCount++;
+
+    if (deltaTime >= 1.0) {
+        double fps = static_cast<double>(frameCount) / deltaTime;
+        frameCount = 0;
+        // Display FPS
+        ImGui::Begin("FPS Counter"); ImGui::SetNextItemWidth(100);
+        ImGui::Text("FPS: %.2f", fps); 
+        ImGui::End();
+    }
 
     //update physics
     physicsManager->Update(deltaTime);

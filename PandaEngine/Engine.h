@@ -44,5 +44,6 @@ private:
 	float near;
 	float far;
 	double lastTime;
+	int frameCount;
 	//Camera* camera;
 };
