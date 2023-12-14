@@ -19,7 +19,7 @@ public:
 	void SetShaderPath(std::string filePath);
 	void SetModelPath(std::string filePath);
 	void SetAudioPath(std::string filePath);
-	cMesh* LoadMesh(std::string filePath, std::string friendlyName);
+	cMesh* LoadMesh(std::string filePath, std::string friendlyName, bool dontDraw = false);
 	PhysicsBody* AddPhysicsBody(std::string friendlyMeshName);
 	bool LoadDefaultShaders();
 	void LoadDefaultLights();

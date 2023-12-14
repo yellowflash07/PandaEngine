@@ -3,6 +3,7 @@
 #include "Random.h"
 #include <iostream>
 #include <map>
+#include "CommandFactory.h"
 
 extern Camera* camera;
 int keyHit = 0;
@@ -22,7 +23,7 @@ float roll = 0.0f;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    //camera->ProcessMouseMovement(xpos, ypos);
+    camera->ProcessMouseMovement(xpos, ypos);
     static bool firstMouse = true;
     static float lastX = 0.0f;
     static float lastY = 0.0f;
@@ -74,133 +75,64 @@ int main(void)
     skyBoxMesh->isSkyBox = true;
     skyBoxMesh->setUniformDrawScale(5000.0f);
 
-    cMesh* bird = engine.LoadMesh("BirdOfPrey.ply", "bird");
-    bird->drawPosition = glm::vec3(0.0f, 30.0f, -200.0f);
-    bird->drawScale = glm::vec3(0.01f, 0.01f, 0.01f);   
-    PhysicsBody* body = engine.AddPhysicsBody("bird");
-    body->shapeType = PhysicsShapes::AABB;
+    cMesh* sphere = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "sphere");
+    sphere->bDoNotLight = true;
+    sphere->bUseDebugColours = true;
+    sphere->bIsVisible = false;
+    sphere->drawPosition = glm::vec3(0, 0, 10);
 
-    //not really using this AABB, this is simply to filter
-    body->setShape(new PhysicsShapes::sAABB(glm::vec3(0), glm::vec3(0)));
+    cMesh* mesh = engine.LoadMesh("bathtub_xyz_n_rgba.ply", "mesh");
+   // mesh->bDoNotLight = true;
+    mesh->bUseDebugColours = true;
+    mesh->wholeObjectDebugColourRGBA = glm::vec4(1, 0, 0, 1);
 
-    engine.physicsManager->GenerateAABBs(body, 5);    
+     CommandFactory commandFactory;
+    OrientTo* orientTo = (OrientTo*)commandFactory.CreateCommand("OrientTo");
 
+    orientTo->SetParams(mesh, sphere->drawPosition,0.0f, 10.0f);
 
-    cMesh* city = engine.LoadMesh("cartoonCity_Showcase_rgba.ply", "city");
-    city->transperancy = 1.0f;
-    city->bDoNotLight = true;
-    city->texture[0] = "PaletteV1.bmp";
-    city->textureRatio[0] = 1.0f;
-    city->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-    city->setRotationFromEuler(glm::vec3(-1.6f, 0.0f, 0.0f));
+    MoveTo* moveTo = (MoveTo*)commandFactory.CreateCommand("MoveTo");
+    moveTo->SetParams(mesh, sphere->drawPosition, 0.5f);
 
-    PhysicsBody* body1 = engine.AddPhysicsBody("city");
-    body1->inverseMass = 0;
-    body1->shapeType = PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT;
-    body1->setShape(new PhysicsShapes::sMeshOfTriangles_Indirect("city"));
-    
-    engine.physicsManager->GenerateAABBs(body1,10);
+    FollowObject* followObject = (FollowObject*)commandFactory.CreateCommand("FollowObject");
+    followObject->SetParams(mesh, sphere, glm::vec3(0, 10, 0), 0.5f, 1.0f);
 
-    body->inverseMass = 1.0f / 10.0f;
-   // body->acceleration = glm::vec3(0.0f, -9.8f/10.0f, 0.0f);
+    FollowCurve* followCurve = (FollowCurve*)commandFactory.CreateCommand("FollowCurve");
+    std::vector<glm::vec3> curvePoints;
+    curvePoints.push_back(glm::vec3(0, 0, 0));
+    curvePoints.push_back(glm::vec3(10, 0, 30));
+    curvePoints.push_back(glm::vec3(20, 0, 50));
+    curvePoints.push_back(glm::vec3(48, 0, 73));
+    curvePoints.push_back(glm::vec3(65, 0, 95));
+    curvePoints.push_back(glm::vec3(90, 0, 110));
+    curvePoints.push_back(glm::vec3(105, 0, 130));
 
-    std::map<cMesh*, cAABB*> sphereAABBmeshes;
-    std::map<cMesh*, cAABB*> meshes;
+    followCurve->SetParams(mesh, curvePoints, 0.5f, 1.0f);
 
-    for (size_t i = 0; i < body->aabbs.size(); i++)
+    for (glm::vec3 curvPt : curvePoints)
     {
-        cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "SPHEREAABB" + std::to_string(i));
-        //mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-        mesh->drawScale = body->aabbs[i]->getExtentsXYZ();
-        mesh->drawPosition = body->aabbs[i]->getCentreXYZ();
-        mesh->bDoNotLight = true;
-        mesh->bUseDebugColours = true;
-        mesh->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-        mesh->drawPosition = body->aabbs[i]->getCentreXYZ();
-        mesh->bIsWireframe = true;
-        sphereAABBmeshes[mesh] = body->aabbs[i];
+        cMesh* sphere = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "sphere");
+        sphere->bDoNotLight = true;
+        sphere->bUseDebugColours = true;
+
+        sphere->drawPosition = curvPt;
     }
 
-    int count = 0;
-    for (size_t i = 0; i < body1->aabbs.size(); i++)
-    {
-
-        cMesh* mesh = engine.LoadMesh("Cube_1x1x1_xyz_n_rgba.ply", "AABB" + std::to_string(i));
-        //mesh->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-        mesh->drawScale = body1->aabbs[i]->getExtentsXYZ();
-        mesh->drawPosition = body1->aabbs[i]->getCentreXYZ();
-        mesh->bIsVisible = true;
-        mesh->bDoNotLight = true;
-        mesh->bUseDebugColours = true;
-        mesh->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-        mesh->bIsWireframe = true;
-        meshes[mesh] = body1->aabbs[i];
-    }
-
-    std::map<cMesh*, cAABB*>::iterator it;
     engine.LoadDefaultLights();
 
+    float currTime = 0;
+    float myTime = 0;
     while (!glfwWindowShouldClose(engine.window))
     {
         engine.Update();
         skyBoxMesh->drawPosition = camera->cameraEye;
+        currTime += engine.deltaTime;
 
-        glm::vec3 cameraPos = glm::vec3(bird->drawPosition.x, bird->drawPosition.y + 5.0f, bird->drawPosition.z -10.0f);
-        camera->Follow(cameraPos, glm::normalize(bird->drawPosition - cameraPos));
-        if (glfwGetKey(engine.window, GLFW_KEY_W) == GLFW_PRESS)
+      
+        if (glfwGetKey(engine.window, GLFW_KEY_1) == GLFW_PRESS)
         {
-			body->velocity.z += 0.1f;
-		}
-        if (glfwGetKey(engine.window, GLFW_KEY_S) == GLFW_PRESS)
-        {
-            body->velocity.z -= 0.1f;
+            followCurve->Execute(engine.deltaTime);
         }
-        if (glfwGetKey(engine.window, GLFW_KEY_A) == GLFW_PRESS)
-        {
-            body->velocity.x += 0.1f;
-		}
-        if (glfwGetKey(engine.window, GLFW_KEY_D) == GLFW_PRESS)
-        {
-            body->velocity.x -= 0.1f;
-        }
-        if (glfwGetKey(engine.window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        {
-			body->velocity.y += 0.1f;
-		}
-        if (glfwGetKey(engine.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        {
-			body->velocity.y -= 0.1f;
-		}
-
-        for (it = sphereAABBmeshes.begin(); it != sphereAABBmeshes.end(); it++)
-        {
-            it->first->drawPosition = it->second->getCentreXYZ();
-            for (size_t i = 0; i < body->aabbPairs.size(); i++)
-            {
-                if (body->aabbPairs[i].first == it->second || body->aabbPairs[i].second == it->second)
-                {
-                    it->first->wholeObjectDebugColourRGBA = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-                    continue;
-				}
-                it->first->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-            }
-        }
-
-        for (it = meshes.begin(); it != meshes.end(); it++)
-        {
-            it->first->drawPosition = it->second->getCentreXYZ();
-            for (size_t i = 0; i < body1->aabbPairs.size(); i++)
-            {
-                if (body1->aabbPairs[i].first == it->second)
-                {
-                    it->first->wholeObjectDebugColourRGBA = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-                    continue;
-                }
-                it->first->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-            }
-        }
-
     }
 
     engine.ShutDown();

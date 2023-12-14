@@ -170,9 +170,18 @@ void Engine::SetAudioPath(std::string filePath)
     audioManager->SetBasePath(filePath);
 }
 
-cMesh* Engine::LoadMesh(std::string filePath, std::string friendlyName)
+cMesh* Engine::LoadMesh(std::string filePath, std::string friendlyName, bool dontDraw)
 {
-    cMesh* mesh = meshManager->AddMesh(filePath, friendlyName, shaderProgramID);
+    cMesh* mesh = nullptr;
+    if (dontDraw)
+    {
+		mesh = meshManager->LoadMesh(filePath, friendlyName, shaderProgramID);
+	}
+    else
+    {
+		mesh = meshManager->AddMesh(filePath, friendlyName, shaderProgramID);
+	}
+    //cMesh* mesh = meshManager->AddMesh(filePath, friendlyName, shaderProgramID);
     return mesh;
 }
 
@@ -213,7 +222,7 @@ void Engine::LoadDefaultLights()
     lightManager->SetUniformLocations(shaderProgramID);
     lightManager->theLights[0]->param2.x = 1; //on
     lightManager->theLights[0]->param1.x = 2; //directional
-    lightManager->theLights[0]->direction = glm::vec4(-1.0,1.0,-1.0,1); //directional
+    lightManager->theLights[0]->direction = glm::vec4(-1.0,-1.0,-1.0,1); //directional
 }
 
 void Engine::LoadSave()
