@@ -39,6 +39,24 @@ cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyNam
     return mesh;
 }
 
+cMesh* MeshManager::LoadMesh(std::string modelNameAtPath, std::string friendlyName, unsigned int shaderProgramID)
+{
+    sModelDrawInfo drawInfo;
+
+    if (!vaoManager->LoadModelIntoVAOAI(modelNameAtPath, drawInfo, shaderProgramID))
+    {
+        //  DoTheErrorLogging("Didn't load model");
+        return nullptr;
+    }
+
+    cMesh* mesh = new cMesh();
+    mesh->meshName = modelNameAtPath;
+    mesh->friendlyName = friendlyName;
+    mesh->modelDrawInfo = drawInfo;
+    std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
+    return mesh;
+}
+
 void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProgramID)
 {
     glm::mat4 matModel = matModelParent;
@@ -147,6 +165,20 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
         glCullFace(GL_BACK);
 	}
 
+    GLint uvoffset_ul = glGetUniformLocation(shaderProgramID, "UV_Offset");
+
+    glUniform2f(uvoffset_ul, pCurrentMesh->UV_Offset.x, pCurrentMesh->UV_Offset.y);
+
+    GLint isReflective_UL = glGetUniformLocation(shaderProgramID, "IsReflective");
+    if (pCurrentMesh->isReflective)
+    {
+		glUniform1f(isReflective_UL, (GLfloat)GL_TRUE);
+	}
+    else
+    {
+		glUniform1f(isReflective_UL, (GLfloat)GL_FALSE);
+	}
+
 	SetUpTextures(pCurrentMesh, shaderProgramID);
 
     if (pCurrentMesh->transperancy < 1.0f)
@@ -159,6 +191,9 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
 		glDisable(GL_BLEND);
 	}
 
+    GLint explosionOffset_UL = glGetUniformLocation(shaderProgramID, "explosionOffset");
+    glUniform1f(explosionOffset_UL, pCurrentMesh->explosionOffset);
+
     //uniform float transparency;
     GLint transparency_UL = glGetUniformLocation(shaderProgramID, "transparency");
     glUniform1f(transparency_UL, pCurrentMesh->transperancy);
@@ -167,13 +202,17 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     if (vaoManager->FindDrawInfoByModelName(pCurrentMesh->meshName, modelInfo))
     {
         // Found it!!!
-
-        glBindVertexArray(modelInfo.VAO_ID); 		//  enable VAO (and everything else)
-        glDrawElements(GL_TRIANGLES,
-            modelInfo.numberOfIndices,
-            GL_UNSIGNED_INT,
-            0);
-        glBindVertexArray(0); 			            // disable VAO (and everything else)
+        if (!pCurrentMesh->hideParent)
+        {
+            glBindVertexArray(modelInfo.VAO_ID); 		//  enable VAO (and everything else)
+            glDrawElements(GL_TRIANGLES,
+                modelInfo.numberOfIndices,
+                GL_UNSIGNED_INT,
+                0);
+            glBindVertexArray(0);
+           // return;
+        }
+		            // disable VAO (and everything else)
 
     }
 
@@ -382,6 +421,11 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
         GLint bUseDiscardMaskTexture_UL = glGetUniformLocation(shaderProgramID, "maskTexture");
         glUniform1i(bUseDiscardMaskTexture_UL, textureUnitNumber);
     }
+    else
+    {
+		GLint maskBool_UL = glGetUniformLocation(shaderProgramID, "hasMask");
+		glUniform1f(maskBool_UL, (GLfloat)GL_FALSE);
+	}
 
 
    

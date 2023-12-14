@@ -78,6 +78,12 @@ void cMesh::calcExtents(void)
 	minExtents_XYZ = modelDrawInfo.minExtents_XYZ;
 }
 
+void cMesh::AddChild(cMesh* child)
+{
+	child->isChild = true;
+	this->vec_pChildMeshes.push_back(child);
+}
+
 // static
 unsigned int cMesh::m_nextUniqueID = cMesh::FIRST_UNIQUE_ID;
 

@@ -13,7 +13,10 @@ public:
 	unsigned int uniqueID;
 	glm::vec3 minXYZ;
 	glm::vec3 maxXYZ;	// AKA the "lengths" or whatever
-
+	glm::vec3 minBoxDimensions;
+	glm::vec3 maxBoxDimensions;
+	int scale = 1;
+	std::string overlappingMeshName;
 	glm::vec3 getCentreXYZ(void)
 	{
 		return (this->minXYZ + this->maxXYZ) / 2.0f;
@@ -22,6 +25,11 @@ public:
 	{
 		// TODO: Calculate the extent
 		return maxXYZ - minXYZ;	// Does this work?? 
+	}
+
+	glm::vec3 getHalfLengths(void)
+	{
+		return this->getExtentsXYZ() / 2.0f;
 	}
 
 	bool isOverlapping ;
@@ -136,6 +144,13 @@ public:
 			point.z > minXYZ.z && point.z < maxXYZ.z);
 
 	}
+
+	void UpdateAABBPosition(glm::vec3 position)
+	{
+		this->minXYZ += position;
+		this->maxXYZ += position;
+	}
+
 };
 
 

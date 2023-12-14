@@ -25,6 +25,12 @@ public:
 		this->m_qOrientation = glm::quat(eulerRotation);
 	}
 
+	void setRotationFromQuat(glm::quat newQuat)
+	{
+		eulerRotation = glm::eulerAngles(newQuat);
+		this->m_qOrientation = newQuat;
+	}
+
 	void Rotate(glm::vec3 EulerAngleXYZ_Adjust)
 	{
 		glm::quat qChange = glm::quat(EulerAngleXYZ_Adjust);
@@ -47,10 +53,13 @@ public:
 	bool bDoNotLight;
 	bool isSkyBox;
 	bool hasVertexColors;
+	bool isReflective;
 	static const int NUM_OF_TEXTURES = 4;
 	std::string texture[NUM_OF_TEXTURES];
 	float textureRatio[NUM_OF_TEXTURES];
 	std::string maskTexture;
+
+	glm::vec2 UV_Offset;
 
 	float transperancy = 1.0f;
 	std::vector<cMesh*> vec_pChildMeshes;
@@ -61,8 +70,18 @@ public:
 
 	void calcExtents(void);
 
+	glm::vec3 GetCenter(void)
+	{
+		return (this->maxExtents_XYZ + this->minExtents_XYZ) / 2.0f;
+	}
+
 	sModelDrawInfo modelDrawInfo;
 
+	float explosionOffset;
+
+	bool isChild = false;
+	void AddChild(cMesh* child);
+	bool hideParent = false;
 private:
 	unsigned int m_UniqueID;
 	static const unsigned int FIRST_UNIQUE_ID = 1000;

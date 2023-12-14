@@ -1,5 +1,6 @@
 #include "PhysicsManager.h"
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
 
 PhysicsManager::PhysicsManager()
 {
@@ -49,6 +50,7 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 			{
 				pAABB->minXYZ += deltaPosition;
 				pAABB->maxXYZ += deltaPosition;
+
 			}
 		}
 
@@ -101,7 +103,7 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 								// Mesh triangle (indirect) - Mesh triangle (indirect)
 								if (this->m_AABB_TriMeshIndirect_IntersectionTest(pObjectA, pObjectB))
 								{
-									std::cout << "AABB-Tri T_T!!" << std::endl;
+									//std::cout << "AABB-Tri T_T!!" << std::endl;
 								}
 								break;
 						}
@@ -157,7 +159,7 @@ void PhysicsManager::AddMesh(PhysicsBody* physicsBody)
 	bodies.push_back(physicsBody);
 }
 
-void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs)
+void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs, int scaleExtents)
 {
 	std::cout << "Generating AAABs for " << body->mesh->friendlyName << std::endl;
 	std::vector<cAABB*> aabbs;
@@ -168,7 +170,7 @@ void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs)
 	body->mesh->calcExtents();
 
 	//populate the aabb map with it's id
-	glm::vec3 extent = body->mesh->maxExtents_XYZ - body->mesh->minExtents_XYZ;
+	glm::vec3 extent = (body->mesh->maxExtents_XYZ - body->mesh->minExtents_XYZ);
 	glm::vec3 center = (body->mesh->maxExtents_XYZ + body->mesh->minExtents_XYZ) * 0.5f;
 
 	glm::vec3 boxDimensions = extent / glm::vec3(numberOfAABBs);
@@ -179,6 +181,9 @@ void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs)
 			for (int z = 0; z != numberOfAABBs; z++)
 			{
 				cAABB* pAABB = new cAABB();
+
+				pAABB->minBoxDimensions = glm::vec3(x * boxDimensions.x, y * boxDimensions.y, z * boxDimensions.z);
+				pAABB->maxBoxDimensions = glm::vec3(boxDimensions.x, boxDimensions.y, boxDimensions.z);
 
 				pAABB->minXYZ.x = body->mesh->minExtents_XYZ.x + x * boxDimensions.x;
 				pAABB->minXYZ.y = body->mesh->minExtents_XYZ.y + y * boxDimensions.y;
@@ -222,6 +227,10 @@ void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs)
 				{
 					continue;
 				}
+
+				pAABB->minXYZ *= scaleExtents;
+				pAABB->maxXYZ *= scaleExtents;
+				pAABB->scale = scaleExtents;
 				body->aabbs.push_back(pAABB);
 			}
 		}
@@ -269,6 +278,9 @@ bool PhysicsManager::CheckAABBOverlap(PhysicsBody* pBodyA, PhysicsBody* pBodyB)
 
 			pBodyA->activeAABB = pAABB1;
 			pBodyB->activeAABB = pAABB2;
+
+			pBodyA->activeAABB->overlappingMeshName = pBodyB->mesh->friendlyName;
+			pBodyB->activeAABB->overlappingMeshName = pBodyA->mesh->friendlyName;
 			// Overlap on all axes means AABBs are intersecting
 			//count++;
 			pAABB1->isOverlapping = true;
@@ -278,9 +290,10 @@ bool PhysicsManager::CheckAABBOverlap(PhysicsBody* pBodyA, PhysicsBody* pBodyB)
 		}
 	}
 
+
 	pBodyA->aabbPairs = overlappingPairsTemp;
 	pBodyB->aabbPairs = overlappingPairsTemp;
-	std::cout << "Overlapping" << pBodyA->aabbPairs.size() << std::endl;
+//	std::cout << "Overlapping" << pBodyA->aabbPairs.size() << std::endl;
 	return foundPairs;
 }
 
@@ -516,6 +529,7 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 
 bool PhysicsManager::m_AABB_TriMeshIndirect_IntersectionTest(PhysicsBody* pAABB, PhysicsBody* pTriMesh)
 {
+
 	for (int i = 0; i < pAABB->aabbPairs.size(); i++)
 	{
 		cAABB* aabb = pAABB->aabbPairs[i].first;
@@ -527,22 +541,42 @@ bool PhysicsManager::m_AABB_TriMeshIndirect_IntersectionTest(PhysicsBody* pAABB,
 			glm::vec3 v2 = tri.v2;
 			glm::vec3 v3 = tri.v3;
 
+
 			int result = TestTriangleAABB(v1, v2, v3, aabb);
 
 			if (result != 0)
 			{
-				pAABB->velocity = glm::vec3(0, 0, 0);
-				std::cout << "AABB-Tri T_T!!" << std::endl;
+				//pAABB->velocity = glm::vec3(0.0f);
+				CollisionEvent* collisionEvent = new CollisionEvent();	
+				collisionEvent->collisionPoint = v1;
+				collisionEvent->objectName = pTriMesh->mesh->friendlyName;
+
+				pAABB->collisionEvents.push_back(collisionEvent);
+				//glm::vec3 direction = pAABB->velocity;
+				//// Normalize... 
+				//direction = glm::normalize(direction);
+
+				//// Calcualte the current normal from the vertices
+				//glm::vec3 edgeA = v1 - v2;
+				//glm::vec3 edgeB = v3 - v1;
+
+				//glm::vec3 triNormal = glm::normalize(glm::cross(edgeA, edgeB));
+				//glm::vec3 reflectionVec = glm::reflect(direction, triNormal);
+
+
+				// Set the part of velocity perpendicular to the plane to zero
+
+				// Update the  velocity based on this reflection vector
+				//float sphereSpeed = glm::length(sphere->velocity);
+				//glm::vec3 newVelocity = reflectionVec * sphereSpeed;
 				return true;
 			}
 		}
 	}
-
-	return false;
-}
-
-bool PhysicsManager::PointInAABB(glm::vec3 point, cAABB* aabb)
-{
+	for (int i = 0; i < pAABB->aabbPairs.size(); i++)
+	{
+		pAABB->collisionEvents.clear();
+	}
 	return false;
 }
 

@@ -11,11 +11,19 @@ struct Plane
 	float d;      // Distance from the origin along the normal vector
 };
 
+struct CollisionEvent
+{
+	glm::vec3 collisionPoint;
+	std::string objectName;
+};
+
 struct PhysicsBody
 {
 	cMesh* mesh;
 	glm::vec3 acceleration;
 	glm::vec3 velocity;
+	glm::vec3 angularVelocity;
+	glm::vec3 angularAcceleration;
 	float inverseMass;
 
 	void setShape(PhysicsShapes::sSphere* pSphereProps);
@@ -34,6 +42,31 @@ struct PhysicsBody
 	cAABB* activeAABB;
 	PhysicsShapes::eShape shapeType;
 	void* shape = NULL;
+
+	void UpdateAABBs()
+	{
+		for (size_t i = 0; i < aabbs.size(); i++)
+		{
+			cAABB* pAABB = aabbs[i];
+
+			glm::vec3 minBoxDimensions = pAABB->minBoxDimensions;
+			glm::vec3 maxBoxDimensions = pAABB->maxBoxDimensions;
+			pAABB->minXYZ.x = mesh->minExtents_XYZ.x + minBoxDimensions.x;
+			pAABB->minXYZ.y = mesh->minExtents_XYZ.y + minBoxDimensions.y;
+			pAABB->minXYZ.z = mesh->minExtents_XYZ.z + minBoxDimensions.z;
+
+			pAABB->maxXYZ.x = pAABB->minXYZ.x + maxBoxDimensions.x;
+			pAABB->maxXYZ.y = pAABB->minXYZ.y + maxBoxDimensions.y;
+			pAABB->maxXYZ.z = pAABB->minXYZ.z + maxBoxDimensions.z;
+
+			pAABB->minXYZ *= pAABB->scale;
+			pAABB->maxXYZ *= pAABB->scale;
+			//aabbs[i]->UpdateAABBPosition(position);
+		}
+	}
+
+	std::vector<CollisionEvent*> collisionEvents;
+
 };
 
 class PhysicsManager
@@ -46,7 +79,7 @@ public:
 	void Update(float deltaTime);
 	void CheckIntersections(float deltaTime);
 	void AddMesh(PhysicsBody* physicsBody);
-	void GenerateAABBs(PhysicsBody* body,int numberOfAABBs);
+	void GenerateAABBs(PhysicsBody* body,int numberOfAABBs, int scaleExtents = 1);
 private:
 	MeshManager* meshManager;
 	std::vector<PhysicsBody*> bodies;
