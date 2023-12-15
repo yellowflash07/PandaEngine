@@ -52,6 +52,9 @@
     <Filter Include="TextureManager">
       <UniqueIdentifier>{2bede983-fb67-43d4-b079-82f1cda1957b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Commands">
+      <UniqueIdentifier>{a8f508e9-02f4-41ce-9147-913342d64433}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -137,6 +140,27 @@
     </ClCompile>
     <ClCompile Include="..\TextureManager\CTextureFromBMP.cpp">
       <Filter>TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandFactory.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="FollowCurve.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="FollowObject.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveTo.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="OrientTo.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandGroup.cpp">
+      <Filter>Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +256,30 @@
     </ClInclude>
     <ClInclude Include="cAABB.h">
       <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="OrientTo.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveTo.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="FollowObject.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="FollowCurve.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandFactory.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="iCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandGroup.h">
+      <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

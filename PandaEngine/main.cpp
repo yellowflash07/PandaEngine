@@ -107,7 +107,7 @@ int main(void)
     curvePoints.push_back(glm::vec3(90, 0, 110));
     curvePoints.push_back(glm::vec3(105, 0, 130));
 
-    followCurve->SetParams(mesh, curvePoints, 0.5f, 1.0f);
+    followCurve->SetParams(mesh, curvePoints, false);
 
     for (glm::vec3 curvPt : curvePoints)
     {

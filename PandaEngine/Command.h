@@ -3,6 +3,7 @@
 #include "iCommand.h"
 #include "Random.h"
 #include <iostream>
+#include <functional>
 class Command :
 	public iCommand
 {
@@ -15,9 +16,16 @@ public:
 	virtual int UniqueId();
 	virtual std::string Name();
 	virtual void SetName(std::string name);
-
-private:
+	void Cancel()
+	{
+		this->isCancelled = true;
+	}
+	float delay;
+	float currTime;
+	std::function<void()> OnStart;
+	std::function<void()> OnComplete;
+protected:
 	std::string name;
-	
+	bool isCancelled;
 };
 

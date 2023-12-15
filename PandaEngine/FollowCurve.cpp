@@ -4,38 +4,82 @@ FollowCurve::FollowCurve()
 {
 }
 
-void FollowCurve::SetParams(cMesh* mesh, std::vector<glm::vec3> curvePoints, float speed, float time)
+void FollowCurve::SetParams(cMesh* mesh, std::vector<glm::vec3> curvePoints, bool orienToPath)
 {
 	this->mesh = mesh;
 	this->curvePoints = curvePoints;
-	this->speed = speed;
-	this->time = time;
+	this->orient = orienToPath;
 }
 
 bool FollowCurve::Execute(double deltaTime)
 {
 	currTime += (float)deltaTime;
-	float t = currTime / time;
 	if (currTime > 1.f)
 	{
 		currTime = 0.0f;
 		pointIndex += 1;
 	}
 
-	if (pointIndex < curvePoints.size() - 3)
+	if (pointIndex == 0)
 	{
 		mesh->drawPosition = PointOnCurve(curvePoints[pointIndex],
 							curvePoints[pointIndex + 1],
 							curvePoints[pointIndex + 2],
 							curvePoints[pointIndex + 3], (float)currTime);
 
-		glm::vec3 direction = glm::normalize(curvePoints[pointIndex + 2] - mesh->drawPosition);
-		glm::quat targetOrientation = glm::quatLookAt(direction, glm::vec3(0, 1, 0));
-		mesh->setRotationFromQuat(glm::normalize(targetOrientation));
+		/*glm::vec3 direction = glm::normalize(to - mesh->drawPosition);
+		mesh->drawPosition += direction * speed * (float)deltaTime;*/
+		//glm::vec3 direction = glm::normalize(to - mesh->drawPosition);
+		//mesh->drawPosition += direction * speed * (float)deltaTime;
 
+		if (orient)
+		{
+			glm::vec3 direction = glm::normalize(mesh->drawPosition - curvePoints[pointIndex + 2]);
+			glm::quat targetOrientation = glm::quatLookAt(direction, glm::vec3(0, 1, 0));
+			glm::quat resultQuat = glm::slerp(mesh->get_qOrientation(), targetOrientation, currTime);
+			mesh->setRotationFromQuat(glm::normalize(resultQuat));
+		}
+		
+
+	//	return false;
+	}
+	else
+	{
+		if (pointIndex < curvePoints.size() - 3)
+		{
+			mesh->drawPosition = PointOnCurve(curvePoints[pointIndex],
+				curvePoints[pointIndex + 1],
+				curvePoints[pointIndex + 2],
+				curvePoints[pointIndex + 3], (float)currTime);
+
+		/*	glm::vec3 direction = glm::normalize(to - mesh->drawPosition);
+			mesh->drawPosition += direction * speed * (float)deltaTime;*/
+
+			if (orient)
+			{
+				glm::vec3 direction = glm::normalize(mesh->drawPosition - curvePoints[pointIndex + 2] );
+				glm::quat targetOrientation = glm::quatLookAt(direction, glm::vec3(0, 1, 0));
+				glm::quat resultQuat = glm::slerp(mesh->get_qOrientation(), targetOrientation, currTime);
+				mesh->setRotationFromQuat(glm::normalize(resultQuat));
+			}
+
+
+		//	return false;
+		}
+		
+	}
+
+	if (OnComplete)
+	{
+		OnComplete();
+	}
+	float distance = glm::distance(mesh->drawPosition, curvePoints[curvePoints.size() - 2]);
+	if (distance > 0.1)
+	{
 		return false;
 	}
-	
+	std::cout << glm::distance(mesh->drawPosition, curvePoints[curvePoints.size() - 1]) << std::endl;	
+	std::cout << "Done" << std::endl;
 	return true;
 }
 

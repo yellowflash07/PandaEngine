@@ -44,7 +44,7 @@ bool Engine::Initialize()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    window = glfwCreateWindow(640, 480, "Template Scene", NULL, NULL);
+    window = glfwCreateWindow(1920, 1080, "Template Scene", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -132,6 +132,12 @@ void Engine::Update()
         ImGui::Text("FPS: %.2f", fps); 
         ImGui::End();
     }
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+		glfwSetWindowShouldClose(window, true);
+        exit(EXIT_SUCCESS);
+	}
 
     //update physics
     physicsManager->Update(deltaTime);

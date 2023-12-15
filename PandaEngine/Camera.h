@@ -24,6 +24,8 @@ public:
 	glm::vec3 cameraEye;
 	glm::vec3 cameraTarget;
 	glm::vec3 upVector;
+	bool isFollowing = false;
+	bool camControl = true;
 private:
 
 	float near;
@@ -34,7 +36,6 @@ private:
 	bool stopUpdates; 
 	glm::mat4 matView;
 
-	bool isFollowing = false;
 	glm::vec3 followPos;
 	glm::vec3 followTarget;
 };

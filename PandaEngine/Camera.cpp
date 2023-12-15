@@ -37,11 +37,11 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     glfwGetFramebufferSize(window, &width, &height);
     ratio = width / (float)height;
 
-    if (isFollowing)
+    /*if (isFollowing)
     {
 		cameraEye = followPos;
 		cameraTarget = followTarget;
-	}
+	}*/
 
     GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
     glUniform4f(eyeLocation_UL,
@@ -52,9 +52,19 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
                                                 near,
                                                 far);
 
-    matView = glm::lookAt(cameraEye,
-                        cameraEye + cameraTarget,
-                        upVector);
+    if (camControl)
+    {
+        matView = glm::lookAt(cameraEye,
+            cameraEye + cameraTarget,
+            upVector);
+    }
+    else
+    {
+		matView = glm::lookAt(cameraEye,
+            			cameraTarget,
+            			upVector);
+	}
+   
 
 
     GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
@@ -69,7 +79,7 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
 
 void Camera::ProcessMouseMovement(double xpos, double ypos)
 {
-    if (isFollowing)
+    if (!camControl)
     {
 		return;
 	}
@@ -110,7 +120,7 @@ void Camera::ProcessMouseMovement(double xpos, double ypos)
 
 void Camera::ProcessKeyboardInput(GLFWwindow* window, double deltaTime)
 {
-    if (isFollowing)
+    if (!camControl)
     {
         return;
     }
@@ -120,8 +130,10 @@ void Camera::ProcessKeyboardInput(GLFWwindow* window, double deltaTime)
     }
     if (stopUpdates)
     {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         return;
     }
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         cameraEye += speed * (float)deltaTime * cameraTarget;
