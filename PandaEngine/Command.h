@@ -16,6 +16,7 @@ public:
 	virtual int UniqueId();
 	virtual std::string Name();
 	virtual void SetName(std::string name);
+	virtual void SetUniqueId(int id);
 	void Cancel()
 	{
 		this->isCancelled = true;
@@ -27,5 +28,6 @@ public:
 protected:
 	std::string name;
 	bool isCancelled;
+	int uniqueId;
 };
 

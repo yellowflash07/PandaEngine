@@ -5,6 +5,7 @@
 #include "FollowObject.h"
 #include "FollowCurve.h"
 #include "LocationTrigger.h"
+#include "Random.h"
 
 class CommandFactory
 {
@@ -12,6 +13,8 @@ public:
 	CommandFactory();
 	~CommandFactory();
 
-	iCommand* CreateCommand(std::string name);
+	iCommand* CreateCommand(std::string name, std::string friendlyName);
+private:
+	int GenerateUniqueId();
 };
 
