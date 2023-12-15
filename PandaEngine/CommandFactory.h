@@ -4,6 +4,8 @@
 #include "OrientTo.h"
 #include "FollowObject.h"
 #include "FollowCurve.h"
+#include "LocationTrigger.h"
+
 class CommandFactory
 {
 public:

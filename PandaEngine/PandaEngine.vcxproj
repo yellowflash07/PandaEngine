@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -173,6 +173,7 @@
     <ClCompile Include="FollowCurve.cpp" />
     <ClCompile Include="FollowObject.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="LocationTrigger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="MoveTo.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="GLFWCallbacks.h" />
     <ClInclude Include="GraphicsCommon.h" />
     <ClInclude Include="iCommand.h" />
+    <ClInclude Include="LocationTrigger.h" />
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="MoveTo.h" />
     <ClInclude Include="OrientTo.h" />

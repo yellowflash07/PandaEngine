@@ -162,6 +162,9 @@
     <ClCompile Include="CommandGroup.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="LocationTrigger.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsCommon.h">
@@ -279,6 +282,9 @@
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="CommandGroup.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="LocationTrigger.h">
       <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>

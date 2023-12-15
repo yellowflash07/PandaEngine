@@ -2,8 +2,7 @@
 #include "Command.h"
 #include <glm/glm.hpp>
 #include <functional>
-#include "Engine.h"
-
+#include "cAABB.h"
 class LocationTrigger :
     public Command
 {
@@ -11,10 +10,11 @@ public:
     LocationTrigger();
     virtual ~LocationTrigger() {};
     virtual bool Execute(double deltaTime);
-    virtual void SetParams(Engine engine, cMesh* meshToTrigger, glm::vec3 location, float size);
+    virtual void SetParams(cAABB* meshToTrigger, glm::vec3 location, float size);
 
     std::function<void()> OnEnter;
-private:
     cAABB* aabb;
+private:
+    cAABB* meshToTrigger;
 };
 

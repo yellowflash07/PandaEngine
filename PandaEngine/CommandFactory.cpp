@@ -32,5 +32,10 @@ iCommand* CommandFactory::CreateCommand(std::string name)
         command = new FollowCurve();
     }
 
+    if (name == "LocationTrigger")
+    {
+		command = new LocationTrigger();
+	}
+
     return command;
 }
