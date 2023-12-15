@@ -173,6 +173,7 @@
     <ClCompile Include="FollowCurve.cpp" />
     <ClCompile Include="FollowObject.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="LightControl.cpp" />
     <ClCompile Include="LocationTrigger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshManager.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="OrientTo.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="ScaleUp.cpp" />
     <ClCompile Include="SceneSaver.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +217,7 @@
     <ClInclude Include="GLFWCallbacks.h" />
     <ClInclude Include="GraphicsCommon.h" />
     <ClInclude Include="iCommand.h" />
+    <ClInclude Include="LightControl.h" />
     <ClInclude Include="LocationTrigger.h" />
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="MoveTo.h" />
@@ -222,6 +225,7 @@
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PhysicsShapes.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="ScaleUp.h" />
     <ClInclude Include="SceneSaver.h" />
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,8 @@
 #include "FollowCurve.h"
 #include "LocationTrigger.h"
 #include "Random.h"
+#include "LightControl.h"
+#include "ScaleUp.h"
 
 class CommandFactory
 {

@@ -35,6 +35,17 @@ iCommand* CommandFactory::CreateCommand(std::string name, std::string friendlyNa
     {
 		command = new LocationTrigger();
 	}
+
+    if (name == "LightControl")
+    {
+		command = new LightControl();
+	}
+
+    if (name == "ScaleUp")
+    {
+		command = new ScaleUp();
+	}
+
     command->SetName(friendlyName);
     command->SetUniqueId(GenerateUniqueId());
 
