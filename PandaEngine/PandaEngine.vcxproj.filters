@@ -289,5 +289,6 @@
     <None Include="..\Assets\Shaders\vertexshader.glsl">
       <Filter>ShaderManager\Shaders</Filter>
     </None>
+    <None Include="MoveTo.lua" />
   </ItemGroup>
 </Project>

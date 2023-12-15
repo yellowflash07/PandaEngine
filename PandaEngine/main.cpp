@@ -4,6 +4,9 @@
 #include <iostream>
 #include <map>
 #include "CommandFactory.h"
+#include <Lua5.4.6/lua.hpp>
+#include <sol/sol.hpp>
+
 
 extern Camera* camera;
 int keyHit = 0;
@@ -58,10 +61,8 @@ int main(void)
         return 1;
     }
 
-  //  engine.meshManager->LoadTexture("Water_Texture_01.bmp");
-  //  engine.meshManager->LoadTexture("TaylorSwift_Eras_Poster.bmp");
-  //  engine.meshManager->LoadTexture("FAKE_Stencil_Texture_612x612.bmp");
-    engine.meshManager->LoadTexture("PaletteV1.bmp");
+#pragma region Skybox
+     engine.meshManager->LoadTexture("PaletteV1.bmp");
     bool loaded = engine.meshManager->LoadCubeMap("space",
                                     "CubeMaps/TropicalSunnyDayLeft2048.bmp",
                                     "CubeMaps/TropicalSunnyDayRight2048.bmp",
@@ -75,50 +76,39 @@ int main(void)
     skyBoxMesh->isSkyBox = true;
     skyBoxMesh->setUniformDrawScale(5000.0f);
 
-    cMesh* sphere = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "sphere");
+#pragma endregion
+
+    sol::state lua;
+
+ 
+	cMesh* sphere = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "sphere");
     sphere->bDoNotLight = true;
     sphere->bUseDebugColours = true;
     sphere->bIsVisible = false;
-    sphere->drawPosition = glm::vec3(0, 0, 10);
+    sphere->drawPosition = glm::vec3(0, 0, 100);
 
     cMesh* mesh = engine.LoadMesh("bathtub_xyz_n_rgba.ply", "mesh");
-   // mesh->bDoNotLight = true;
+ 
     mesh->bUseDebugColours = true;
     mesh->wholeObjectDebugColourRGBA = glm::vec4(1, 0, 0, 1);
 
+
+ lua.new_usertype<MoveTo>("MoveTo",
+        sol::constructors<MoveTo(), MoveTo(cMesh*, glm::vec3, float)>(),
+        "SetParams", sol::overload(
+            static_cast<void (MoveTo::*)(cMesh*, glm::vec3, float)>(&MoveTo::SetParams),
+            static_cast<void (MoveTo::*)(cMesh*, cMesh*, float)>(&MoveTo::SetParams)
+        ),
+        "Execute", &MoveTo::Execute
+    );
+
+ 
      CommandFactory commandFactory;
-    OrientTo* orientTo = (OrientTo*)commandFactory.CreateCommand("OrientTo");
+	MoveTo* moveTo = (MoveTo*)commandFactory.CreateCommand("MoveTo");
+    moveTo->SetParams(mesh, sphere->drawPosition, 20.5f);
 
-    orientTo->SetParams(mesh, sphere->drawPosition,0.0f, 10.0f);
 
-    MoveTo* moveTo = (MoveTo*)commandFactory.CreateCommand("MoveTo");
-    moveTo->SetParams(mesh, sphere->drawPosition, 0.5f);
-
-    FollowObject* followObject = (FollowObject*)commandFactory.CreateCommand("FollowObject");
-    followObject->SetParams(mesh, sphere, glm::vec3(0, 10, 0), 0.5f, 1.0f);
-
-    FollowCurve* followCurve = (FollowCurve*)commandFactory.CreateCommand("FollowCurve");
-    std::vector<glm::vec3> curvePoints;
-    curvePoints.push_back(glm::vec3(0, 0, 0));
-    curvePoints.push_back(glm::vec3(10, 0, 30));
-    curvePoints.push_back(glm::vec3(20, 0, 50));
-    curvePoints.push_back(glm::vec3(48, 0, 73));
-    curvePoints.push_back(glm::vec3(65, 0, 95));
-    curvePoints.push_back(glm::vec3(90, 0, 110));
-    curvePoints.push_back(glm::vec3(105, 0, 130));
-
-    followCurve->SetParams(mesh, curvePoints, false);
-
-    for (glm::vec3 curvPt : curvePoints)
-    {
-        cMesh* sphere = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "sphere");
-        sphere->bDoNotLight = true;
-        sphere->bUseDebugColours = true;
-
-        sphere->drawPosition = curvPt;
-    }
-
-    engine.LoadDefaultLights();
+  engine.LoadDefaultLights();
 
     float currTime = 0;
     float myTime = 0;
@@ -131,7 +121,10 @@ int main(void)
       
         if (glfwGetKey(engine.window, GLFW_KEY_1) == GLFW_PRESS)
         {
-            followCurve->Execute(engine.deltaTime);
+            
+            sol::function executeFunc = lua["MoveTo"]["Execute"];
+            executeFunc(moveTo, engine.deltaTime);
+            
         }
     }
 
