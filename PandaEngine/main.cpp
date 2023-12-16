@@ -6,7 +6,8 @@
 #include "CommandFactory.h"
 #include <Lua5.4.6/lua.hpp>
 #include <sol/sol.hpp>
-
+#include <functional>
+#include "CommandGroup.h"
 
 extern Camera* camera;
 int keyHit = 0;
@@ -92,22 +93,161 @@ int main(void)
     mesh->bUseDebugColours = true;
     mesh->wholeObjectDebugColourRGBA = glm::vec4(1, 0, 0, 1);
 
+ 
+    lua.script_file("MoveTo.lua");  
+ 
+   sol::table myFunctions = lua["commandGroups"];
+   CommandFactory commandFactory;
+   CommandGroup scene1("command");
 
- lua.new_usertype<MoveTo>("MoveTo",
-        sol::constructors<MoveTo(), MoveTo(cMesh*, glm::vec3, float)>(),
-        "SetParams", sol::overload(
-            static_cast<void (MoveTo::*)(cMesh*, glm::vec3, float)>(&MoveTo::SetParams),
-            static_cast<void (MoveTo::*)(cMesh*, cMesh*, float)>(&MoveTo::SetParams)
-        ),
-        "Execute", &MoveTo::Execute
-    );
+   
+
+   for (auto& entry : myFunctions) {
+
+       std::string identifier = entry.first.as<std::string>();
+       sol::table commandGroup = entry.second;
+
+
+   		std::cout << "identifier: " << identifier << std::endl;
+   		std::string commandNameValue = commandGroup[5];
+       
+ 
+
+       if(commandNameValue == "MoveTo")
+
+       {
+       	std::string mesh = commandGroup[1];
+        std::string sphere = commandGroup[2];
+	    MoveTo* moveTo = (MoveTo*)commandFactory.CreateCommand("MoveTo","MoveTofriendlyName");
+        cMesh* sphereMesh = engine.meshManager->FindMeshByFriendlyName(sphere);
+        cMesh* meshMesh = engine.meshManager->FindMeshByFriendlyName(mesh);
+        int speed = commandGroup[3];
+		moveTo->SetParams(meshMesh, sphereMesh, speed);
+        scene1.AddSerialCommand(moveTo);
+       }
+	   else if (commandNameValue == "OrientTo")
+	   {
+        std::string mesh = commandGroup[1];
+        std::string sphere = commandGroup[2];
+ 		OrientTo* orientTo = (OrientTo*)commandFactory.CreateCommand("OrientTo", "OrientTofriendlyName"); 
+        cMesh* sphereMesh = engine.meshManager->FindMeshByFriendlyName(sphere);
+	   	cMesh* meshMesh = engine.meshManager->FindMeshByFriendlyName(mesh);
+        int speed = commandGroup[3];
+        int time = commandGroup[4];
+        orientTo->SetParams(meshMesh, sphereMesh, speed,time);
+
+	   }
+       else if (commandNameValue == "FollowObject")
+       {
+	    std::string mesh = commandGroup[1];
+        std::string sphere = commandGroup[2];
+ 		FollowObject* followObject = (FollowObject*)commandFactory.CreateCommand("FollowObject", "FollowObjectfriendlyName");
+        cMesh* sphereMesh = engine.meshManager->FindMeshByFriendlyName(sphere);
+        cMesh* meshMesh = engine.meshManager->FindMeshByFriendlyName(mesh);
+
+		int minSpeed = commandGroup[4];
+		int maxSpeed = commandGroup[4];
+        //sol::table vectorTable = commandGroup[3]; 
+       /*	float x = vectorTable[1];
+        float y = vectorTable[2];
+        float z = vectorTable[3];
+        glm::vec3 offset(x, y, z);*/
+
+        glm::vec3 offset(
+            commandGroup[3][1].get<float>(),
+            commandGroup[3][2].get<float>(),
+            commandGroup[3][3].get<float>()
+        );
 
  
-     CommandFactory commandFactory;
-	MoveTo* moveTo = (MoveTo*)commandFactory.CreateCommand("MoveTo");
-    moveTo->SetParams(mesh, sphere->drawPosition, 20.5f);
+		followObject->SetParams(meshMesh, sphereMesh, offset, minSpeed, maxSpeed);
+	   }
+	   else if (commandNameValue == "FollowCurve")
+	   {
+         std::string mesh = commandGroup[1];
+         FollowCurve* followCurve = (FollowCurve*)commandFactory.CreateCommand("FollowCurve", "FollowCurvefriendlyName");
+       cMesh* meshMesh = engine.meshManager->FindMeshByFriendlyName(mesh);
 
+   
+        
+       sol::table followCurveTable = commandGroup[4];
+       sol::table curveTable = followCurveTable[3];
 
+     
+       glm::vec3 curvePoint1(
+           curveTable[1][1].get<float>(),
+           curveTable[1][2].get<float>(),
+           curveTable[1][3].get<float>()
+       );
+
+       glm::vec3 curvePoint2(
+           curveTable[2][1].get<float>(),
+           curveTable[2][2].get<float>(),
+           curveTable[2][3].get<float>()
+       );
+
+       glm::vec3 curvePoint3(
+           curveTable[3][1].get<float>(),
+           curveTable[3][2].get<float>(),
+           curveTable[3][3].get<float>()
+       );
+
+       std::vector<glm::vec3> curvePoints;
+       curvePoints.push_back(curvePoint1);
+       curvePoints.push_back(curvePoint2);
+       curvePoints.push_back(curvePoint3);
+
+       followCurve->SetParams(meshMesh, curvePoints, true);
+
+       }
+
+       else if (commandNameValue == "LocationTrigger")
+       {
+           LocationTrigger* locationTrigger = (LocationTrigger*)commandFactory.CreateCommand("LocationTrigger", "LocationTriggerfriendlyName");
+           std::string mesh = commandGroup[1];
+           glm::vec3 locationOffset(
+               commandGroup[2][1].get<float>(),
+               commandGroup[2][2].get<float>(),
+               commandGroup[2][3].get<float>()
+           );
+           float size = commandGroup[3];
+
+           //locationTrigger->SetParams(engine.meshManager->FindMeshByFriendlyName(mesh)->pAABB, locationOffset, size);
+       }
+       else if (commandNameValue == "LightControl")
+       {
+			LightControl* lightControl = (LightControl*)commandFactory.CreateCommand("LightControl", "LightControlfriendlyName");
+           int lightNumber = commandGroup[1];
+           glm::vec3 locationOffset(
+               commandGroup[2][1].get<float>(),
+               commandGroup[2][2].get<float>(),
+               commandGroup[2][3].get<float>()
+           );
+           int speed = commandGroup[3];
+
+        //engine.lightManager->[lightNumber]->SetParams(locationOffset, speed);
+
+       }
+       else if (commandNameValue == "ScaleUp")
+       {
+           std::string mesh = commandGroup[1];
+        float speed = commandGroup[2];
+        float scale = commandGroup[3];
+         
+        ScaleUp* scaleUp = (ScaleUp*)commandFactory.CreateCommand("ScaleUp", "ScaleUpfriendlyName");
+        scaleUp->SetParams(engine.meshManager->FindMeshByFriendlyName(mesh), speed, scale);
+       }
+ 
+       //// Print the extracted values
+       //std::cout << "mesh: " << mesh << std::endl;
+       //std::cout << "sphere: " << sphere << std::endl;
+       //std::cout << "value1: " << value1 << std::endl;
+       //std::cout << "value2: " << value2 << std::endl;
+   }
+
+ 
+ 
+ 
   engine.LoadDefaultLights();
 
     float currTime = 0;
@@ -116,14 +256,13 @@ int main(void)
     {
         engine.Update();
         skyBoxMesh->drawPosition = camera->cameraEye;
+
         currTime += engine.deltaTime;
 
-      
         if (glfwGetKey(engine.window, GLFW_KEY_1) == GLFW_PRESS)
         {
             
-            sol::function executeFunc = lua["MoveTo"]["Execute"];
-            executeFunc(moveTo, engine.deltaTime);
+			scene1.Execute(engine.deltaTime);
             
         }
     }

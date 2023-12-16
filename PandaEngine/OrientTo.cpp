@@ -17,15 +17,7 @@ void OrientTo::SetParams(cMesh* mesh, cMesh* to, float speed, float time)
 	this->targetRotationSet = false;
 }
 
-void OrientTo::SetParams(cMesh* mesh, glm::vec3 targetRotation, float speed, float time)
-{
-	this->mesh = mesh;
-	this->targetRotation = targetRotation;
-	this->speed = speed;
-	this->time = time;
-	this->targetPositionSet = false;
-	this->targetRotationSet = true;
-}
+ 
 
 bool OrientTo::Execute(double deltaTime)
 {
