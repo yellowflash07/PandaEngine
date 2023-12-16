@@ -238,6 +238,18 @@ void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs, int sca
 	std::cout << "Generated " << body->aabbs.size() << " AABBs" << std::endl;
 }
 
+PhysicsBody* PhysicsManager::FindBodyByFriendlyName(std::string meshName)
+{
+	for (PhysicsBody* body : bodies)
+	{
+		if (body->mesh->friendlyName == meshName)
+		{
+			return body;
+		}
+	}
+	return nullptr;
+}
+
 bool PhysicsManager::CheckAABBOverlap(PhysicsBody* pBodyA, PhysicsBody* pBodyB)
 {
 	// Temporary vector to store currently overlapping AABB pairs

@@ -86,6 +86,7 @@ public:
 	void CheckIntersections(float deltaTime);
 	void AddMesh(PhysicsBody* physicsBody);
 	void GenerateAABBs(PhysicsBody* body,int numberOfAABBs, int scaleExtents = 1);
+	PhysicsBody* FindBodyByFriendlyName(std::string meshName);
 private:
 	MeshManager* meshManager;
 	std::vector<PhysicsBody*> bodies;

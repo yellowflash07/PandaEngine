@@ -169,7 +169,7 @@
       <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="ScaleUp.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -297,7 +297,7 @@
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="ScaleUp.h">
-      <Filter>Header Files</Filter>
+      <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

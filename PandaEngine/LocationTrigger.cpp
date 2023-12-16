@@ -30,7 +30,7 @@ bool LocationTrigger::Execute(double deltaTime)
 	{
 		OnEnter();
 	}
-
+	std::cout << "Triggered" << std::endl;
 	return true;
 }
 
