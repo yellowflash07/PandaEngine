@@ -17,8 +17,7 @@ bool Command::Execute(double deltaTime)
 
 int Command::UniqueId()
 {
-	Random random;
-	return random.GetRandomInt(0, 100000);
+	return uniqueId;
 }
 
 std::string Command::Name()
@@ -29,4 +28,9 @@ std::string Command::Name()
 void Command::SetName(std::string name)
 {
 	this->name = name;
+}
+
+void Command::SetUniqueId(int id)
+{
+		this->uniqueId = id;
 }

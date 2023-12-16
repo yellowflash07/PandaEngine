@@ -6,7 +6,8 @@
 #include <map>
 #include <string>
 #include <iostream>
-
+#include <vector>
+#include "../cVAOManager/sModelDrawInfo.h"
 class cAABB
 {
 public:

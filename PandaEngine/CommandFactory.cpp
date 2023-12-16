@@ -8,10 +8,9 @@ CommandFactory::~CommandFactory()
 {
 }
 
-iCommand* CommandFactory::CreateCommand(std::string name)
+iCommand* CommandFactory::CreateCommand(std::string name, std::string friendlyName)
 {
     iCommand* command = nullptr;
-
     if (name == "MoveTo")
     {
 		command = new MoveTo();
@@ -32,5 +31,29 @@ iCommand* CommandFactory::CreateCommand(std::string name)
         command = new FollowCurve();
     }
 
+    if (name == "LocationTrigger")
+    {
+		command = new LocationTrigger();
+	}
+
+    if (name == "LightControl")
+    {
+		command = new LightControl();
+	}
+
+    if (name == "ScaleUp")
+    {
+		command = new ScaleUp();
+	}
+
+    command->SetName(friendlyName);
+    command->SetUniqueId(GenerateUniqueId());
+
     return command;
+}
+
+int CommandFactory::GenerateUniqueId()
+{
+    Random random;
+    return random.GetRandomInt(100000, 999999);
 }

@@ -162,6 +162,15 @@
     <ClCompile Include="CommandGroup.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="LocationTrigger.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="LightControl.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ScaleUp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsCommon.h">
@@ -280,6 +289,15 @@
     </ClInclude>
     <ClInclude Include="CommandGroup.h">
       <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="LocationTrigger.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="LightControl.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleUp.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
