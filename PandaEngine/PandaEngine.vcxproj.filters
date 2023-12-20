@@ -55,6 +55,9 @@
     <Filter Include="Commands">
       <UniqueIdentifier>{a8f508e9-02f4-41ce-9147-913342d64433}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{2bc72f73-129a-4088-acf5-874c40f4034a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -170,6 +173,18 @@
     </ClCompile>
     <ClCompile Include="ScaleUp.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UdpServer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="UdpClient.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="TCPDebug.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +313,18 @@
     </ClInclude>
     <ClInclude Include="ScaleUp.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UdpServer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="UdpClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="TCPDebug.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
