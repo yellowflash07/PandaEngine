@@ -19,6 +19,7 @@ uniform bool hasTexture;
 uniform bool hasMask;
 uniform bool bIsSkyBox;
 uniform bool hasVertexColor;
+uniform vec4 color;
 uniform vec4 eyeLocation;
 
 uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour

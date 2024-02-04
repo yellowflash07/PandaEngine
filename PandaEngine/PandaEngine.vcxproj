@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -160,6 +160,7 @@
     <ClCompile Include="..\TextureManager\C24BitBMPpixel.cpp" />
     <ClCompile Include="..\TextureManager\cBasicTextureManager.cpp" />
     <ClCompile Include="..\TextureManager\CTextureFromBMP.cpp" />
+    <ClCompile Include="AnimationSystem.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="AudioUtils.cpp" />
     <ClCompile Include="Buffer.cpp" />
@@ -205,6 +206,8 @@
     <ClInclude Include="..\TextureManager\C24BitBMPpixel.h" />
     <ClInclude Include="..\TextureManager\cBasicTextureManager.h" />
     <ClInclude Include="..\TextureManager\CTextureFromBMP.h" />
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationSystem.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="AudioUtils.h" />
     <ClInclude Include="Buffer.h" />

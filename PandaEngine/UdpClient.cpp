@@ -1,5 +1,4 @@
 #include "UdpClient.h"
-#include "../Extern/proto/multiplayer.pb.h"
 
 UdpClient::UdpClient()
 {

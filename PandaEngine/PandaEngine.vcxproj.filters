@@ -58,6 +58,9 @@
     <Filter Include="Network">
       <UniqueIdentifier>{2bc72f73-129a-4088-acf5-874c40f4034a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{c7987848-2f71-47de-a3ea-0606f7684b96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -171,9 +174,6 @@
     <ClCompile Include="LightControl.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="ScaleUp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UdpServer.cpp">
       <Filter>Network</Filter>
     </ClCompile>
@@ -185,6 +185,12 @@
     </ClCompile>
     <ClCompile Include="TCPDebug.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSystem.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="ScaleUp.cpp">
+      <Filter>Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -311,9 +317,6 @@
     <ClInclude Include="LightControl.h">
       <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="ScaleUp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UdpServer.h">
       <Filter>Network</Filter>
     </ClInclude>
@@ -325,6 +328,15 @@
     </ClInclude>
     <ClInclude Include="TCPDebug.h">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSystem.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleUp.h">
+      <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
