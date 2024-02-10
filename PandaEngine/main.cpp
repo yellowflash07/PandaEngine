@@ -81,94 +81,13 @@ int main(void)
     cMesh* mesh = engine.LoadMesh("tie_fighter.ply", "tie_fighter");
     mesh->bUseDebugColours = true;
 
-    AnimationSystem* animSystem = new AnimationSystem();
-
-    Animation* anim = new Animation();
-    anim->name = "TieFighter";
-    anim->mesh = mesh;
-    anim->positionKeyFrames.push_back(PositionKeyFrame(glm::vec3(0.0f, 0.0f, 20.0f), 0.0, EasingType::SineEaseIn));
-    anim->positionKeyFrames.push_back(PositionKeyFrame(glm::vec3(0.0f, 0.0f, -1000.0f), 2.0, EasingType::SineEaseIn));
-
-    anim->rotationKeyFrames.push_back(RotationKeyFrame(glm::vec3(0.0f, 0.0f, 0.0f), 0.0, EasingType::SineEaseIn));
-    anim->rotationKeyFrames.push_back(RotationKeyFrame(glm::vec3(0.0f, 0.0f, 1.6f), 2.0, EasingType::SineEaseIn));
-
-    anim->scaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(1.0f, 1.0f, 1.0f), 0.0, EasingType::SineEaseIn));
-
-    animSystem->AddAnimation(anim);
-
-    glm::vec3 direction = glm::normalize(mesh->drawPosition - camera->cameraEye);
-    camera->cameraTarget = direction;
 
     float currTime = 0;
     float myTime = 0;
-    unsigned long long frameNumber = 0;
-    bool togglePause = false;
-    bool reverse = false;
+
     while (!glfwWindowShouldClose(engine.window))
     {
         engine.Update();      
-
-        if (keyHit == GLFW_KEY_SPACE)
-        {
-            togglePause = !togglePause;
-            keyHit = 0;
-        }
-
-        if (keyHit == GLFW_KEY_1)
-        {
-            animSystem->animationSpeed = 1.0f;
-			keyHit = 0;
-		}
-        if (keyHit == GLFW_KEY_2)
-        {
-			animSystem->animationSpeed = 2.0f;
-            keyHit = 0;
-        }
-        if (keyHit == GLFW_KEY_3)
-		{
-            animSystem->animationSpeed = 3.0f;
-            keyHit = 0;
-        }
-        if (keyHit == GLFW_KEY_4)
-        {
-            animSystem->animationSpeed = 4.0f;
-            keyHit = 0;
-        }
-        if (keyHit == GLFW_KEY_5)
-        {
-            animSystem->animationSpeed = 5.0f;
-            keyHit = 0;
-        }
-        
-
-        if (togglePause)
-        {
-			animSystem->Pause();
-		}
-        else
-        {
-			animSystem->Resume();         
-             
-            if (keyHit == GLFW_KEY_R)
-            {
-                reverse = !reverse;
-                keyHit = 0;
-            }
-
-            if (reverse)
-            {
-				frameNumber--;
-			}
-            else
-            {
-				frameNumber++;
-			}
-
-            if (frameNumber > 1000) frameNumber = 0;
-            float val = (float)frameNumber / 250.f;
-
-            animSystem->Update(val);
-		}
     }
 
     engine.ShutDown();

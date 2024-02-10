@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include <imgui.h>
 #include <iostream>
-#include "Input.h"
+
 Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float near, float far)
 {
     this->cameraEye = position;
@@ -74,7 +74,6 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
 
     ProcessKeyboardInput(window, deltaTime);
-    ProcessMouseMovement(Input::getInstance()->MouseX, Input::getInstance()->MouseY);
 }
 
 void Camera::ProcessMouseMovement(double xpos, double ypos)
