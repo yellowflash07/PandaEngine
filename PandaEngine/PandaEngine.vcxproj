@@ -160,6 +160,7 @@
     <ClCompile Include="..\TextureManager\C24BitBMPpixel.cpp" />
     <ClCompile Include="..\TextureManager\cBasicTextureManager.cpp" />
     <ClCompile Include="..\TextureManager\CTextureFromBMP.cpp" />
+    <ClCompile Include="AnimationSequencer.cpp" />
     <ClCompile Include="AnimationSystem.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="AudioUtils.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="FollowCurve.cpp" />
     <ClCompile Include="FollowObject.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="LightControl.cpp" />
     <ClCompile Include="LocationTrigger.cpp" />
     <ClCompile Include="main.cpp" />
@@ -207,6 +209,7 @@
     <ClInclude Include="..\TextureManager\cBasicTextureManager.h" />
     <ClInclude Include="..\TextureManager\CTextureFromBMP.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationSequencer.h" />
     <ClInclude Include="AnimationSystem.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="AudioUtils.h" />
@@ -225,6 +228,7 @@
     <ClInclude Include="GLFWCallbacks.h" />
     <ClInclude Include="GraphicsCommon.h" />
     <ClInclude Include="iCommand.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="LightControl.h" />
     <ClInclude Include="LocationTrigger.h" />
     <ClInclude Include="MeshManager.h" />
