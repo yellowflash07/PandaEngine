@@ -1,0 +1,10 @@
+{
+    "Config": {
+      "UserPrefs" : "UserPrefs.json",
+      "Scenes" : [
+        {
+            "SceneData" : "Scene.json"
+        }
+      ]
+    }
+  }

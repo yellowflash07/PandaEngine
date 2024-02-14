@@ -64,6 +64,9 @@
     <Filter Include="Input">
       <UniqueIdentifier>{c88ccfa1-5826-489c-a2ae-2a9e2d080a63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Json">
+      <UniqueIdentifier>{7b16dc4c-17a1-42a0-87a2-f685b11eb560}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -195,11 +198,11 @@
     <ClCompile Include="ScaleUp.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationSequencer.cpp">
-      <Filter>Animation</Filter>
+    <ClCompile Include="JsonReader.cpp">
+      <Filter>Json</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Input</Filter>
+    <ClCompile Include="ConfigReader.cpp">
+      <Filter>Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -271,9 +274,6 @@
     </ClInclude>
     <ClInclude Include="PhysicsShapes.h">
       <Filter>Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="GLFWCallbacks.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Camera</Filter>
@@ -347,11 +347,14 @@
     <ClInclude Include="ScaleUp.h">
       <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationSequencer.h">
-      <Filter>Animation</Filter>
+    <ClInclude Include="JsonReader.h">
+      <Filter>Json</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Input</Filter>
+    <ClInclude Include="ConfigReader.h">
+      <Filter>Json</Filter>
+    </ClInclude>
+    <ClInclude Include="GLFWCallbacks.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

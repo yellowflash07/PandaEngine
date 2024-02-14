@@ -7,6 +7,7 @@
 #include "PhysicsManager.h"
 #include "Camera.h"
 #include "AudioManager.h"
+#include "ConfigReader.h"
 
 class Engine
 {
@@ -36,6 +37,7 @@ public:
 	PhysicsManager* physicsManager;
 
 private:
+	ConfigDef config;
 	cShaderManager* shaderManager;
 	GLuint shaderProgramID;
 	glm::vec3 cameraEye;

@@ -1,0 +1,20 @@
+{
+    "Scene": {
+      "SceneName" : "Scene1", 
+      "Meshes": [
+        {
+          "MeshName" : "Mesh"
+        }
+      ],
+      "Lights": [
+        {
+          "LightIndex" : 0
+        }
+      ],
+      "PhysicsBodies" : [
+        {
+            "MeshName"  : "Mesh"
+        }
+      ]
+    }
+  }
