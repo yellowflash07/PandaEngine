@@ -42,6 +42,23 @@ public:
 		return this->m_qOrientation;
 	}
 
+	glm::vec3 GetForwardVector(void)
+	{
+		glm::mat4 matRotation = glm::mat4(this->m_qOrientation);
+		glm::vec4 forward4 = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+		glm::vec4 newForward4 = matRotation * forward4;
+		glm::vec3 newForward = newForward4;
+		return newForward;
+	}
+
+	glm::vec3 GetRightVector(void)
+	{
+		glm::vec3 newRight = glm::cross(this->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
+		return newRight;
+	}
+
+
+
 	glm::vec3 drawScale;
 	void setUniformDrawScale(float scale);
 	bool bIsVisible;

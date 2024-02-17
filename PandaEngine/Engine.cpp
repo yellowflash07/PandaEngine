@@ -28,7 +28,6 @@ Engine::Engine()
     camera = new Camera(glm::vec3(0.0,0.0f,0.0f),
         		        glm::vec3(0.0f, 0.0f, -1.0f),
         		        glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 10000.0f);
-
 }
 
 Engine::~Engine()
@@ -45,13 +44,7 @@ bool Engine::Initialize()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    ConfigReader configReader;
-    configReader.LoadConfigFile(config);
-    UserDef* userDef = config.userDef;
-
-    window = glfwCreateWindow(userDef->windowWidth,
-                              userDef->windowHeight,
-                              userDef->windowTitle.c_str(), NULL, NULL);
+    window = glfwCreateWindow(1920, 1080, "Template Scene", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -81,8 +74,6 @@ bool Engine::Initialize()
     SetModelPath("../Assets/Models");
     SetAudioPath("../Assets/Audio");
     meshManager->SetTexturePath("../Assets/Textures");
-
-
 
     if (!LoadDefaultShaders())
     {

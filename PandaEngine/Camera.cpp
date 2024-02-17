@@ -15,6 +15,9 @@ Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float n
     this->speed = 35.0f;
     this->stopUpdates = false;
     matView = glm::mat4(1.0f);
+    //upVector = glm::vec3(0.0f, 1.0f, 0.0f);
+    forwardVector = glm::vec3(0.0f, 0.0f, -1.0f);
+    rightVector = glm::vec3(1.0f, 0.0f, 0.0f);
 }
 
 Camera::~Camera()
@@ -37,15 +40,19 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     glfwGetFramebufferSize(window, &width, &height);
     ratio = width / (float)height;
 
-    /*if (isFollowing)
+    if (isFollowing)
     {
-		cameraEye = followPos;
-		cameraTarget = followTarget;
-	}*/
+	    cameraTarget = followTarget;
+        glm::mat4 transform = glm::mat4(glm::quat(followOrientation));
 
-    GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
-    glUniform4f(eyeLocation_UL,
-        cameraEye.x, cameraEye.y, cameraEye.z, 1.0f);
+        offset = transform * glm::vec4(offset, 1.0f);
+        offset = glm::normalize(offset) * 500.0f;
+        cameraEye = offset + followPos;
+
+        camControl = false;
+        forwardVector = glm::normalize(followTarget - cameraEye);
+        rightVector = glm::normalize(glm::cross(upVector, forwardVector));
+	}
 
     glm::mat4 matProjection = glm::perspective(0.6f,
                                                 ratio,
@@ -61,7 +68,7 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     else
     {
 		matView = glm::lookAt(cameraEye,
-            			cameraTarget,
+                        cameraTarget,
             			upVector);
 	}
    
@@ -78,14 +85,7 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
 
 void Camera::ProcessMouseMovement(double xpos, double ypos)
 {
-    if (!camControl)
-    {
-		return;
-	}
-    if (stopUpdates)
-    {
-		return;
-	}
+   
     static bool firstMouse = true;
     static float lastX = 0.0f;
     static float lastY = 0.0f;
@@ -110,6 +110,15 @@ void Camera::ProcessMouseMovement(double xpos, double ypos)
 
     this->yaw += xoffset;
     this->pitch += yoffset;
+
+    if (!camControl)
+    {
+        return;
+    }
+    if (stopUpdates)
+    {
+        return;
+    }
 
     cameraTarget.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
     cameraTarget.y = sin(glm::radians(this->pitch));
@@ -151,10 +160,12 @@ void Camera::ProcessKeyboardInput(GLFWwindow* window, double deltaTime)
     }
 }
 
-void Camera::Follow(glm::vec3 followPos, glm::vec3 followTarget)
+void Camera::Follow(glm::vec3 followPos, glm::vec3 offset,glm::vec3 followTarget, glm::vec3 followOrientation)
 {
     this->followPos = followPos;
     this->followTarget = followTarget;
+    this->followOrientation = followOrientation;
+    this->offset = offset;
     isFollowing = true;
 }
 
@@ -176,5 +187,20 @@ glm::vec3 Camera::GetCameraRotation()
 
     return glm::vec3(pitch, yaw, roll);
 
+}
+
+glm::vec3 Camera::GetForwardVector()
+{
+    return forwardVector;
+}
+
+glm::vec3 Camera::GetRightVector()
+{
+    return rightVector;
+}
+
+glm::vec3 Camera::GetUpVector()
+{
+    return upVector;
 }
 

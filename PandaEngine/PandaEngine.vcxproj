@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -171,12 +171,10 @@
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandFactory.cpp" />
     <ClCompile Include="CommandGroup.cpp" />
-    <ClCompile Include="ConfigReader.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="FollowCurve.cpp" />
     <ClCompile Include="FollowObject.cpp" />
     <ClCompile Include="glad.c" />
-    <ClCompile Include="JsonReader.cpp" />
     <ClCompile Include="LightControl.cpp" />
     <ClCompile Include="LocationTrigger.cpp" />
     <ClCompile Include="main.cpp" />
@@ -221,14 +219,12 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandFactory.h" />
     <ClInclude Include="CommandGroup.h" />
-    <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="FollowCurve.h" />
     <ClInclude Include="FollowObject.h" />
     <ClInclude Include="GLFWCallbacks.h" />
     <ClInclude Include="GraphicsCommon.h" />
     <ClInclude Include="iCommand.h" />
-    <ClInclude Include="JsonReader.h" />
     <ClInclude Include="LightControl.h" />
     <ClInclude Include="LocationTrigger.h" />
     <ClInclude Include="MeshManager.h" />

@@ -344,7 +344,13 @@ void MeshManager::ToggleWireframe(bool wireframe)
 
 bool MeshManager::LoadTexture(std::string textureFileName)
 {
-    return textureManager->Create2DTextureFromBMPFile(textureFileName, true);
+    if (textureManager->Create2DTextureFromBMPFile(textureFileName, true))
+    {
+        std::cout << "Loaded texture: " << textureFileName << std::endl;
+        return true;
+    }
+    std::cout << "Didn't load texture: " << textureFileName << std::endl;
+    return false;
 }
 
 bool MeshManager::LoadCubeMap(std::string cubeMapName, std::string posX_fileName, std::string negX_fileName, std::string posY_fileName, std::string negY_fileName, std::string posZ_fileName, std::string negZ_fileName, bool bIsSeamless)
