@@ -7,3 +7,7 @@ Engine Capabilities:
 2. Has point lights, directional lights, and spotlights.
 3. Optimized physics engine that can handle millions of polygons.
 4. Can load textures.
+5. Audio implemented using FMOD
+6. UDP networking
+7. Can generate catmullrom splines
+8. 
