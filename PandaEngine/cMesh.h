@@ -99,6 +99,8 @@ public:
 	bool isChild = false;
 	void AddChild(cMesh* child);
 	bool hideParent = false;
+
+	glm::mat4 GetTransform();
 private:
 	unsigned int m_UniqueID;
 	static const unsigned int FIRST_UNIQUE_ID = 1000;

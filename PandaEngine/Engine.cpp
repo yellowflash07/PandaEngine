@@ -5,6 +5,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "GLFWCallbacks.h"
+#include "ImGuizmo.h"
 
 static void error_callback(int error, const char* description)
 {
@@ -102,6 +103,9 @@ void Engine::Update()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    ImGuizmo::SetOrthographic(false);
+    ImGuizmo::BeginFrame();
+    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, width, height);
 
     // While drawing a pixel, see if the pixel that's already there is closer or not?
     glEnable(GL_DEPTH_TEST);

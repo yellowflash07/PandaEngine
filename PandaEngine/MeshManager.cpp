@@ -3,6 +3,9 @@
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 #include <imgui.h>
 #include "Camera.h"
+#include "ImGuizmo.h"
+#include <glm/gtc/type_ptr.hpp> 
+#include <glm/gtx/matrix_decompose.hpp>
 
 extern Camera* camera;
 
@@ -308,6 +311,48 @@ void MeshManager::DrawTransformBox()
     ImGui::InputFloat("zS", &selectedMesh->drawScale.z); ImGui::SetNextItemWidth(100);
 
     ImGui::SliderFloat("Transparency", &selectedMesh->transperancy, 0.0f, 1.0f); ImGui::SameLine();
+
+    glm::mat4 meshTransform = selectedMesh->GetTransform();
+
+    static ImGuizmo::OPERATION gizmoOperation(ImGuizmo::OPERATION::UNIVERSAL);
+    bool isTranslateRadio = false;
+    ImGui::NewLine();
+    if(ImGui::RadioButton("Translate", &isTranslateRadio))
+    {
+		gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+    }
+    bool isRotateRadio = false;
+    ImGui::SameLine();
+    if (ImGui::RadioButton("Rotate", &isRotateRadio))
+    {
+        gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+    }
+    bool isScaleRadio = false;
+    ImGui::SameLine();
+    if (ImGui::RadioButton("Scale", &isScaleRadio))
+    {
+        gizmoOperation = ImGuizmo::OPERATION::SCALE;
+    }
+
+
+    ImGui::SameLine();
+    ImGuizmo::Manipulate(glm::value_ptr(camera->matView),
+        glm::value_ptr(camera->matProjection),
+        gizmoOperation,
+        ImGuizmo::MODE::LOCAL,
+        glm::value_ptr(meshTransform));
+
+    if(ImGuizmo::IsUsing())
+	{
+		glm::vec3 position, scale;
+		glm::quat rotation;
+		glm::vec3 skew;
+		glm::vec4 perspective;
+		glm::decompose(meshTransform, scale, rotation, position, skew, perspective);
+		selectedMesh->drawPosition = position;
+		selectedMesh->drawScale = scale;
+		selectedMesh->setRotationFromQuat(rotation);
+	}
 
     if (ImGui::Button("Save"))
     {

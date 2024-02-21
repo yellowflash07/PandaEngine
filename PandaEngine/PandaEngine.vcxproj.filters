@@ -64,6 +64,9 @@
     <Filter Include="Input">
       <UniqueIdentifier>{c88ccfa1-5826-489c-a2ae-2a9e2d080a63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="imguizmo">
+      <UniqueIdentifier>{71c34dc1-ee57-4fed-b0e2-bfe746b7475b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -194,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="ScaleUp.cpp">
       <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo.cpp">
+      <Filter>imguizmo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -340,6 +346,9 @@
     </ClInclude>
     <ClInclude Include="ScaleUp.h">
       <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo.h">
+      <Filter>imguizmo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

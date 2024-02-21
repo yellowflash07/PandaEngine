@@ -84,6 +84,32 @@ void cMesh::AddChild(cMesh* child)
 	this->vec_pChildMeshes.push_back(child);
 }
 
+glm::mat4 cMesh::GetTransform()
+{
+	glm::mat4 matModel = glm::mat4(1.0f);
+
+	// Translation
+	glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
+		glm::vec3(drawPosition.x,
+			drawPosition.y,
+			drawPosition.z));
+
+	// Rotation matrix generation
+	glm::mat4 matRotation = glm::mat4(get_qOrientation());
+
+	glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
+		glm::vec3(drawScale.x, drawScale.y, drawScale.z));
+
+	// Combine all these transformation
+	matModel = matModel * matTranslate;
+
+	matModel = matModel * matRotation;
+
+	matModel = matModel * matScale;
+
+	return matModel;
+}
+
 // static
 unsigned int cMesh::m_nextUniqueID = cMesh::FIRST_UNIQUE_ID;
 

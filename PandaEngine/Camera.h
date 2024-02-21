@@ -29,6 +29,13 @@ public:
 	glm::vec3 GetForwardVector();
 	glm::vec3 GetRightVector();
 	glm::vec3 GetUpVector();
+
+	glm::mat4 matProjection;
+	glm::mat4 matView;
+
+	glm::mat4 GetViewMatrix();
+	glm::mat4 GetProjectionMatrix();
+	glm::mat4 GetViewProjectionMatrix();
 private:
 
 	float near;
@@ -37,7 +44,6 @@ private:
 	float pitch;
 	float speed;
 	bool stopUpdates; 
-	glm::mat4 matView;
 
 	glm::vec3 followPos;
 	glm::vec3 followTarget;

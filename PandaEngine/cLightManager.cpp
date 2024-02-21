@@ -3,6 +3,13 @@
 #include "cLightManager.h"
 #include <sstream> //"string stream"
 #include <imgui.h>
+#include "ImGuizmo.h"
+#include "Camera.h"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
+
+
+extern Camera* camera;
 
 cLight::cLight()
 {
@@ -147,6 +154,42 @@ void cLightManager::DrawBox()
 	if (selectedLight == nullptr) return;
 //	std::string boxName = "Transform " + selectedMesh->friendlyName;
 	ImGui::Begin("Light Value");
+
+	glm::mat4 matModel = glm::mat4(1.0f);
+	matModel = glm::translate(matModel, glm::vec3(selectedLight->position));
+	matModel = glm::mat4(glm::quat(selectedLight->direction)) * matModel;
+
+	static ImGuizmo::OPERATION gizmoOperation(ImGuizmo::TRANSLATE);
+
+	bool isTranslateRadio = false;
+	ImGui::NewLine();
+	if (ImGui::RadioButton("Translate", &isTranslateRadio))
+	{
+		gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+	}
+	bool isRotateRadio = false;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Rotate", &isRotateRadio))
+	{
+		gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+	}
+
+	ImGuizmo::Manipulate(glm::value_ptr(camera->matView),
+		glm::value_ptr(camera->matProjection),
+		gizmoOperation,
+		ImGuizmo::MODE::LOCAL,
+		glm::value_ptr(matModel));
+
+	if (ImGuizmo::IsUsing())
+	{
+		glm::vec3 position, scale;
+		glm::quat rotation;
+		glm::vec3 skew;
+		glm::vec4 perspective;
+		glm::decompose(matModel, scale, rotation, position, skew, perspective);
+		selectedLight->position = glm::vec4(position,0);
+		selectedLight->direction = glm::vec4(rotation.x, rotation.y, rotation.z, 1);
+	}
 
 	ImGui::Text("On?"); ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("On", &selectedLight->param2.x);
