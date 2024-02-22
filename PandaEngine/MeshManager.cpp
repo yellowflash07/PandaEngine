@@ -242,6 +242,17 @@ void MeshManager::DrawAllObjects(GLuint shaderProgramID)
 {
     ImGui::Begin("Meshes");
 
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model_DND"))
+        {
+            const char* payload_n = (const char*)payload->Data;
+            AddMesh(payload_n, payload_n, shaderProgramID);
+            //std::cout << "Accepted: " << payload_n << std::endl;
+        }
+        ImGui::EndDragDropTarget();
+    }
+
     for (unsigned int index = 0; index != meshList.size(); index++)
     {
         cMesh* pCurrentMesh = meshList[index];
@@ -292,6 +303,10 @@ void MeshManager::DrawTransformBox()
     std::string boxName = "Transform " + selectedMesh->friendlyName;
     selectedMesh->bIsWireframe = false;
     ImGui::Begin(boxName.c_str());
+
+
+   
+
 
     ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("xP", &selectedMesh->drawPosition.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
@@ -352,6 +367,52 @@ void MeshManager::DrawTransformBox()
 		selectedMesh->drawPosition = position;
 		selectedMesh->drawScale = scale;
 		selectedMesh->setRotationFromQuat(rotation);
+	}
+
+    ImGui::NewLine();
+    for (size_t i = 0; i < selectedMesh->NUM_OF_TEXTURES; i++)
+    {
+        if (selectedMesh->texture[i].empty())
+        {
+            ImGui::Text("Texture Slot: %d EMPTY", i);
+            if (ImGui::BeginDragDropTarget())
+            {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture_DND"))
+                {
+                    const char* payload_n = (const char*)payload->Data;
+                    selectedMesh->texture[i] = payload_n;
+                    selectedMesh->textureRatio[i] = 1.0f;
+                    selectedMesh->hasVertexColors = false;
+                    selectedMesh->bUseDebugColours = false;
+                }
+                ImGui::EndDragDropTarget();
+            }
+           // break;
+        }
+        else
+        {
+            ImGui::Text("Texture Slot: %s", selectedMesh->texture[i].c_str());
+            if(ImGui::SliderFloat("Mix Ratio", &selectedMesh->textureRatio[i], 0.0f, 1.0f))
+            {
+            }
+            if (ImGui::Button("Remove Texture"))
+            {
+				selectedMesh->texture[i] = "";
+				selectedMesh->textureRatio[i] = 0.0f;
+			}
+        }
+    }
+
+    ImGui::NewLine();
+    ImGui::Text("Mask Texture: %s", selectedMesh->maskTexture.c_str());
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture_DND"))
+        {
+			const char* payload_n = (const char*)payload->Data;
+			selectedMesh->maskTexture = payload_n;
+		}
+		ImGui::EndDragDropTarget();
 	}
 
     if (ImGui::Button("Save"))

@@ -7,6 +7,7 @@
 #include "PhysicsManager.h"
 #include "Camera.h"
 #include "AudioManager.h"
+#include "AssetLibrary.h"
 
 class Engine
 {
@@ -45,5 +46,6 @@ private:
 	float far;
 	double lastTime;
 	int frameCount;
+	AssetLibrary assetLib;
 	//Camera* camera;
 };

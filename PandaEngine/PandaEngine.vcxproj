@@ -161,6 +161,7 @@
     <ClCompile Include="..\TextureManager\cBasicTextureManager.cpp" />
     <ClCompile Include="..\TextureManager\CTextureFromBMP.cpp" />
     <ClCompile Include="AnimationSystem.cpp" />
+    <ClCompile Include="AssetLibrary.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="AudioUtils.cpp" />
     <ClCompile Include="Buffer.cpp" />
@@ -207,8 +208,10 @@
     <ClInclude Include="..\TextureManager\C24BitBMPpixel.h" />
     <ClInclude Include="..\TextureManager\cBasicTextureManager.h" />
     <ClInclude Include="..\TextureManager\CTextureFromBMP.h" />
+    <ClInclude Include="..\TextureManager\stb_image.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationSystem.h" />
+    <ClInclude Include="AssetLibrary.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="AudioUtils.h" />
     <ClInclude Include="Buffer.h" />

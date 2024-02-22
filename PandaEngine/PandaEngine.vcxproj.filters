@@ -67,6 +67,9 @@
     <Filter Include="imguizmo">
       <UniqueIdentifier>{71c34dc1-ee57-4fed-b0e2-bfe746b7475b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AssetLibrary">
+      <UniqueIdentifier>{06633d19-791e-440f-aabd-d02ee1d6832f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -200,6 +203,9 @@
     </ClCompile>
     <ClCompile Include="ImGuizmo.cpp">
       <Filter>imguizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetLibrary.cpp">
+      <Filter>AssetLibrary</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -349,6 +355,12 @@
     </ClInclude>
     <ClInclude Include="ImGuizmo.h">
       <Filter>imguizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetLibrary.h">
+      <Filter>AssetLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextureManager\stb_image.h">
+      <Filter>TextureManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

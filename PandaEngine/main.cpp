@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include "ConfigReader.h"
+#include "AssetLibrary.h"
 
 extern Camera* camera;
 int keyHit = 0;
@@ -47,15 +48,18 @@ int main(void)
     skyBoxMesh->setUniformDrawScale(5000.0f);
 
     cMesh* mesh = engine.LoadMesh("tie_fighter.ply", "tie_fighter");
-    mesh->bUseDebugColours = true;
 
+    
+    //std::vector<std::wstring> files = assetLib.GetFiles("../Assets/Models");
 
     float currTime = 0;
     float myTime = 0;
 
     while (!glfwWindowShouldClose(engine.window))
     {
-        engine.Update();      
+        engine.Update();   
+
+      //  assetLib.RenderBox();
     }
 
     engine.ShutDown();

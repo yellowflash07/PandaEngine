@@ -29,7 +29,7 @@ public:
 	bool LoadCubeMap(std::string cubeMapName, std::string posX_fileName, std::string negX_fileName,
 				std::string posY_fileName, std::string negY_fileName,
 				std::string posZ_fileName, std::string negZ_fileName, bool bIsSeamless);
-	std::string texture;
+	cBasicTextureManager* GetTextureManager() { return textureManager; }
 private:
 	cVAOManager* vaoManager;
 	std::vector< cMesh* > meshList;

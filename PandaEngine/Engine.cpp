@@ -29,6 +29,7 @@ Engine::Engine()
     camera = new Camera(glm::vec3(0.0,0.0f,0.0f),
         		        glm::vec3(0.0f, 0.0f, -1.0f),
         		        glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 10000.0f);
+
 }
 
 Engine::~Engine()
@@ -76,6 +77,9 @@ bool Engine::Initialize()
     SetAudioPath("../Assets/Audio");
     meshManager->SetTexturePath("../Assets/Textures");
 
+    assetLib.m_texManager = meshManager->GetTextureManager();
+    assetLib.Init();
+
     if (!LoadDefaultShaders())
     {
         return false;
@@ -120,6 +124,8 @@ void Engine::Update()
 
     //draw meshes
     meshManager->DrawAllObjects(shaderProgramID);
+
+    assetLib.RenderBox();
 
     // Time per frame
     double currentTime = glfwGetTime();
