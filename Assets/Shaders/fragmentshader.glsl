@@ -31,6 +31,9 @@ uniform sampler2D texture_02;
 uniform sampler2D texture_03;
 uniform sampler2D maskTexture;
 
+uniform bool hasRenderTexture;
+uniform sampler2D renderTexture;
+
 uniform samplerCube skyBoxCubeMap;
 uniform vec2 UV_Offset;
 uniform vec4 textureMixRatio_0_3;
@@ -69,6 +72,14 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
+
+	if( hasRenderTexture )
+	{
+		vec4 renderTextureColor =  texture( renderTexture, texCoord.st ).rgba;
+		outputColour.rgb = renderTextureColor.rgb;
+		outputColour.a = 1.0f;
+		return;
+	}
 
 	if ( bIsSkyBox )
 	{

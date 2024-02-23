@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "AudioManager.h"
 #include "AssetLibrary.h"
+#include "RenderTexture.h"
 
 class Engine
 {
@@ -30,22 +31,26 @@ public:
 	void ShutDown();
 	void SetCameraDefaults(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float near=0.1f, float far=1000.0f);
 	void SetCameraTarget(glm::vec3 target);
+	RenderTexture* CreateRenderTexture(Camera* camera, int width, int height, std::vector<cMesh*> offScreenMesh);
 	GLFWwindow* window;
 	cLightManager* lightManager;
 	MeshManager* meshManager;
 	cAudioManager* audioManager;
 	PhysicsManager* physicsManager;
+	GLuint shaderProgramID;
 
+	cFBO* fbo;
 private:
 	cShaderManager* shaderManager;
-	GLuint shaderProgramID;
 	glm::vec3 cameraEye;
 	glm::vec3 cameraTarget;
 	glm::vec3 upVector;
 	float near;
 	float far;
 	double lastTime;
+	double currentTime;
 	int frameCount;
 	AssetLibrary assetLib;
+	std::vector<RenderTexture*> renderTextures;
 	//Camera* camera;
 };

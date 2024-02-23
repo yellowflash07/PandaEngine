@@ -29,7 +29,7 @@ Engine::Engine()
     camera = new Camera(glm::vec3(0.0,0.0f,0.0f),
         		        glm::vec3(0.0f, 0.0f, -1.0f),
         		        glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 10000.0f);
-
+    fbo = new cFBO();
 }
 
 Engine::~Engine()
@@ -80,6 +80,12 @@ bool Engine::Initialize()
     assetLib.m_texManager = meshManager->GetTextureManager();
     assetLib.Init();
 
+    std::string error;
+    if (!fbo->init(1920, 1080, error))
+    {
+        std::cout << "Error initializing FBO: " << error << std::endl;
+    }
+
     if (!LoadDefaultShaders())
     {
         return false;
@@ -92,6 +98,12 @@ bool Engine::Initialize()
 
 void Engine::Update()
 {
+
+    //render render textures
+    for (int i = 0; i < renderTextures.size(); i++)
+    {
+        renderTextures[i]->Render();
+    }
     float ratio;
     int width, height;
 
@@ -102,6 +114,7 @@ void Engine::Update()
 
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -123,25 +136,18 @@ void Engine::Update()
     camera->Update(window, deltaTime);
 
     //draw meshes
-    meshManager->DrawAllObjects(shaderProgramID);
+    meshManager->DrawAllObjects(shaderProgramID); 
 
+  
+
+    //show asset library
     assetLib.RenderBox();
 
     // Time per frame
     double currentTime = glfwGetTime();
     deltaTime = currentTime - lastTime;
+    currentTime += deltaTime;
     lastTime = currentTime;
-
-    frameCount++;
-
-    if (deltaTime >= 1.0) {
-        double fps = static_cast<double>(frameCount) / deltaTime;
-        frameCount = 0;
-        // Display FPS
-        ImGui::Begin("FPS Counter"); ImGui::SetNextItemWidth(100);
-        ImGui::Text("FPS: %.2f", fps); 
-        ImGui::End();
-    }
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
@@ -262,9 +268,12 @@ void Engine::ShutDown()
     //exit(EXIT_SUCCESS);
 }
 
-//void Engine::SetCamera(Camera* camera)
-//{
-//  //  this->camera = camera;
-//   // this->camera->shaderProgramID = shaderProgramID;
-//}
+RenderTexture* Engine::CreateRenderTexture(Camera* camera, int width, int height, std::vector<cMesh*> offScreenMesh)
+{
+    RenderTexture* rt = new RenderTexture(camera, width, height, shaderProgramID, offScreenMesh);
+    rt->meshManager = this->meshManager;
+    rt->lightManager = this->lightManager;
+    renderTextures.push_back(rt);
+    return rt;
+}
 

@@ -45,6 +45,8 @@ public:
     // This is called every frame
     void UpdateUniformValues(GLuint shaderID);
 
+    void UpdateLights(GLuint shaderID);
+
     static const unsigned int NUMBER_OF_LIGHTS_IM_USING = 50;
     cLight* theLights[NUMBER_OF_LIGHTS_IM_USING];
     void DrawBox();

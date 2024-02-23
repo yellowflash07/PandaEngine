@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "../cVAOManager/sModelDrawInfo.h"
+#include "../PandaEngine/GraphicsCommon.h"
 
 class cMesh
 {
@@ -75,7 +76,7 @@ public:
 	std::string texture[NUM_OF_TEXTURES];
 	float textureRatio[NUM_OF_TEXTURES];
 	std::string maskTexture;
-
+	GLuint renderTextureID =0;
 	glm::vec2 UV_Offset;
 
 	float transperancy = 1.0f;

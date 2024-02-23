@@ -70,6 +70,12 @@
     <Filter Include="AssetLibrary">
       <UniqueIdentifier>{06633d19-791e-440f-aabd-d02ee1d6832f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FBO">
+      <UniqueIdentifier>{9e0e3aa1-4f1d-45d0-aad7-e2086af2945b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderTexture">
+      <UniqueIdentifier>{ec411256-17c3-4232-a8b7-6acb66e8e138}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -206,6 +212,12 @@
     </ClCompile>
     <ClCompile Include="AssetLibrary.cpp">
       <Filter>AssetLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FBO\cFBO.cpp">
+      <Filter>FBO</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTexture.cpp">
+      <Filter>RenderTexture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -361,6 +373,12 @@
     </ClInclude>
     <ClInclude Include="..\TextureManager\stb_image.h">
       <Filter>TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FBO\cFBO.h">
+      <Filter>FBO</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTexture.h">
+      <Filter>RenderTexture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -35,10 +35,20 @@ cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyNam
 
     cMesh* mesh = new cMesh();
     mesh->meshName = modelNameAtPath;
-    mesh->friendlyName = friendlyName;
     mesh->modelDrawInfo = drawInfo;
+    mesh->friendlyName = friendlyName;
+
+    for (size_t i = 0; i < meshList.size(); i++)
+    {
+        if (meshList[i]->friendlyName == friendlyName)
+        {
+            mesh->friendlyName = friendlyName + std::to_string(i);
+        }
+    }
+
     std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
     meshList.push_back(mesh);
+
     return mesh;
 }
 
@@ -241,7 +251,8 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
 void MeshManager::DrawAllObjects(GLuint shaderProgramID)
 {
     ImGui::Begin("Meshes");
-
+    ImGui::SetNextWindowContentSize(ImVec2(100, 100));
+    ImGui::Text("Drag a model here");
     if (ImGui::BeginDragDropTarget())
     {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model_DND"))
@@ -256,10 +267,9 @@ void MeshManager::DrawAllObjects(GLuint shaderProgramID)
     for (unsigned int index = 0; index != meshList.size(); index++)
     {
         cMesh* pCurrentMesh = meshList[index];
-
-        if (ImGui::Button(pCurrentMesh->friendlyName.c_str(), ImVec2(100,25)))
+        if (ImGui::Button(pCurrentMesh->friendlyName.c_str(), ImVec2(100, 25)))
         {
-            selectedMesh = pCurrentMesh;        
+            selectedMesh = pCurrentMesh;
         }
 
         if (pCurrentMesh->bIsVisible)
@@ -268,6 +278,7 @@ void MeshManager::DrawAllObjects(GLuint shaderProgramID)
             DrawObject(pCurrentMesh, matModel, shaderProgramID);
         }
     }
+
     ImGui::End();
     DrawTransformBox();
 }
@@ -303,10 +314,6 @@ void MeshManager::DrawTransformBox()
     std::string boxName = "Transform " + selectedMesh->friendlyName;
     selectedMesh->bIsWireframe = false;
     ImGui::Begin(boxName.c_str());
-
-
-   
-
 
     ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("xP", &selectedMesh->drawPosition.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
@@ -415,6 +422,11 @@ void MeshManager::DrawTransformBox()
 		ImGui::EndDragDropTarget();
 	}
 
+    if (ImGui::Button("Remove Mask"))
+    {
+        selectedMesh->maskTexture = "";
+    }
+
     if (ImGui::Button("Save"))
     {
         saver->SaveMeshes(meshList);
@@ -470,6 +482,22 @@ bool MeshManager::LoadCubeMap(std::string cubeMapName, std::string posX_fileName
 
 }
 
+
+void MeshManager::RemoveMesh(std::string friendlyName)
+{
+    for (size_t i = 0; i < meshList.size(); i++)
+    {
+        cMesh* mesh = meshList[i];
+        if (mesh->friendlyName == friendlyName)
+        {
+			meshList.erase(meshList.begin() + i);
+            delete mesh;
+			return;
+		}
+	}
+}
+
+
 void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
 {
     if (pCurrentMesh->isSkyBox)
@@ -482,6 +510,35 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
         GLint skyBoxSampler_UL = glGetUniformLocation(shaderProgramID, "skyBoxCubeMap");
         glUniform1i(skyBoxSampler_UL, textureUnit30);
         return;
+    }
+
+    if (pCurrentMesh->renderTextureID > 0)
+    {
+        //GLint renderTextureBool_UL = glGetUniformLocation(shaderProgramID, "hasRenderTexture");
+        //glUniform1f(renderTextureBool_UL, (GLfloat)GL_TRUE);
+        GLint textureBool_UL = glGetUniformLocation(shaderProgramID, "hasRenderTexture");
+        glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
+
+        GLint textureUnitNumber = 0;
+        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+        glBindTexture(GL_TEXTURE_2D, pCurrentMesh->renderTextureID);
+        GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "renderTexture");
+        glUniform1i(texture_00_UL, textureUnitNumber);
+
+  /*      GLint textureMixRatio_0_3_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_0_3");
+
+        glUniform4f(textureMixRatio_0_3_UL,
+            1.0f,
+            1.0f,
+            1.0f,
+            1.0f);*/
+
+        return;
+	}
+    else
+    {
+        GLint renderTextureBool_UL = glGetUniformLocation(shaderProgramID, "hasRenderTexture");
+        glUniform1f(renderTextureBool_UL, (GLfloat)GL_FALSE);
     }
 
     GLint textureBool_UL = glGetUniformLocation(shaderProgramID, "hasTexture");

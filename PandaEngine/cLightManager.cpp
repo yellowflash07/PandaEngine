@@ -102,51 +102,61 @@ void cLightManager::UpdateUniformValues(GLuint shaderID)
 			selectedLight = pCurrentLight;
 		}
 		ImGui::End();
-		glUniform4f(pCurrentLight->position_UL,
-					pCurrentLight->position.x,
-					pCurrentLight->position.y,
-					pCurrentLight->position.z,
-					pCurrentLight->position.w);
-
-		glUniform4f(theLights[index]->diffuse_UL,
-					theLights[index]->diffuse.x,
-					theLights[index]->diffuse.y,
-					theLights[index]->diffuse.z,
-					theLights[index]->diffuse.w);
-
-		glUniform4f(theLights[index]->specular_UL,
-					theLights[index]->specular.x,
-					theLights[index]->specular.y,
-					theLights[index]->specular.z,
-					theLights[index]->specular.w);
-
-		glUniform4f(theLights[index]->atten_UL,
-					theLights[index]->atten.x,
-					theLights[index]->atten.y,
-					theLights[index]->atten.z,
-					theLights[index]->atten.w);
-
-		glUniform4f(theLights[index]->direction_UL,
-					theLights[index]->direction.x,
-					theLights[index]->direction.y,
-					theLights[index]->direction.z,
-					theLights[index]->direction.w);
-
-		glUniform4f(theLights[index]->param1_UL,
-					theLights[index]->param1.x,
-					theLights[index]->param1.y,
-					theLights[index]->param1.z,
-					theLights[index]->param1.w);
-
-		glUniform4f(theLights[index]->param2_UL,
-					theLights[index]->param2.x,
-					theLights[index]->param2.y,
-					theLights[index]->param2.z,
-					theLights[index]->param2.w);
 	}// for ( unsigned int index...
+
+	UpdateLights(shaderID);
 
 	DrawBox();
 	return;
+}
+
+void cLightManager::UpdateLights(GLuint shaderID)
+{
+	for (unsigned int index = 0; index != cLightManager::NUMBER_OF_LIGHTS_IM_USING; index++)
+	{
+		cLight* pCurrentLight = theLights[index];
+		glUniform4f(pCurrentLight->position_UL,
+			pCurrentLight->position.x,
+			pCurrentLight->position.y,
+			pCurrentLight->position.z,
+			pCurrentLight->position.w);
+
+		glUniform4f(theLights[index]->diffuse_UL,
+			theLights[index]->diffuse.x,
+			theLights[index]->diffuse.y,
+			theLights[index]->diffuse.z,
+			theLights[index]->diffuse.w);
+
+		glUniform4f(theLights[index]->specular_UL,
+			theLights[index]->specular.x,
+			theLights[index]->specular.y,
+			theLights[index]->specular.z,
+			theLights[index]->specular.w);
+
+		glUniform4f(theLights[index]->atten_UL,
+			theLights[index]->atten.x,
+			theLights[index]->atten.y,
+			theLights[index]->atten.z,
+			theLights[index]->atten.w);
+
+		glUniform4f(theLights[index]->direction_UL,
+			theLights[index]->direction.x,
+			theLights[index]->direction.y,
+			theLights[index]->direction.z,
+			theLights[index]->direction.w);
+
+		glUniform4f(theLights[index]->param1_UL,
+			theLights[index]->param1.x,
+			theLights[index]->param1.y,
+			theLights[index]->param1.z,
+			theLights[index]->param1.w);
+
+		glUniform4f(theLights[index]->param2_UL,
+			theLights[index]->param2.x,
+			theLights[index]->param2.y,
+			theLights[index]->param2.z,
+			theLights[index]->param2.w);
+	}
 }
 
 void cLightManager::DrawBox()

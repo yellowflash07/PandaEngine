@@ -149,6 +149,7 @@
     <ClCompile Include="..\Basic Shader Manager\cShaderManager.cpp" />
     <ClCompile Include="..\cVAOManager\cVAOManager.cpp" />
     <ClCompile Include="..\cVAOManager\sModelDrawInfo.cpp" />
+    <ClCompile Include="..\FBO\cFBO.cpp" />
     <ClCompile Include="..\imgui\imgui.cpp" />
     <ClCompile Include="..\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\imgui\imgui_draw.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="OrientTo.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="ScaleUp.cpp" />
     <ClCompile Include="SceneSaver.cpp" />
     <ClCompile Include="TCPDebug.cpp" />
@@ -195,6 +197,7 @@
     <ClInclude Include="..\Basic Shader Manager\cShaderManager.h" />
     <ClInclude Include="..\cVAOManager\cVAOManager.h" />
     <ClInclude Include="..\cVAOManager\sModelDrawInfo.h" />
+    <ClInclude Include="..\FBO\cFBO.h" />
     <ClInclude Include="..\imgui\imconfig.h" />
     <ClInclude Include="..\imgui\imgui.h" />
     <ClInclude Include="..\imgui\imgui_impl_glfw.h" />
@@ -238,6 +241,7 @@
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PhysicsShapes.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="ScaleUp.h" />
     <ClInclude Include="SceneSaver.h" />
     <ClInclude Include="TCPDebug.h" />

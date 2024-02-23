@@ -12,7 +12,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float n
 
     this->yaw = -90.0f;
     this->pitch = 0.0f;
-    this->speed = 35.0f;
+    this->speed = 50.0f;
     this->stopUpdates = false;
     matView = glm::mat4(1.0f);
     //upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -142,6 +142,16 @@ void Camera::ProcessKeyboardInput(GLFWwindow* window, double deltaTime)
         return;
     }
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //if shift is pressed, disable cursor
+    /*if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT ) == GLFW_PRESS)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+    else
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }*/
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         cameraEye += speed * (float)deltaTime * cameraTarget;
