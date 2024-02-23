@@ -313,8 +313,9 @@ void MeshManager::DrawTransformBox()
     if (selectedMesh == nullptr) return;
     std::string boxName = "Transform " + selectedMesh->friendlyName;
     selectedMesh->bIsWireframe = false;
+   
     ImGui::Begin(boxName.c_str());
-
+    ImGui::SetNextWindowContentSize(ImVec2(250, 250));
     ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("xP", &selectedMesh->drawPosition.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("yP", &selectedMesh->drawPosition.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
@@ -422,15 +423,24 @@ void MeshManager::DrawTransformBox()
 		ImGui::EndDragDropTarget();
 	}
 
-    if (ImGui::Button("Remove Mask"))
+    if (!selectedMesh->maskTexture.empty())
     {
-        selectedMesh->maskTexture = "";
+        if (ImGui::Button("Remove Mask"))
+        {
+            selectedMesh->maskTexture = "";
+        }
     }
 
     if (ImGui::Button("Save"))
     {
         saver->SaveMeshes(meshList);
     }
+    ImGui::SameLine();
+    if (ImGui::Button("Delete"))
+    {
+		RemoveMesh(selectedMesh->friendlyName);
+        selectedMesh = nullptr;
+	}
     ImGui::End();
 }
 
