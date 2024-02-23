@@ -1,14 +1,16 @@
-Mesh Name:bathtub_xyz_n_rgba.ply
-Friendly Name:bathtub
-Position:0 -30 0
+Mesh Name:tie_fighter.ply
+Friendly Name:TieFighter
+Position:0 -50 0
 Rotation:0 0 0
 Scale:1 1 1
 Color:1 1 1 1
+Transparency:1
 
-Mesh Name:Sphere_1_unit_Radius.ply
-Friendly Name:Sphere
-Position:0 0 0
-Rotation:0 0 0
+Mesh Name:Terrain_xyz_n_rgba_uv.ply
+Friendly Name:Terrain_xyz_n_rgba_uv.ply
+Position:0 -225.8 0
+Rotation:0 -0 0
 Scale:1 1 1
 Color:1 1 1 1
+Transparency:1
 

@@ -41,25 +41,13 @@ int main(void)
                                     "CubeMaps/TropicalSunnyDayBack2048.bmp",
                                     true);
 
-    camera->SetPosition(glm::vec3(0.0f, 400.0f, 200.0f));
+    camera->SetPosition(glm::vec3(35.0f, 150.0f, 500.0f));
+
+    engine.LoadSave();
     
     cMesh* skyBoxMesh = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "skybox");
     skyBoxMesh->isSkyBox = true;
-    skyBoxMesh->setUniformDrawScale(5000.0f);
-
-    cMesh* tieFighter = engine.LoadMesh("tie_fighter.ply", "TieFighter", false);
-    tieFighter->drawPosition = glm::vec3(0.0f, -50.0f, 0.0f);
-
-    std::vector<cMesh*> offScreenMeshList;
-    offScreenMeshList.push_back(tieFighter);
-
-    cMesh* mesh = engine.LoadMesh("Terrain_xyz_n_rgba_uv.ply", "flat_plane");
-    mesh->bDoNotLight = true;
-    Camera* rtCam = new Camera(glm::vec3(0.0f, 400.0f, 200.0f),
-                                glm::vec3(0.0f, 0.0f, -1.0f),
-                                glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 10000.0f);
-
-    RenderTexture* rt = engine.CreateRenderTexture(rtCam, offScreenMeshList);
+    skyBoxMesh->setUniformDrawScale(5000.0f);  
 
     float currTime = 0;
     float myTime = 0;
@@ -67,7 +55,6 @@ int main(void)
     while (!glfwWindowShouldClose(engine.window))
     {
         engine.Update();   
-        mesh->renderTextureID = rt->GetTextureID();
     }
 
     engine.ShutDown();

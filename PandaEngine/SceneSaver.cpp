@@ -18,6 +18,11 @@ void SceneSaver::SaveMeshes(std::vector<cMesh*> meshes)
     {
         for (cMesh* mesh : meshes) 
         {
+            if (mesh->isSkyBox)
+            {
+                continue;
+            }
+
             file << "Mesh Name:" << mesh->meshName << "\n";
             file << "Friendly Name:" << mesh->friendlyName << "\n";
             file << "Position:" << mesh->drawPosition.x << " " << mesh->drawPosition.y << " " << mesh->drawPosition.z << "\n";
