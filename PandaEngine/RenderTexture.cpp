@@ -47,7 +47,7 @@ void RenderTexture::Render()
 	GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
 	glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
 
-	lightManager->UpdateLights(shaderProgramID);
+	//lightManager->UpdateLights(shaderProgramID);
 
 	//draw meshes
 	for (int i = 0; i < offScreenMeshList.size(); i++)

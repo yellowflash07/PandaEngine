@@ -74,10 +74,7 @@ bool Engine::Initialize()
     SetShaderPath("../Assets/Shaders");
     SetModelPath("../Assets/Models");
     SetAudioPath("../Assets/Audio");
-    meshManager->SetTexturePath("../Assets/Textures");
-
-    assetLib.m_texManager = meshManager->GetTextureManager();
-    assetLib.Init();
+    meshManager->SetTexturePath("../Assets/Textures");   
 
     if (!LoadDefaultShaders())
     {
@@ -85,6 +82,12 @@ bool Engine::Initialize()
     }
 
     LoadDefaultLights();
+
+
+    assetLib.m_texManager = meshManager->GetTextureManager();
+    assetLib.m_meshManager = meshManager;
+    assetLib.shaderProgramID = shaderProgramID;
+    assetLib.Init();
 
     return true;
 }
@@ -260,7 +263,7 @@ void Engine::ShutDown()
     //exit(EXIT_SUCCESS);
 }
 
-RenderTexture* Engine::CreateRenderTexture(Camera* camera, int width, int height, std::vector<cMesh*> offScreenMesh)
+RenderTexture* Engine::CreateRenderTexture(Camera* camera, std::vector<cMesh*> offScreenMesh, int width, int height)
 {
     RenderTexture* rt = new RenderTexture(camera, width, height, shaderProgramID, offScreenMesh);
     rt->meshManager = this->meshManager;

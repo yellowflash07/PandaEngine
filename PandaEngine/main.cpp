@@ -59,7 +59,7 @@ int main(void)
                                 glm::vec3(0.0f, 0.0f, -1.0f),
                                 glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 10000.0f);
 
-    RenderTexture* rt = engine.CreateRenderTexture(rtCam, 1920, 1080, offScreenMeshList);
+    RenderTexture* rt = engine.CreateRenderTexture(rtCam, offScreenMeshList);
 
     float currTime = 0;
     float myTime = 0;

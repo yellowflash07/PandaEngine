@@ -19,9 +19,10 @@ public:
 	GLuint GetFBOID();
 	MeshManager* meshManager;
 	cLightManager* lightManager;
+	std::vector<cMesh*> offScreenMeshList;
+
 private:
 	Camera* camera;
-	std::vector<cMesh*> offScreenMeshList;
 	cFBO* fbo;
 	GLuint shaderProgramID;
 	bool isRendering;

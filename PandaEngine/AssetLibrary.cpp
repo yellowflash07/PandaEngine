@@ -6,8 +6,6 @@ AssetLibrary::AssetLibrary()
 {
     m_modelFiles = GetFiles("../Assets/Models");
     m_texFiles = GetFiles("../Assets/Textures");
-
-   
 }
 
 AssetLibrary::~AssetLibrary()
@@ -25,32 +23,22 @@ void AssetLibrary::Init()
         GLuint texID = m_texManager->getTextureIDFromName(fileStr);
         m_texIDs.push_back(texID);
     }
-}
 
-//void AssetLibrary::LoadAssets()
-//{
-//    WIN32_FIND_DATA findFileData;
-//    std::wstring path = L"../Assets/Models";
-//    HANDLE hFind = FindFirstFile((path + L"\\*").c_str(), &findFileData);
-//
-//    if (hFind == INVALID_HANDLE_VALUE) {
-//        std::wcerr << L"Error opening directory: " << path << std::endl;
-//        return;
-//    }
-//
-//    do {
-//        if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-//            if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0) {
-//                std::wcout << L"Subdirectory: " << findFileData.cFileName << std::endl;
-//
-//                // Recursive call for subdirectories
-//                scanDirectory(path + L"\\" + findFileData.cFileName);
-//            }
-//        }
-//    } while (FindNextFile(hFind, &findFileData) != 0);
-//
-//    FindClose(hFind);
-//}
+    for (size_t i = 0; i < m_modelFiles.size(); i++)
+    {
+        std::wstring file = m_modelFiles[i];
+        std::string fileStr(file.begin(), file.end());
+        cMesh* mesh = m_meshManager->LoadMesh(fileStr, fileStr,shaderProgramID);
+        glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 100.0f);
+        Camera* camera = new Camera(cameraPos,
+            glm::vec3(0.0f, 0.0f, -1.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 10000.0f);
+        RenderTexture* renderTexture = new RenderTexture(camera, 512, 512, shaderProgramID, { mesh });
+        renderTexture->meshManager = m_meshManager;
+        m_renderTextures.push_back(renderTexture);
+    }
+
+}
 
 void AssetLibrary::RenderBox()
 {
@@ -59,13 +47,18 @@ void AssetLibrary::RenderBox()
     {
         if (ImGui::BeginTabItem("Models"))
         {
-            for (int i = 0; i < m_modelFiles.size(); i++)
+            for (int i = 0; i < m_renderTextures.size(); i++)
             {
-                std::wstring file = m_modelFiles[i];
+             /*   std::wstring file = m_modelFiles[i];
                 std::string fileStr(file.begin(), file.end());
-                ImGui::Button(fileStr.c_str(), ImVec2(100, 100));
+                ImGui::Button(fileStr.c_str(), ImVec2(100, 100));*/
+
+                RenderTexture* rt = m_renderTextures[i];
+                rt->Render();
+                ImGui::ImageButton((void*)(intptr_t)rt->GetTextureID(), ImVec2(100, 100));
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
                 {
+                    std::string fileStr = rt->offScreenMeshList[0]->meshName;
                     // Set payload to carry the index of our item (could be anything)
                     ImGui::SetDragDropPayload("Model_DND", fileStr.c_str(), fileStr.length() * sizeof(char*));
                     ImGui::EndDragDropSource();
