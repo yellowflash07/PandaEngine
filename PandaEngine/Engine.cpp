@@ -29,7 +29,6 @@ Engine::Engine()
     camera = new Camera(glm::vec3(0.0,0.0f,0.0f),
         		        glm::vec3(0.0f, 0.0f, -1.0f),
         		        glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 10000.0f);
-    fbo = new cFBO();
 }
 
 Engine::~Engine()
@@ -79,12 +78,6 @@ bool Engine::Initialize()
 
     assetLib.m_texManager = meshManager->GetTextureManager();
     assetLib.Init();
-
-    std::string error;
-    if (!fbo->init(1920, 1080, error))
-    {
-        std::cout << "Error initializing FBO: " << error << std::endl;
-    }
 
     if (!LoadDefaultShaders())
     {
@@ -146,7 +139,6 @@ void Engine::Update()
     // Time per frame
     double currentTime = glfwGetTime();
     deltaTime = currentTime - lastTime;
-    currentTime += deltaTime;
     lastTime = currentTime;
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

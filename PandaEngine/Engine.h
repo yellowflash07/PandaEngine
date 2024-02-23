@@ -38,8 +38,6 @@ public:
 	cAudioManager* audioManager;
 	PhysicsManager* physicsManager;
 	GLuint shaderProgramID;
-
-	cFBO* fbo;
 private:
 	cShaderManager* shaderManager;
 	glm::vec3 cameraEye;
@@ -48,7 +46,6 @@ private:
 	float near;
 	float far;
 	double lastTime;
-	double currentTime;
 	int frameCount;
 	AssetLibrary assetLib;
 	std::vector<RenderTexture*> renderTextures;
