@@ -232,12 +232,12 @@ bool cVAOManager::UpdateVAOBuffers(std::string fileName,
                       unsigned int shaderProgramID)
 {
     // This exists? 
-    sModelDrawInfo updatedDrawInfo_TEMP;
-    if ( ! this->FindDrawInfoByModelName(fileName,  updatedDrawInfo_TEMP) )
-    {
-        // Didn't find this buffer
-        return false;
-    }
+   // sModelDrawInfo updatedDrawInfo_TEMP;
+    //if ( ! this->FindDrawInfoByModelName(fileName,  updatedDrawInfo_TEMP) )
+    //{
+    //    // Didn't find this buffer
+    //    return false;
+    //}
 
 
     glBindBuffer(GL_ARRAY_BUFFER, updatedDrawInfo.VertexBufferID);
@@ -257,14 +257,14 @@ bool cVAOManager::UpdateVAOBuffers(std::string fileName,
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, updatedDrawInfo.IndexBufferID);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, updatedDrawInfo.IndexBufferID);
 
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,			
-                    0,  
-                    sizeof(unsigned int) * updatedDrawInfo.numberOfIndices,
-                    (GLvoid*)updatedDrawInfo.pIndices);
+    //glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,			
+    //                0,  
+    //                sizeof(unsigned int) * updatedDrawInfo.numberOfIndices,
+    //                (GLvoid*)updatedDrawInfo.pIndices);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
     return true;

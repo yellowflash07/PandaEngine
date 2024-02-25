@@ -189,6 +189,8 @@
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="ScaleUp.cpp" />
     <ClCompile Include="SceneSaver.cpp" />
+    <ClCompile Include="SoftBody.cpp" />
+    <ClCompile Include="SoftBodyManager.cpp" />
     <ClCompile Include="TCPDebug.cpp" />
     <ClCompile Include="UdpClient.cpp" />
     <ClCompile Include="UdpServer.cpp" />
@@ -244,6 +246,8 @@
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="ScaleUp.h" />
     <ClInclude Include="SceneSaver.h" />
+    <ClInclude Include="SoftBody.h" />
+    <ClInclude Include="SoftBodyManager.h" />
     <ClInclude Include="TCPDebug.h" />
     <ClInclude Include="UdpClient.h" />
     <ClInclude Include="UdpServer.h" />

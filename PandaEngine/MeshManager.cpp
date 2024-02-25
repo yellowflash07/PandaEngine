@@ -26,7 +26,7 @@ MeshManager::~MeshManager()
 cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyName, unsigned int shaderProgramID)
 {
     sModelDrawInfo drawInfo;
-
+    this->shaderProgramID = shaderProgramID;
     if (!vaoManager->LoadModelIntoVAOAI(modelNameAtPath, drawInfo, shaderProgramID))
     {
 		//  DoTheErrorLogging("Didn't load model");
@@ -315,6 +315,7 @@ void MeshManager::DrawTransformBox()
     selectedMesh->bIsWireframe = false;
    
     ImGui::Begin(boxName.c_str());
+    ImGui::InputText("Name", &selectedMesh->friendlyName[0], 100);
     ImGui::SetNextWindowContentSize(ImVec2(250, 250));
     ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("xP", &selectedMesh->drawPosition.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
@@ -462,6 +463,48 @@ bool MeshManager::GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& dra
     return vaoManager->FindDrawInfoByModelName(FindMeshByFriendlyName(friendlyName)->meshName, drawInfo);
 }
 
+bool MeshManager::GetTransformedMeshDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo)
+{
+ //   sModelDrawInfo modelInfo;
+    if (!GetModelDrawInfo(friendlyName, drawInfo))
+    {
+		return false;
+	}
+
+    cMesh* pCurrentMesh = FindMeshByFriendlyName(friendlyName);
+
+    glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
+    glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
+        		                glm::vec3(pCurrentMesh->drawPosition.x,
+                    			pCurrentMesh->drawPosition.y,
+                    			pCurrentMesh->drawPosition.z));
+
+    glm::mat4 matRotation = glm::mat4(pCurrentMesh->get_qOrientation());
+
+    glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
+        		                glm::vec3(pCurrentMesh->drawScale.x,
+                    			pCurrentMesh->drawScale.y,
+                    			pCurrentMesh->drawScale.z));
+
+    matModel = matModel * matTranslate;         // Done last
+    matModel = matModel * matRotation;
+    matModel = matModel * matScale;
+
+    for (size_t i = 0; i < drawInfo.numberOfVertices; i++)
+    {
+        glm::vec3 vert = glm::vec3(drawInfo.pVertices[i].x,
+            drawInfo.pVertices[i].y,
+            drawInfo.pVertices[i].z);
+        vert = (matModel * glm::vec4(vert, 1.0f));
+
+        drawInfo.pVertices[i].x = vert.x;
+        drawInfo.pVertices[i].y = vert.y;
+        drawInfo.pVertices[i].z = vert.z;
+    }  
+
+    return true;
+}
+
 void MeshManager::ToggleWireframe(bool wireframe)
 {
     for (size_t i = 0; i < meshList.size(); i++)
@@ -492,7 +535,6 @@ bool MeshManager::LoadCubeMap(std::string cubeMapName, std::string posX_fileName
 
 }
 
-
 void MeshManager::RemoveMesh(std::string friendlyName)
 {
     for (size_t i = 0; i < meshList.size(); i++)
@@ -501,10 +543,15 @@ void MeshManager::RemoveMesh(std::string friendlyName)
         if (mesh->friendlyName == friendlyName)
         {
 			meshList.erase(meshList.begin() + i);
-            delete mesh;
+           // delete mesh;
 			return;
 		}
 	}
+}
+
+void MeshManager::UpdateVAOBuffers(std::string friendlyName, sModelDrawInfo& drawInfo)
+{    
+    vaoManager->UpdateVAOBuffers(friendlyName, drawInfo, shaderProgramID);
 }
 
 
@@ -545,11 +592,9 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
 
         return;
 	}
-    else
-    {
-        GLint renderTextureBool_UL = glGetUniformLocation(shaderProgramID, "hasRenderTexture");
-        glUniform1f(renderTextureBool_UL, (GLfloat)GL_FALSE);
-    }
+
+    GLint renderTextureBool_UL = glGetUniformLocation(shaderProgramID, "hasRenderTexture");
+    glUniform1f(renderTextureBool_UL, (GLfloat)GL_FALSE);
 
     GLint textureBool_UL = glGetUniformLocation(shaderProgramID, "hasTexture");
     glUniform1f(textureBool_UL, (GLfloat)GL_FALSE);

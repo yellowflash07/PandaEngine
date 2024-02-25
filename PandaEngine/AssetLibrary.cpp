@@ -24,7 +24,7 @@ void AssetLibrary::Init()
         m_texIDs.push_back(texID);
     }
 
-    for (size_t i = 0; i < m_modelFiles.size(); i++)
+ /*   for (size_t i = 0; i < m_modelFiles.size(); i++)
     {
         std::wstring file = m_modelFiles[i];
         std::string fileStr(file.begin(), file.end());
@@ -36,7 +36,7 @@ void AssetLibrary::Init()
         RenderTexture* renderTexture = new RenderTexture(camera, 512, 512, shaderProgramID, { mesh });
         renderTexture->meshManager = m_meshManager;
         m_renderTextures.push_back(renderTexture);
-    }
+    }*/
 
 }
 
@@ -47,18 +47,18 @@ void AssetLibrary::RenderBox()
     {
         if (ImGui::BeginTabItem("Models"))
         {
-            for (int i = 0; i < m_renderTextures.size(); i++)
+            for (int i = 0; i < m_modelFiles.size(); i++)
             {
-             /*   std::wstring file = m_modelFiles[i];
+                std::wstring file = m_modelFiles[i];
                 std::string fileStr(file.begin(), file.end());
-                ImGui::Button(fileStr.c_str(), ImVec2(100, 100));*/
+                ImGui::Button(fileStr.c_str(), ImVec2(100, 100));
 
-                RenderTexture* rt = m_renderTextures[i];
-                rt->Render();
-                ImGui::ImageButton((void*)(intptr_t)rt->GetTextureID(), ImVec2(100, 100));
+               // RenderTexture* rt = m_renderTextures[i];
+               // rt->Render();
+               // ImGui::ImageButton((void*)(intptr_t)rt->GetTextureID(), ImVec2(100, 100));
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
                 {
-                    std::string fileStr = rt->offScreenMeshList[0]->meshName;
+                    //std::string fileStr = rt->offScreenMeshList[0]->meshName;
                     // Set payload to carry the index of our item (could be anything)
                     ImGui::SetDragDropPayload("Model_DND", fileStr.c_str(), fileStr.length() * sizeof(char*));
                     ImGui::EndDragDropSource();

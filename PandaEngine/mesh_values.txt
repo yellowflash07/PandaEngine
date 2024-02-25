@@ -1,16 +1,24 @@
-Mesh Name:tie_fighter.ply
-Friendly Name:TieFighter
-Position:0 -50 0
-Rotation:0 0 0
-Scale:1 1 1
-Color:1 1 1 1
-Transparency:1
-
 Mesh Name:Terrain_xyz_n_rgba_uv.ply
 Friendly Name:Terrain_xyz_n_rgba_uv.ply
 Position:0 -225.8 0
 Rotation:0 -0 0
 Scale:1 1 1
+Color:1 1 1 1
+Transparency:1
+
+Mesh Name:Grid_10x10_vertical_in_y.ply
+Friendly Name:GSoftBody.ply
+Position:0 67.7944 363.871
+Rotation:-1.47632 0 0
+Scale:2.54 2.54 2.54
+Color:1 1 1 1
+Transparency:1
+
+Mesh Name:Sphere_1_unit_Radius_UV.ply
+Friendly Name:Sphere_1_unit_Radius_UV.ply
+Position:-38.8522 19.2657 304.148
+Rotation:0 -0 0
+Scale:23.1647 23.1647 23.1647
 Color:1 1 1 1
 Transparency:1
 

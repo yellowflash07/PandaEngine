@@ -24,6 +24,7 @@ public:
 	void DrawTransformBox();
 	void LoadSavedMeshes(unsigned int shaderProgramID);
 	bool GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo);
+	bool GetTransformedMeshDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo);
 	void ToggleWireframe(bool wireframe);
 	bool LoadTexture(std::string textureFileName);
 	bool LoadCubeMap(std::string cubeMapName, std::string posX_fileName, std::string negX_fileName,
@@ -31,8 +32,10 @@ public:
 				std::string posZ_fileName, std::string negZ_fileName, bool bIsSeamless);
 	cBasicTextureManager* GetTextureManager() { return textureManager; }
 	void RemoveMesh(std::string friendlyName);
-private:
 	cVAOManager* vaoManager;
+	void UpdateVAOBuffers(std::string friendlyName, sModelDrawInfo& drawInfo);
+private:
+	GLuint shaderProgramID;
 	std::vector< cMesh* > meshList;
 	cMesh* selectedMesh;
 	SceneSaver* saver;

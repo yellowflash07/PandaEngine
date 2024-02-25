@@ -67,19 +67,11 @@ uniform sLight theLights[NUMBEROFLIGHTS];  	// 70 uniforms
 
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
                             vec3 vertexWorldPos, vec4 vertexSpecular );
-
+float rand(vec2 co);
 
 void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
-
-	if( hasRenderTexture )
-	{
-		vec4 renderTextureColor =  texture( renderTexture, texCoord.st ).rgba;
-		outputColour.rgb = renderTextureColor.rgb;
-		outputColour.a = 1.0f;
-		return;
-	}
 
 	if ( bIsSkyBox )
 	{
@@ -88,6 +80,32 @@ void main()
 		outputColour.a = 1.0f;
 		return;
 	}
+	
+	if( hasRenderTexture )
+	{
+		vec4 renderTextureColor =  texture( renderTexture, texCoord.st ).rgba;
+		outputColour.rgb = renderTextureColor.rgb;
+		outputColour.a = 1.0f;
+		//chromatic aberration
+//		vec2 color_Offset = vec2(0.01f, 0.01f);
+//		vec2 texCoordRed = texCoord.st + color_Offset;
+//		vec2 texCoordBlue = texCoord.st - color_Offset;
+//		vec4 red = texture( renderTexture, texCoordRed ).rgba;
+//		vec4 blue = texture( renderTexture, texCoordBlue ).rgba;
+//		outputColour.r = red.r;
+//		outputColour.g = renderTextureColor.g;
+//		outputColour.b = blue.b;
+
+		//Grain
+//		float grain = rand(texCoord.st);
+//		outputColour.rgb = mix(renderTextureColor.rgb, vec3(grain), 0.5f);
+//		outputColour.a = 1.0f;
+
+		//bloom
+		 
+		return;
+	}
+
 
 	vec4 vertexRGBA = colour;
 	if(hasVertexColor)
@@ -290,4 +308,8 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 	finalObjectColour.a = 1.0f;
 	
 	return finalObjectColour;
+}
+
+float rand(vec2 co){
+    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }

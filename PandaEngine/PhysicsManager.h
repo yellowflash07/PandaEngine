@@ -34,11 +34,8 @@ struct PhysicsBody
 	void setShape(PhysicsShapes::sMeshOfTriangles_LocalVertices* pTriangleMeshProps);
 	void setShape(PhysicsShapes::sAABB* aabb);
 
-	std::map<unsigned int, cAABB*> aabbsMap;
 	std::vector<cAABB*> aabbs;
-	std::vector<cAABB*> activeAABBs;
 	std::vector<std::pair<cAABB*, cAABB*>> aabbPairs;
-//	std::pair<cAABB*, cAABB*> aabbPair;
 	cAABB* activeAABB;
 	PhysicsShapes::eShape shapeType;
 	void* shape = NULL;
@@ -62,11 +59,6 @@ struct PhysicsBody
 			pAABB->minXYZ *= pAABB->scale;
 			pAABB->maxXYZ *= pAABB->scale;
 
-			/*for (cAABB* aabb : aabbs)
-			{
-				aabb->minXYZ += globe1->drawPosition;
-				aabb->maxXYZ += globe1->drawPosition;
-			}*/
 			aabbs[i]->UpdateAABBPosition(mesh->drawPosition);
 		}
 	}
@@ -103,9 +95,6 @@ private:
 	bool m_Sphere_TriMeshLocal_IntersectionTest(PhysicsBody* pSphere, PhysicsBody* pTriMesh);
 	bool m_AABB_TriMeshIndirect_IntersectionTest(PhysicsBody* pAABB, PhysicsBody* pTriMesh);
 
-	bool PointInAABB(glm::vec3 point, cAABB* aabb);
-	int TestTriangleAABB(glm::vec3 v0, glm::vec3  v1, glm::vec3  v2, cAABB* b);
-	int TestAABBPlane(cAABB* b, Plane p);
 
 };
 

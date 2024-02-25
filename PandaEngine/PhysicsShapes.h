@@ -17,7 +17,7 @@ struct PhysicsShapes
 		AABB,
 		CAPSULE,
 		MESH_OF_TRIANGLES_INDIRECT,			// By meshID (vertices stored elsewhere)
-		MESH_OF_TRIANGLES_LOCAL_VERTICES	// Vertices stored in local structure
+		MESH_OF_TRIANGLES_LOCAL_VERTICES,	// Vertices stored in local structure
 	};
 
 	struct sSphere

@@ -76,6 +76,9 @@
     <Filter Include="RenderTexture">
       <UniqueIdentifier>{ec411256-17c3-4232-a8b7-6acb66e8e138}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics\SoftBody">
+      <UniqueIdentifier>{8e26b1cb-dd2c-4ca2-8645-71ce86b28634}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -218,6 +221,12 @@
     </ClCompile>
     <ClCompile Include="RenderTexture.cpp">
       <Filter>RenderTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="SoftBody.cpp">
+      <Filter>Physics\SoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="SoftBodyManager.cpp">
+      <Filter>Physics\SoftBody</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -379,6 +388,12 @@
     </ClInclude>
     <ClInclude Include="RenderTexture.h">
       <Filter>RenderTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="SoftBodyManager.h">
+      <Filter>Physics\SoftBody</Filter>
+    </ClInclude>
+    <ClInclude Include="SoftBody.h">
+      <Filter>Physics\SoftBody</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

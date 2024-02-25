@@ -100,6 +100,7 @@ void Engine::Update()
     {
         renderTextures[i]->Render();
     }
+
     float ratio;
     int width, height;
 
@@ -132,9 +133,7 @@ void Engine::Update()
     camera->Update(window, deltaTime);
 
     //draw meshes
-    meshManager->DrawAllObjects(shaderProgramID); 
-
-  
+    meshManager->DrawAllObjects(shaderProgramID);   
 
     //show asset library
     assetLib.RenderBox();
@@ -168,7 +167,6 @@ void Engine::Update()
 
     glfwSwapBuffers(window);
     glfwPollEvents();
-
 }
 
 void Engine::SetShaderPath(std::string filePath)

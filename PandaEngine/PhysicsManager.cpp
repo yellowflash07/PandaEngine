@@ -71,12 +71,7 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 
 			// Check if the two AABBs overlap
 			if (CheckAABBOverlap(pObjectA, pObjectB))
-			{
-				/*std::cout << "Overlapping" << std::endl;
-				std::cout << pObjectA->mesh->friendlyName << std::endl;
-				std::cout << pObjectA->activeAABB->vecTrianglesInside.size() << std::endl;
-				std::cout << pObjectB->mesh->friendlyName << std::endl;
-				std::cout << pObjectB->activeAABB->vecTrianglesInside.size() << std::endl;*/
+			{				
 				// Narrow phase
 				switch (pObjectA->shapeType)
 				{
@@ -112,45 +107,6 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 			}
 		}
 	}
-
-	// See which object is colliding with which object...
-	//for (PhysicsBody* pObjectA : this->bodies)
-	//{
-
-	//	for (PhysicsBody* pObjectB : this->bodies)
-	//	{
-	//		// Are "A" and "B" the same object
-	//		if (pObjectA == pObjectB)
-	//		{
-	//			// Yup, so skip this
-	//			continue;
-	//		}
-	//		// What's the collision? 
-	//		switch (pObjectA->shapeType)
-	//		{
-	//			case PhysicsShapes::SPHERE:
-	//				switch (pObjectB->shapeType)
-	//				{
-	//					case PhysicsShapes::SPHERE:
-	//						// Sphere - Sphere
-	//						this->m_Sphere_Sphere_IntersectionTest(pObjectA, pObjectB);
-	//						break;
-	//					case PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT:
-	//						// Sphere - Mesh triangle (indirect)
-	//						if (this->m_Sphere_TriMeshIndirect_IntersectionTest(pObjectA, pObjectB))
-	//						{
-	//							std::cout << "Hazzah!" << std::endl;
-	//						}
-	//						break;
-	//					case PhysicsShapes::MESH_OF_TRIANGLES_LOCAL_VERTICES:
-	//						// Shpere - Mesh (local vertices)
-	//						break;
-	//				}//switch (pObjectB->shapeType)
-	//				break;
-	//		}
-
-	//	}
-	//}
 	return;
 }
 
@@ -195,8 +151,6 @@ void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs, int sca
 
 
 				unsigned int AABB_ID = cAABB::static_getLocationIndex(pAABB->minXYZ, extent);
-
-				body->aabbsMap[AABB_ID] = pAABB;
 
 				// Count the number of vertices within this AABB
 			/*	for(int i = 0; i < drawInfo.numberOfVertices; i++)
@@ -243,8 +197,7 @@ bool PhysicsManager::CheckAABBOverlap(PhysicsBody* pBodyA, PhysicsBody* pBodyB)
 	// Temporary vector to store currently overlapping AABB pairs
 	std::vector<std::pair<cAABB*, cAABB*>> overlappingPairsTemp;
 	bool foundPairs = false;
-	//std::pair<cAABB*, cAABB*> aabbPair;
-	//int count = 0;
+
 	for (cAABB* pAABB1 : pBodyA->aabbs)
 	{
 		for (cAABB* pAABB2 : pBodyB->aabbs)
@@ -541,10 +494,9 @@ bool PhysicsManager::m_AABB_TriMeshIndirect_IntersectionTest(PhysicsBody* pAABB,
 			glm::vec3 v2 = tri.v2;
 			glm::vec3 v3 = tri.v3;
 
+			bool result = aabb->IsPointInside(v1) || aabb->IsPointInside(v2) || aabb->IsPointInside(v3);
 
-			int result = TestTriangleAABB(v1, v2, v3, aabb);
-
-			if (result != 0)
+			if (result)
 			{
 				//pAABB->velocity = glm::vec3(0.0f);
 				CollisionEvent* collisionEvent = new CollisionEvent();	
@@ -552,31 +504,12 @@ bool PhysicsManager::m_AABB_TriMeshIndirect_IntersectionTest(PhysicsBody* pAABB,
 				collisionEvent->objectName = pTriMesh->mesh->friendlyName;
 
 				pAABB->collisionEvents.push_back(collisionEvent);
-				//glm::vec3 direction = pAABB->velocity;
-				//// Normalize... 
-				//direction = glm::normalize(direction);
-
-				//// Calcualte the current normal from the vertices
-				//glm::vec3 edgeA = v1 - v2;
-				//glm::vec3 edgeB = v3 - v1;
-
-				//glm::vec3 triNormal = glm::normalize(glm::cross(edgeA, edgeB));
-				//glm::vec3 reflectionVec = glm::reflect(direction, triNormal);
-
-
-				// Set the part of velocity perpendicular to the plane to zero
-
-				// Update the  velocity based on this reflection vector
-				//float sphereSpeed = glm::length(sphere->velocity);
-				//glm::vec3 newVelocity = reflectionVec * sphereSpeed;
 				return true;
 			}
 		}
 	}
-	for (int i = 0; i < pAABB->aabbPairs.size(); i++)
-	{
-		pAABB->collisionEvents.clear();
-	}
+	pAABB->collisionEvents.clear();
+	pTriMesh->collisionEvents.clear();
 	return false;
 }
 
@@ -615,93 +548,4 @@ void PhysicsBody::setShape(PhysicsShapes::sAABB* aabb)
 	this->shape = (void*)aabb;
 }
 
-int PhysicsManager::TestTriangleAABB(glm::vec3 v0, glm::vec3  v1, glm::vec3  v2, cAABB* b)
-{
-	float p0, p1, p2, r;
 
-	// Compute box center and extents (if not already given in that format)
-	glm::vec3 c = (b->minXYZ + b->maxXYZ) * 0.5f;
-	float e0 = (b->maxXYZ.x - b->minXYZ.x) * 0.5f;
-	float e1 = (b->maxXYZ.y - b->minXYZ.y) * 0.5f;
-	float e2 = (b->maxXYZ.z - b->minXYZ.z) * 0.5f;
-
-	// Translate triangle as conceptually moving AABB to origin
-	v0 = v0 - c;
-	v1 = v1 - c;
-	v2 = v2 - c;
-
-	// Compute edge vectors for triangle
-	glm::vec3 f0 = v1 - v0, f1 = v2 - v1, f2 = v0 - v2;
-
-	// Test axes a00..a22 (category 3)
-	// Test axis a00
-	p0 = v0.z * v1.y - v0.y * v1.z;
-	p2 = v2.z * (v1.y - v0.y) - v2.z * (v1.z - v0.z);
-	r = e1 * std::abs(f0.z) + e2 * std::abs(f0.y);
-	if (std::max(-std::max(p0, p2), std::min(p0, p2)) > r) return 0; // Axis is a separating axis
-
-	// Test axis a02
-	p0 = v0.x * f0.y - v0.y * f0.x;
-	p1 = v1.x * f0.y - v1.y * f0.x;
-	r = e0 * std::abs(f0.y) + e1 * std::abs(f0.x);
-	if (std::max(-std::max(p0, p1), std::min(p0, p1)) > r) return 0;
-
-	// Test axis a10
-	p0 = v0.y * f1.z - v0.z * f1.y;
-	p1 = v1.y * f1.z - v1.z * f1.y;
-	r = e0 * std::abs(f1.z) + e2 * std::abs(f1.y);
-	if (std::max(-std::max(p0, p1), std::min(p0, p1)) > r) return 0;
-
-	// Test axis a12
-	p0 = v0.x * f1.z - v0.z * f1.x;
-	p1 = v1.x * f1.z - v1.z * f1.x;
-	r = e0 * std::abs(f1.z) + e2 * std::abs(f1.x);
-	if (std::max(-std::max(p0, p1), std::min(p0, p1)) > r) return 0;
-
-	// Test axis a20
-	p0 = v0.y * f2.z - v0.z * f2.y;
-	p1 = v1.y * f2.z - v1.z * f2.y;
-	r = e1 * std::abs(f2.z) + e2 * std::abs(f2.y);
-	if (std::max(-std::max(p0, p1), std::min(p0, p1)) > r) return 0;
-
-	// Test axis a21
-	p0 = v0.x * f2.z - v0.z * f2.x;
-	p1 = v1.x * f2.z - v1.z * f2.x;
-	r = e0 * std::abs(f2.z) + e2 * std::abs(f2.x);
-	if (std::max(-std::max(p0, p1), std::min(p0, p1)) > r) return 0;
-
-	// Test axis a22
-	p0 = v0.x * f0.y - v0.y * f0.x;
-	p1 = v1.x * f0.y - v1.y * f0.x;
-	r = e0 * std::abs(f0.y) + e1 * std::abs(f0.x);
-	if (std::max(-std::max(p0, p1), std::min(p0, p1)) > r) return 0;
-
-// Test the three axes corresponding to the face normals of AABB b (category 1).
-// Exit if...
-// ... [-e0, e0] and [min(v0.x,v1.x,v2.x), max(v0.x,v1.x,v2.x)] do not overlap
-	if (std::max({ v0.x, v1.x, v2.x }) < -e0 || std::min({ v0.x, v1.x, v2.x }) > e0) return 0;
-	// ... [-e1, e1] and [min(v0.y,v1.y,v2.y), max(v0.y,v1.y,v2.y)] do not overlap
-	if (std::max({ v0.y, v1.y, v2.y }) < -e1 || std::min({ v0.y, v1.y, v2.y }) > e1) return 0;
-	// ... [-e2, e2] and [min(v0.z,v1.z,v2.z), max(v0.z,v1.z,v2.z)] do not overlap
-	if (std::max({ v0.z, v1.z, v2.z }) < -e2 || std::min({ v0.z, v1.z, v2.z }) > e2) return 0;
-
-	// Test separating axis corresponding to triangle face normal (category 2)
-	Plane p;
-	p.n = glm::cross(f0, f1);
-	p.d = glm::dot(p.n, v0);
-	return TestAABBPlane(b, p);
-}
-
-int PhysicsManager::TestAABBPlane(cAABB* b, Plane p)
-{
-	// These two lines not necessary with a (center, extents) AABB representation
-	glm::vec3 c = (b->maxXYZ + b->minXYZ) * 0.5f; // Compute AABB center
-	glm::vec3 e = b->maxXYZ - c; // Compute positive extents
-
-	// Compute the projection interval radius of b onto L(t) = b.c + t * p.n
-	float r = e[0] * std::abs(p.n[0]) + e[1] * std::abs(p.n[1]) + e[2] * std::abs(p.n[2]);
-	// Compute distance of box center from plane
-	float s = glm::dot(p.n, c) - p.d;
-	// Intersection occurs when distance s falls within [-r,+r] interval
-	return std::abs(s) <= r;
-}
