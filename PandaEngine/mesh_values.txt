@@ -1,5 +1,5 @@
 Mesh Name:Terrain_xyz_n_rgba_uv.ply
-Friendly Name:Terrain_xyz_n_rgba_uv.ply
+Friendly Name:new terrain
 Position:0 -225.8 0
 Rotation:0 -0 0
 Scale:1 1 1

@@ -28,7 +28,7 @@ void SoftBody::Init()
 		pParticle->pModelVertex = &(this->ModelInfo.pVertices[index]);
 
 		this->vec_pParticles.push_back(pParticle);
-	}//for ( unsigned int index =...
+	}
 
 	// Constraints
 	for (unsigned int index = 0; index < this->ModelInfo.numberOfIndices; index += 3)

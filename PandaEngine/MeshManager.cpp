@@ -315,7 +315,12 @@ void MeshManager::DrawTransformBox()
     selectedMesh->bIsWireframe = false;
    
     ImGui::Begin(boxName.c_str());
-    ImGui::InputText("Name", &selectedMesh->friendlyName[0], 100);
+    std::string friendName = selectedMesh->friendlyName;
+    if (ImGui::InputText("Name", &friendName[0], 100, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+		selectedMesh->friendlyName = friendName.c_str();
+	}
+
     ImGui::SetNextWindowContentSize(ImVec2(250, 250));
     ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("xP", &selectedMesh->drawPosition.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);

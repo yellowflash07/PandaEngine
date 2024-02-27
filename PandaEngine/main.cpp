@@ -48,15 +48,13 @@ int main(void)
     skyBoxMesh->isSkyBox = true;
     skyBoxMesh->setUniformDrawScale(5000.0f);  
 
+
     SoftBodyManager* softBodyManager = new SoftBodyManager(engine.meshManager);
 
     SoftBody* softBody = softBodyManager->CreateSoftBody("GSoftBody.ply");
     softBody->acceleration = glm::vec3(0.0f, -9.8f/2000.0f, 0.0f);
 
-   // cMesh* tieFigter = engine.meshManager->FindMeshByFriendlyName("TieFighter");
     std::vector<cMesh*> vecMeshes;
-   // vecMeshes.push_back(tieFigter);
-   // vecMeshes.push_back(skyBoxMesh);
 
     PhysicsBody* pBody = new PhysicsBody();
     pBody->mesh = engine.meshManager->FindMeshByFriendlyName("Sphere_1_unit_Radius_UV.ply");
@@ -84,7 +82,6 @@ int main(void)
     while (!glfwWindowShouldClose(engine.window))
     {
         engine.Update();   
-        //grid->renderTextureID = rt->GetTextureID();
         softBodyManager->Update(engine.deltaTime);
 
        /* for (size_t i = 0; i < softBody->vec_pParticles.size(); i++)
