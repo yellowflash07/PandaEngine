@@ -52,7 +52,9 @@ int main(void)
     SoftBodyManager* softBodyManager = new SoftBodyManager(engine.meshManager);
 
     SoftBody* softBody = softBodyManager->CreateSoftBody("GSoftBody.ply");
+    softBody->CreateRandomBracing(10, 10.0f);   
     softBody->acceleration = glm::vec3(0.0f, -9.8f/2000.0f, 0.0f);
+    softBody->LockParticle(0, true);
 
     std::vector<cMesh*> vecMeshes;
 

@@ -15,8 +15,8 @@ void SoftBody::Init()
 		sParticle* pParticle = new sParticle();
 
 		glm::vec4 vert = glm::vec4(this->ModelInfo.pVertices[index].x,
-						this->ModelInfo.pVertices[index].y,
-						this->ModelInfo.pVertices[index].z, 1.0f);
+									this->ModelInfo.pVertices[index].y,
+									this->ModelInfo.pVertices[index].z, 1.0f);
 
 		// Apply transformation
 		vert = pMesh->GetTransform() * vert;
@@ -81,6 +81,52 @@ void SoftBody::UpdateVertexPositions(void)
 
 void SoftBody::CreateRandomBracing(unsigned int numberOfBraces, float minDistanceBetweenVertices)
 {
+
+	for (unsigned int count = 0; count != numberOfBraces; count++)
+	{
+		// Assume the distance is OK
+		bool bKeepLookingForParticles = false;
+
+		do
+		{
+			// Assume the distance is OK
+			bKeepLookingForParticles = false;
+
+			// Pick two random vertices
+			// NOTE: Here, rand() might not be great because there's usually
+			//	onlly about 32,000 possible integer values...
+			// Meaning that if your are chosing from something LARGER than
+			//	around 32,000, you'll miss a bunch of values. 
+			// HOWEVER, you could also multiply rand() by itself
+			unsigned int particleIndex1 = rand() % this->vec_pParticles.size();
+			unsigned int particleIndex2 = rand() % this->vec_pParticles.size();
+
+			sParticle* pParticle1 = this->vec_pParticles[particleIndex1];
+			sParticle* pParticle2 = this->vec_pParticles[particleIndex2];
+			float distBetween = this->calcDistanceBetween(pParticle1, pParticle2);
+
+			// Distance OK?
+			if (distBetween < minDistanceBetweenVertices)
+			{
+				// No
+				bKeepLookingForParticles = true;
+			}
+			else
+			{
+				// Distance is OK, so make a constraint
+				sConstraint* pBracingConstraint = new sConstraint();
+				pBracingConstraint->pParticleA = pParticle1;
+				pBracingConstraint->pParticleB = pParticle2;
+				pBracingConstraint->restLength = this->calcDistanceBetween(pBracingConstraint->pParticleA, pBracingConstraint->pParticleB);
+
+				this->vec_pConstraints.push_back(pBracingConstraint);
+			}
+
+		} while (bKeepLookingForParticles);
+
+	}
+
+	return;
 }
 
 void SoftBody::VerletUpdate(double deltaTime)
@@ -138,16 +184,16 @@ void SoftBody::UpdateNormals(void)
 
 		// note the references so that when we update this, it will update the mesh
 		// (otherwise we'll be updating a copy of it)
-		sVertex& vertexA = this->ModelInfo.pVertices[vertAIndex];
-		sVertex& vertexB = this->ModelInfo.pVertices[vertBIndex];
-		sVertex& vertexC = this->ModelInfo.pVertices[vertCIndex];
+		sVertex vertexA = this->ModelInfo.pVertices[vertAIndex];
+		sVertex vertexB = this->ModelInfo.pVertices[vertBIndex];
+		sVertex vertexC = this->ModelInfo.pVertices[vertCIndex];
 
 		glm::vec3 vertA = glm::vec3(vertexA.x, vertexA.y, vertexA.z);
-	//	vertA = glm::vec3(matModel * glm::vec4(vertA, 1.0f));
+		//vertA = glm::vec3(matModel * glm::vec4(vertA, 1.0f));
 		glm::vec3 vertB = glm::vec3(vertexB.x, vertexB.y, vertexB.z);
-	//	vertB = glm::vec3(matModel * glm::vec4(vertB, 1.0f));
+		//vertB = glm::vec3(matModel * glm::vec4(vertB, 1.0f));
 		glm::vec3 vertC = glm::vec3(vertexC.x, vertexC.y, vertexC.z);
-	//	vertC = glm::vec3(matModel * glm::vec4(vertC, 1.0f));
+		//vertC = glm::vec3(matModel * glm::vec4(vertC, 1.0f));
 
 		glm::vec3 triangleEdgeAtoB = vertB - vertA;
 		glm::vec3 triangleEdgeAtoC = vertC - vertA;
@@ -167,6 +213,11 @@ void SoftBody::UpdateNormals(void)
 		vertexC.nx += theNormal.x;
 		vertexC.ny += theNormal.y;
 		vertexC.nz += theNormal.z;
+
+		// Update the vertices
+		this->ModelInfo.pVertices[vertAIndex] = vertexA;
+		this->ModelInfo.pVertices[vertBIndex] = vertexB;
+		this->ModelInfo.pVertices[vertCIndex] = vertexC;
 	}// for ( unsigned int triIndex = 0
 
 	// Now normalize the accumulated normals
@@ -287,8 +338,17 @@ void SoftBody::SatisfyConstraints(void)
 				// For example, making this < 1.0 will make it "bouncier"
 				float tightnessFactor = 1.0f;
 
-				pX1->position += delta * 0.5f * diff * tightnessFactor;
-				pX2->position -= delta * 0.5f * diff * tightnessFactor;
+				if (!pX1->bIsLocked)
+				{
+					pX1->position += delta * 0.5f * diff * tightnessFactor;
+
+				}
+				if (!pX2->bIsLocked)
+				{
+					pX2->position -= delta * 0.5f * diff * tightnessFactor;
+				}
+				//pX1->position += delta * 0.5f * diff * tightnessFactor;
+				//pX2->position -= delta * 0.5f * diff * tightnessFactor;
 
 				this->cleanZeros(pX1->position);
 				this->cleanZeros(pX2->position);

@@ -16,7 +16,7 @@ void SoftBodyManager::Update(double deltaTime)
 		pSoftBody->VerletUpdate(deltaTime);
 		pSoftBody->UpdateVertexPositions();
 		meshManager->UpdateVAOBuffers(pSoftBody->meshName, pSoftBody->ModelInfo);
-		//pSoftBody->UpdateNormals();
+		pSoftBody->UpdateNormals();
 	}
 }
 
@@ -32,10 +32,6 @@ SoftBody* SoftBodyManager::CreateSoftBody(std::string friendlyName)
 	pSoftBody->meshName = friendlyName;
 	cMesh* pMesh = meshManager->FindMeshByFriendlyName(friendlyName);
 	pSoftBody->pMesh = pMesh;
-	/*pSoftBody->scale = pMesh->drawScale;
-	pSoftBody->rotation = pMesh->get_qOrientation();
-	pSoftBody->position = pMesh->drawPosition;
-	pSoftBody->matModel = pMesh->GetTransform();*/
 	pSoftBody->Init();
 	vecSoftBodies.push_back(pSoftBody);
 	return pSoftBody;
