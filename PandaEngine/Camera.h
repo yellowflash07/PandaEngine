@@ -8,7 +8,7 @@ class Camera
 public:
 	Camera(glm::vec3 position,
 		glm::vec3 target, 
-		glm::vec3 upVector, 
+		glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f),
 		float near = 0.1f, 
 		float far = 1000.0f);
 	~Camera();
@@ -36,13 +36,14 @@ public:
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix();
 	glm::mat4 GetViewProjectionMatrix();
+	float speed;
+
 private:
 
 	float near;
 	float far;
 	float yaw;
 	float pitch;
-	float speed;
 	bool stopUpdates; 
 
 	glm::vec3 followPos;

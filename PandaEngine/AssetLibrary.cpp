@@ -1,6 +1,7 @@
 #include "AssetLibrary.h"
 #include <windows.h>
 #include <iostream>
+#include <imgui.h>
 
 AssetLibrary::AssetLibrary()
 {
@@ -51,7 +52,7 @@ void AssetLibrary::RenderBox()
             {
                 std::wstring file = m_modelFiles[i];
                 std::string fileStr(file.begin(), file.end());
-                ImGui::Button(fileStr.c_str(), ImVec2(100, 100));
+                ImGui::Button(fileStr.c_str(), ImVec2(200, 100));
 
                // RenderTexture* rt = m_renderTextures[i];
                // rt->Render();

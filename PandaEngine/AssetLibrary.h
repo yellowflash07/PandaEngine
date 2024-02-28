@@ -2,10 +2,10 @@
 
 #include <vector>
 #include <string>
-#include <imgui.h>
 #include "../TextureManager/cBasicTextureManager.h"
 #include "MeshManager.h"
 #include "RenderTexture.h"
+
 class AssetLibrary
 {
 public:
@@ -13,8 +13,6 @@ public:
 	~AssetLibrary();
 
 	void Init();
-	void LoadAssets();
-
 	void RenderBox();
 	std::vector<std::wstring> GetFiles(std::string folder);
 

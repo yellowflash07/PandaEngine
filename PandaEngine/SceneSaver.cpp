@@ -30,6 +30,15 @@ void SceneSaver::SaveMeshes(std::vector<cMesh*> meshes)
             file << "Scale:" << mesh->drawScale.x << " " << mesh->drawScale.y << " " << mesh->drawScale.z << "\n";
             file << "Color:" << mesh->color.x << " " << mesh->color.y << " " << mesh->color.z << " " << mesh->color.w << "\n";
             file << "Transparency:" << mesh->transperancy << "\n";
+
+            for (size_t i = 0; i < mesh->NUM_OF_TEXTURES; i++)
+            {
+                file << "Texture" + std::to_string(i) + ":" << mesh->texture[i] << "\n";
+                file << "TextureRatio" + std::to_string(i) + ":" << mesh->textureRatio[i] << "\n";
+            }
+
+            file << "Mask Texture:" << mesh->maskTexture << "\n";
+
             // Separate meshes with an empty line
             file << "\n";
         }
@@ -68,6 +77,16 @@ std::vector<cMesh*> SceneSaver::LoadMeshes()
                         newMesh->eulerRotation = currentMesh.eulerRotation;
                         newMesh->drawScale = currentMesh.drawScale;
                         newMesh->color = currentMesh.color;
+                        newMesh->transperancy = currentMesh.transperancy;
+                        newMesh->texture[0] = currentMesh.texture[0];
+                        newMesh->texture[1] = currentMesh.texture[1];
+                        newMesh->texture[2] = currentMesh.texture[2];
+                        newMesh->texture[3] = currentMesh.texture[3];
+                        newMesh->textureRatio[0] = currentMesh.textureRatio[0];
+                        newMesh->textureRatio[1] = currentMesh.textureRatio[1];
+                        newMesh->textureRatio[2] = currentMesh.textureRatio[2];
+                        newMesh->textureRatio[3] = currentMesh.textureRatio[3];
+                        newMesh->maskTexture = currentMesh.maskTexture;
                         loadedMeshes.push_back(newMesh);
                     }
 
@@ -97,6 +116,42 @@ std::vector<cMesh*> SceneSaver::LoadMeshes()
                 {
                     iss >> currentMesh.transperancy;
                 }
+                else if (token == "Texture0")
+                {
+					std::getline(iss, currentMesh.texture[0]);
+				}
+                else if (token == "Texture1")
+                {
+					std::getline(iss, currentMesh.texture[1]);
+				}
+                else if (token == "Texture2")
+                {
+					std::getline(iss, currentMesh.texture[2]);
+				}
+                else if (token == "Texture3")
+                {
+					std::getline(iss, currentMesh.texture[3]);
+				}
+                else if (token == "TextureRatio0")
+                {
+					iss >> currentMesh.textureRatio[0];
+				}
+                else if (token == "TextureRatio1")
+                {
+					iss >> currentMesh.textureRatio[1];
+				}
+                else if (token == "TextureRatio2")
+                {
+					iss >> currentMesh.textureRatio[2];
+				}
+                else if (token == "TextureRatio3")
+                {
+					iss >> currentMesh.textureRatio[3];
+				}
+                else if (token == "Mask Texture")
+                {
+					std::getline(iss, currentMesh.maskTexture);
+				}
             }
             else if (line.empty()) 
             {
@@ -115,6 +170,16 @@ std::vector<cMesh*> SceneSaver::LoadMeshes()
             newMesh->eulerRotation = currentMesh.eulerRotation;
             newMesh->drawScale = currentMesh.drawScale;
             newMesh->color = currentMesh.color;
+            newMesh->transperancy = currentMesh.transperancy;
+            newMesh->texture[0] = currentMesh.texture[0];
+            newMesh->texture[1] = currentMesh.texture[1];
+            newMesh->texture[2] = currentMesh.texture[2];
+            newMesh->texture[3] = currentMesh.texture[3];
+            newMesh->textureRatio[0] = currentMesh.textureRatio[0];
+            newMesh->textureRatio[1] = currentMesh.textureRatio[1];
+            newMesh->textureRatio[2] = currentMesh.textureRatio[2];
+            newMesh->textureRatio[3] = currentMesh.textureRatio[3];
+            newMesh->maskTexture = currentMesh.maskTexture;
             loadedMeshes.push_back(newMesh);
         }
 

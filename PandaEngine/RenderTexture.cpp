@@ -30,16 +30,17 @@ void RenderTexture::Render()
 	glViewport(0, 0, fbo->width, fbo->height);
 
 	glm::vec3 sceneEye = this->camera->cameraEye;
-	glm::vec3 sceneTarget = this->camera->cameraTarget;
+	glm::vec3 sceneTarget = this->camera->cameraTarget + sceneEye;
+	glm::vec3 upVector = this->camera->upVector;
 
 	glm::mat4 matProjection = glm::perspective(0.6f,
-		fboRatio,
-		0.1f,
-		10'000.0f);
+												fboRatio,
+												0.1f,
+												10'000.0f);
 
 	glm::mat4 matView = glm::lookAt(sceneEye,
-		sceneTarget,
-		glm::vec3(0.0f, 1.0f, 1.0f));
+									sceneTarget,
+									upVector);
 
 	GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
 	glUniformMatrix4fv(matProjection_UL, 1, GL_FALSE, glm::value_ptr(matProjection));

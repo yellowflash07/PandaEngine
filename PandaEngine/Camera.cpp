@@ -138,17 +138,11 @@ void Camera::ProcessKeyboardInput(GLFWwindow* window, double deltaTime)
     }
     if (stopUpdates)
     {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         return;
     }
-    //if shift is pressed, disable cursor
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT ) == GLFW_PRESS)
-    {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
-    else
-    {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {

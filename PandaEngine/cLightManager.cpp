@@ -190,7 +190,7 @@ void cLightManager::DrawBox()
 		ImGuizmo::MODE::LOCAL,
 		glm::value_ptr(matModel));
 
-	if (ImGuizmo::IsUsing())
+	/*if (ImGuizmo::IsUsing())
 	{
 		glm::vec3 position, scale;
 		glm::quat rotation;
@@ -199,7 +199,7 @@ void cLightManager::DrawBox()
 		glm::decompose(matModel, scale, rotation, position, skew, perspective);
 		selectedLight->position = glm::vec4(position,0);
 		selectedLight->direction = glm::vec4(rotation.x, rotation.y, rotation.z, 1);
-	}
+	}*/
 
 	ImGui::Text("On?"); ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("On", &selectedLight->param2.x);
