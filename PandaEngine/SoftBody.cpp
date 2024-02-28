@@ -56,6 +56,10 @@ void SoftBody::Init()
 		this->vec_pConstraints.push_back(pEdge2);
 		this->vec_pConstraints.push_back(pEdge3);
 	}
+
+	//vec_pParticles[0]->bIsLocked = true;	
+	//vec_pParticles[1]->bIsLocked = true;
+	//vec_pParticles[2]->bIsLocked = true;
 }
 
 void SoftBody::UpdateVertexPositions(void)
@@ -84,6 +88,11 @@ void SoftBody::VerletUpdate(double deltaTime)
 
 	for (sParticle* pCurrentParticle : vec_pParticles)
 	{
+		if (pCurrentParticle->bIsLocked)
+		{
+			continue;
+		}
+
 		glm::vec3 current_pos = pCurrentParticle->position;
 		glm::vec3 old_pos = pCurrentParticle->old_position;
 
@@ -201,6 +210,17 @@ float SoftBody::calcDistanceBetween(sParticle* pPartA, sParticle* pPartB)
 void SoftBody::AddCollisionSphere(PhysicsBody* pSphere)
 {
 	this->vec_pSpheres.push_back(pSphere);
+}
+
+bool SoftBody::LockParticle(unsigned int index, bool bLock)
+{
+	if (vec_pParticles.size() > index)
+	{
+		vec_pParticles[index]->bIsLocked = bLock;
+		return true;
+	}
+
+	return false;
 }
 
 void SoftBody::ApplyCollision()

@@ -62,7 +62,7 @@ int main(void)
     pBody->setShape(new PhysicsShapes::sSphere(pBody->mesh->drawScale.x));  
     pBody->inverseMass = 0.0f;
 
-    softBody->AddCollisionSphere(pBody);
+   // softBody->AddCollisionSphere(pBody);
 
     engine.meshManager->RemoveMesh("TieFighter");
 

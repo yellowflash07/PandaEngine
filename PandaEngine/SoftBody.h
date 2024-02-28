@@ -21,6 +21,8 @@ public:
 		glm::vec3 old_position = glm::vec3(0.0f);
 		// Pointer back to the model vertex info
 		sVertex* pModelVertex = NULL;
+		bool bIsLocked = false;
+
 	};
 
 	struct sConstraint
@@ -36,11 +38,6 @@ public:
 		// if false, this isnt' checked
 		// Like if the constraint is 'broken'
 		bool bIsActive = true;
-		// This is interesting, too
-		// From: I Spent a Week Making an AI's Video Game Idea - YouTube
-		// https://www.youtube.com/watch?v=PGk0rnyTa1U&ab_channel=SebastianLague
-		// He's using it as to fix the end of the constraint
-		bool bIsLocked = false;
 	};
 
 	void cleanZeros(glm::vec3& value);
@@ -49,6 +46,8 @@ public:
 	float calcDistanceBetween(sParticle* pPartA, sParticle* pPartB);
 
 	void AddCollisionSphere(PhysicsBody* pSphere);
+
+	bool LockParticle(unsigned int index, bool bLock);
 
 	glm::vec3 acceleration = glm::vec3(0.0f);
 	sModelDrawInfo ModelInfo;
