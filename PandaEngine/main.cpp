@@ -66,7 +66,7 @@ int main(void)
 
    // softBody->AddCollisionSphere(pBody);
 
-    engine.meshManager->RemoveMesh("TieFighter");
+  //  engine.meshManager->RemoveMesh("TieFighter");
 
     cMesh* grid = engine.meshManager->FindMeshByFriendlyName("GSoftBody.ply");
     grid->bDoNotLight = false;

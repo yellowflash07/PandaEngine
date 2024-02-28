@@ -91,13 +91,6 @@ void SoftBody::CreateRandomBracing(unsigned int numberOfBraces, float minDistanc
 		{
 			// Assume the distance is OK
 			bKeepLookingForParticles = false;
-
-			// Pick two random vertices
-			// NOTE: Here, rand() might not be great because there's usually
-			//	onlly about 32,000 possible integer values...
-			// Meaning that if your are chosing from something LARGER than
-			//	around 32,000, you'll miss a bunch of values. 
-			// HOWEVER, you could also multiply rand() by itself
 			unsigned int particleIndex1 = rand() % this->vec_pParticles.size();
 			unsigned int particleIndex2 = rand() % this->vec_pParticles.size();
 
@@ -172,12 +165,12 @@ void SoftBody::UpdateNormals(void)
 	}
 
 
-	for (unsigned int triIndex = 0; triIndex != this->ModelInfo.numberOfTriangles; triIndex++)
+	for (unsigned int index = 0; index != this->ModelInfo.numberOfIndices; index+=3)
 	{
 		// Indices are sets of 3, one per 
-		unsigned int vertAIndex = this->ModelInfo.pIndices[triIndex + 0];
-		unsigned int vertBIndex = this->ModelInfo.pIndices[triIndex + 1];
-		unsigned int vertCIndex = this->ModelInfo.pIndices[triIndex + 2];
+		unsigned int vertAIndex = this->ModelInfo.pIndices[index + 0];
+		unsigned int vertBIndex = this->ModelInfo.pIndices[index + 1];
+		unsigned int vertCIndex = this->ModelInfo.pIndices[index + 2];
 
 		//glm::mat4 matModel = pMesh->GetTransform();
 		//matModel = glm::inverse(matModel);
