@@ -460,6 +460,13 @@ void MeshManager::LoadSavedMeshes(unsigned int shaderProgramID)
         mesh->setRotationFromEuler(meshes[i]->eulerRotation);
         mesh->drawScale = meshes[i]->drawScale;
         mesh->color = meshes[i]->color;
+        mesh->transperancy = meshes[i]->transperancy;
+        mesh->maskTexture = meshes[i]->maskTexture;
+        for (size_t j = 0; j < cMesh::NUM_OF_TEXTURES; j++)
+        {
+			mesh->texture[j] = meshes[i]->texture[j];
+			mesh->textureRatio[j] = meshes[i]->textureRatio[j];
+		}
     }
 }
 

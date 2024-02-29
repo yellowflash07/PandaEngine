@@ -22,7 +22,7 @@ public:
 		// Pointer back to the model vertex info
 		sVertex* pModelVertex = NULL;
 		bool bIsLocked = false;
-
+		bool bDisconnected = false;
 	};
 
 	struct sConstraint
@@ -49,6 +49,10 @@ public:
 
 	bool LockParticle(unsigned int index, bool bLock);
 
+	void DisconnectParticle(unsigned int index);
+
+	void Reset();
+
 	glm::vec3 acceleration = glm::vec3(0.0f);
 	sModelDrawInfo ModelInfo;
 	std::vector< sParticle* > vec_pParticles;
@@ -64,5 +68,8 @@ private:
 	std::vector< sConstraint* > vec_pConstraints;
 	std::vector<PhysicsBody*> vec_pSpheres;
 	glm::mat4 matInitialTransform;
+
+	sVertex* ogVertices;
+
 };
 

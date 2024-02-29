@@ -10,6 +10,8 @@ SoftBody::~SoftBody()
 
 void SoftBody::Init()
 {
+	ogVertices = new sVertex[this->ModelInfo.numberOfVertices];
+
 	for (unsigned int index = 0; index != this->ModelInfo.numberOfVertices; index++)
 	{
 		sParticle* pParticle = new sParticle();
@@ -17,6 +19,8 @@ void SoftBody::Init()
 		glm::vec4 vert = glm::vec4(this->ModelInfo.pVertices[index].x,
 									this->ModelInfo.pVertices[index].y,
 									this->ModelInfo.pVertices[index].z, 1.0f);
+
+		ogVertices[index] = this->ModelInfo.pVertices[index];
 
 		// Apply transformation
 		vert = pMesh->GetTransform() * vert;
@@ -56,10 +60,6 @@ void SoftBody::Init()
 		this->vec_pConstraints.push_back(pEdge2);
 		this->vec_pConstraints.push_back(pEdge3);
 	}
-
-	//vec_pParticles[0]->bIsLocked = true;	
-	//vec_pParticles[1]->bIsLocked = true;
-	//vec_pParticles[2]->bIsLocked = true;
 }
 
 void SoftBody::UpdateVertexPositions(void)
@@ -67,6 +67,12 @@ void SoftBody::UpdateVertexPositions(void)
 	for (size_t i = 0; i < this->ModelInfo.numberOfVertices; i++)
 	{
 		sParticle* curParticle = this->vec_pParticles[i];
+
+		if (curParticle->bDisconnected)
+		{
+			continue;
+		}
+
 		glm::vec4 vert = glm::vec4(curParticle->position, 1.0f);
 		
 		glm::mat4 matModel = pMesh->GetTransform();
@@ -267,10 +273,59 @@ bool SoftBody::LockParticle(unsigned int index, bool bLock)
 	return false;
 }
 
+void SoftBody::DisconnectParticle(unsigned int index)
+{
+	if (vec_pParticles.size() > index)
+	{
+		sParticle* pParticle = vec_pParticles[index];
+		pParticle->bDisconnected = true;
+
+		// Deactivate constraints that have this particle in them
+		for (sConstraint* pCurConstraint : this->vec_pConstraints)
+		{
+			if (pCurConstraint->pParticleA == pParticle || pCurConstraint->pParticleB == pParticle)
+			{
+				pCurConstraint->bIsActive = false;
+			}
+		}		
+
+		//update the model info to reflect the change
+		//assinging nan to the vertex will make it invisible/dead
+		this->ModelInfo.pVertices[index].x = sqrt(-1);
+		this->ModelInfo.pVertices[index].y = sqrt(-1);
+		this->ModelInfo.pVertices[index].z = sqrt(-1);
+
+	}
+}
+
+void SoftBody::Reset()
+{
+	// Reset the particles to their original positions
+	for (size_t i = 0; i < vec_pParticles.size(); i++)
+	{
+		glm::vec4 vert = glm::vec4(this->ogVertices[i].x,
+									this->ogVertices[i].y,
+									this->ogVertices[i].z, 1.0f);
+		vert = pMesh->GetTransform() * vert;
+		vec_pParticles[i]->position = vert;
+		vec_pParticles[i]->old_position = vert;
+		vec_pParticles[i]->bDisconnected = false;
+		vec_pParticles[i]->bIsLocked = false;
+	}
+
+	for (size_t i = 0; i < vec_pConstraints.size(); i++)
+	{
+		vec_pConstraints[i]->bIsActive = true;
+	}
+
+}
+
 void SoftBody::ApplyCollision()
 {	
-	for (sParticle* pCurrentParticle : vec_pParticles)
+	//for (sParticle* pCurrentParticle : vec_pParticles)
+	for (int i = 0;i < vec_pParticles.size(); i++)
 	{
+		sParticle* pCurrentParticle = vec_pParticles[i];
 		// Check for collision with the spheres
 		for (PhysicsBody* sphereBody : vec_pSpheres)
 		{
@@ -283,12 +338,13 @@ void SoftBody::ApplyCollision()
 													sphereCentre);
 			if (distanceToSphere < sphereRadius)
 			{
+				DisconnectParticle(i);
 				// it's 'inside' the sphere
 				// Shift or slide the point along the ray from the centre of the sphere
-				glm::vec3 particleToCentreRay = pCurrentParticle->position - sphereCentre;
+				//glm::vec3 particleToCentreRay = pCurrentParticle->position - sphereCentre;
 				// Normalize to get the direction
-				particleToCentreRay = glm::normalize(particleToCentreRay);
-				pCurrentParticle->position = (particleToCentreRay * sphereRadius) + sphereCentre;
+				//particleToCentreRay = glm::normalize(particleToCentreRay);
+				//pCurrentParticle->position = (particleToCentreRay * sphereRadius) + sphereCentre;
 			}
 		}
 	}
@@ -307,6 +363,12 @@ void SoftBody::SatisfyConstraints(void)
 			{
 				SoftBody::sParticle* pX1 = pCurConstraint->pParticleA;
 				SoftBody::sParticle* pX2 = pCurConstraint->pParticleB;
+
+				if (pX1->bDisconnected && pX2->bDisconnected)
+				{
+					pCurConstraint->bIsActive = false;
+					continue;
+				}
 
 				glm::vec3 delta = pX2->position - pX1->position;
 
