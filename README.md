@@ -10,4 +10,4 @@ Engine Capabilities:
 5. Audio implemented using FMOD
 6. UDP networking
 7. Can generate catmullrom splines
-8. 
+8. Softbody simulation with tearing and collision
