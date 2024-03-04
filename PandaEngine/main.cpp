@@ -47,10 +47,13 @@ int main(void)
     skyBoxMesh->isSkyBox = true;
     skyBoxMesh->setUniformDrawScale(5000.0f);
 
-    cMesh* mesh = engine.meshManager->FindMeshByFriendlyName("rigged");
+    cMesh* mesh = engine.meshManager->FindMeshByFriendlyName("vampire");
     mesh->useBone = true;
     //cMesh* riggedMesh = engine.LoadMesh("Aland.FBX", "rigged");
     //riggedMesh->bDoNotLight = true;
+
+    //Animation* anim = new Animation("idle", mesh);
+   // int anims = mesh->modelDrawInfo.Animations.size();
 
     float currTime = 0;
     float myTime = 0;

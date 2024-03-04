@@ -16,7 +16,7 @@ in vec2 vTexCoord;
 layout (location = 5) in vec4 vBoneId;
 layout (location = 6) in vec4 vBoneWeight;
 
-uniform mat4 BoneMatrices[50];
+uniform mat4 BoneMatrices[150];
 uniform bool useBones;
 
 out vec4 colour;
@@ -32,14 +32,32 @@ void main()
 	
 //	gl_Position = MVP * vec4(finalPos, 1.0);
 //	gl_Position = MVP * vertModelPosition;
-	vec4 finalPos = vPos;
+	vec4 finalPos = vec4(1.0f);
 	if (useBones)
 	{
-		mat4 skinning = BoneMatrices[int(vBoneId.x)] * vBoneWeight.x;
-		skinning += BoneMatrices[int(vBoneId.y)] * vBoneWeight.y;
-		skinning += BoneMatrices[int(vBoneId.z)] * vBoneWeight.z;
-		skinning += BoneMatrices[int(vBoneId.w)] * vBoneWeight.w;
-		finalPos = skinning * vPos;
+		for(int i = 0 ; i < 4 ; i++)
+		{
+			if(vBoneId[i] == -1)
+			{
+				break;
+			}
+				
+			if(vBoneId[i] >=150) 
+			{
+				finalPos = vPos;
+				break;
+			}
+			int boneIdx = int(vBoneId[i]);
+			vec4 localPosition = BoneMatrices[boneIdx] * vPos;
+			finalPos += localPosition  * vBoneWeight[i];
+		
+		//	vec4 localNormal = finalBonesMatrices[boneIds[i]] * vec4(aNormal,0.0f);
+		//	totalNormal += localNormal * weights[i];
+		}
+	}
+	else
+	{
+		finalPos = vPos;
 	}
 
 	mat4 matMVP = matProjection * matView * matModel;

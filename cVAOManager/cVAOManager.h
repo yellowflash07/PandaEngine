@@ -50,7 +50,8 @@ private:
 
 	void AssimpToGLM(const aiMatrix4x4 &fromAssimp, glm::mat4 &toGLM);
 	Node* GenerateBoneHierarchy(const aiNode* node, sModelDrawInfo &drawInfo);
-	
+
+	void ExtractBoneWeightForVertices(const aiMesh* mesh, sModelDrawInfo &drawInfo);
 };
 
 #endif	// _cVAOManager_HG_
