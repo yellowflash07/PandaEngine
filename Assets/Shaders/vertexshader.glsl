@@ -9,25 +9,41 @@ uniform mat4 matModel_IT;		// Inverse transpose of the model matrix
 
 //uniform vec3 modelScale;
 //uniform vec3 modelOffset;
-
 in vec4 vCol;		// was vec3
 in vec4 vPos;		// was vec3
 in vec4 vNormal;	// NEW for 2023!
 in vec2 vTexCoord;
+layout (location = 5) in vec4 vBoneId;
+layout (location = 6) in vec4 vBoneWeight;
+
+uniform mat4 BoneMatrices[50];
+uniform bool useBones;
 
 out vec4 colour;
 out vec4 vertexWorldPos;	
 out vec4 vertexWorldNormal;
 out vec2 texCoord;
 
+out vec4 boneId;
+out vec4 boneWeight;
+
 void main()
 {
 	
 //	gl_Position = MVP * vec4(finalPos, 1.0);
 //	gl_Position = MVP * vertModelPosition;
+	vec4 finalPos = vPos;
+	if (useBones)
+	{
+		mat4 skinning = BoneMatrices[int(vBoneId.x)] * vBoneWeight.x;
+		skinning += BoneMatrices[int(vBoneId.y)] * vBoneWeight.y;
+		skinning += BoneMatrices[int(vBoneId.z)] * vBoneWeight.z;
+		skinning += BoneMatrices[int(vBoneId.w)] * vBoneWeight.w;
+		finalPos = skinning * vPos;
+	}
+
 	mat4 matMVP = matProjection * matView * matModel;
-	gl_Position = matMVP * vec4(vPos.xyz, 1.0);
-	
+	gl_Position = matMVP * vec4(finalPos.xyz, 1.0);	
 		
 	// Rotate the normal by the inverse transpose of the model matrix
 	// (so that it only is impacted by the rotation, not translation or scale)
@@ -39,4 +55,6 @@ void main()
 	
 	colour = vCol;
 	texCoord = vTexCoord;
+	boneId = vBoneId;
+	boneWeight = vBoneWeight;
 }

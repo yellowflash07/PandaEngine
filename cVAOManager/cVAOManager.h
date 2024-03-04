@@ -39,7 +39,6 @@ public:
 						  sModelDrawInfo& updatedDrawInfo,
 						  unsigned int shaderProgramID);
 
-
 private:
 	bool m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo);
 
@@ -49,6 +48,9 @@ private:
 
 	std::string m_basePathWithoutSlash;
 
+	void AssimpToGLM(const aiMatrix4x4 &fromAssimp, glm::mat4 &toGLM);
+	Node* GenerateBoneHierarchy(const aiNode* node, sModelDrawInfo &drawInfo);
+	
 };
 
 #endif	// _cVAOManager_HG_

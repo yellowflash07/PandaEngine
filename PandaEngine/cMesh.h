@@ -100,7 +100,7 @@ public:
 	bool isChild = false;
 	void AddChild(cMesh* child);
 	bool hideParent = false;
-
+	bool useBone = false;
 	glm::mat4 GetTransform();
 private:
 	unsigned int m_UniqueID;

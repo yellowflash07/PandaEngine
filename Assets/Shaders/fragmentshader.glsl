@@ -5,7 +5,8 @@ in vec4 colour;
 in vec4 vertexWorldPos;			// vertex in "world space"
 in vec4 vertexWorldNormal;	
 in vec2 texCoord;
-
+in vec4 boneId;
+in vec4 boneWeight;
 out vec4 outputColour;		// To the frame buffer (aka screen)
 
 //uniform vec3 directionalLightColour;
@@ -64,7 +65,7 @@ uniform sLight theLights[NUMBEROFLIGHTS];  	// 70 uniforms
 //uniform vec4 theLights[2].position;
 // etc...
 
-
+uniform bool useBones;
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
                             vec3 vertexWorldPos, vec4 vertexSpecular );
 float rand(vec2 co);
@@ -72,6 +73,18 @@ float rand(vec2 co);
 void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
+
+	if (useBones)
+	{
+		vec4 finalColor = vec4(0.0, 0.0, 0.0, 1.0);
+		finalColor += boneWeight.x * vec4(1.0, 0.0, 0.0, 1.0); // Red for bone 1
+		finalColor += boneWeight.y * vec4(0.0, 1.0, 0.0, 1.0); // Green for bone 2
+		finalColor += boneWeight.z * vec4(0.0, 0.0, 1.0, 1.0); // Blue for bone 3
+		finalColor += boneWeight.w * vec4(1.0, 1.0, 0.0, 1.0); // Yellow for bone 4
+		//vec4 weightColor = vec4(boneWeight.x, boneWeight.y, boneWeight.z, 1.0f);
+		outputColour = finalColor;
+		return;
+	}
 
 	if ( bIsSkyBox )
 	{
@@ -115,7 +128,8 @@ void main()
 
 	if(hasTexture)
 	{
-		vec4 texColour = texture( texture_00, texCoord.st ).rgba * textureMixRatio_0_3.x 	
+
+		vec4 texColour = texture( texture_00, texCoord.st + UV_Offset.xy).rgba * textureMixRatio_0_3.x 	
 						+ texture( texture_01, texCoord.st ).rgba * textureMixRatio_0_3.y
 						+ texture( texture_02, texCoord.st ).rgba * textureMixRatio_0_3.z
 						+ texture( texture_03, texCoord.st ).rgba * textureMixRatio_0_3.w;

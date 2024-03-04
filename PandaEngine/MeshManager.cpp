@@ -203,6 +203,10 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     {
 		glDisable(GL_BLEND);
 	}
+    GLint useBone_UL = glGetUniformLocation(shaderProgramID, "useBones");
+    glUniform1f(useBone_UL, pCurrentMesh->useBone ? (GLfloat)GL_TRUE : (GLfloat)GL_FALSE);
+
+
 
     GLint explosionOffset_UL = glGetUniformLocation(shaderProgramID, "explosionOffset");
     glUniform1f(explosionOffset_UL, pCurrentMesh->explosionOffset);
@@ -214,6 +218,20 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     sModelDrawInfo modelInfo;
     if (vaoManager->FindDrawInfoByModelName(pCurrentMesh->meshName, modelInfo))
     {
+        if (pCurrentMesh->useBone)
+        {
+            CalculateMatrices(modelInfo.RootNode, glm::mat4(1.0f), modelInfo);
+            for (int j = 0; j < modelInfo.vecBoneInfo.size(); ++j)
+            {
+                glm::mat4 boneMatrix = modelInfo.vecBoneInfo[j].FinalTransformation;
+                std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+                GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+               // glm::mat4 debugMat = glm::mat4(1.0f);
+                glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+            }
+        }
+        
+
         // Found it!!!
         if (!pCurrentMesh->hideParent)
         {
@@ -665,5 +683,50 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
 
 
    
+}
+
+void MeshManager::CalculateMatrices(Node* node, const glm::mat4& parentTransformationMatrix, 
+    sModelDrawInfo& modelInfo)
+{
+    std::string nodeName(node->Name);		// use this for lookups, bones, animation nodes
+
+    glm::mat4 transformationMatrix = node->Transformation;
+
+    // Project #2
+    // Animation calculation
+    // AnimationData* data = FindAnimationDat(nodeName);
+    //if (data != nullptr)
+    {
+        // glm::vec3 position = GetAnimationPosition(data, keyFrameTime);	/// POSITION update in previous function
+        // glm::vec3 scale = GetAnimationPosition(data, keyFrameTime);		/// SCALE from your project
+        // glm::vec3 rotation = GetAnimationPosition(data, keyFrameTime);	/// ROTATION update from previous function
+
+        // calculate the matrices
+        // glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), position);
+        // glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
+        // glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.f), scale);
+
+        // transformationMatrix = translationMatrix * rotationMatrix * scaleMatrix
+    }
+
+    // Calculate the global transformation
+    glm::mat4 globalTransformation = parentTransformationMatrix * transformationMatrix;
+
+
+    // If there is a bone associated with this name, assign the global transformation
+    auto boneMapIt = modelInfo.BoneNameToIdMap.find(nodeName);
+    if (boneMapIt != modelInfo.BoneNameToIdMap.end())
+    {
+        BoneInfo& boneInfo = modelInfo.vecBoneInfo[boneMapIt->second];
+        boneInfo.FinalTransformation = /*modelInfo.GlobalInverseTransformation **/ globalTransformation * boneInfo.BoneOffset;
+        boneInfo.GlobalTransformation = globalTransformation;
+    }
+
+    // Calculate all children
+    for (int i = 0; i < node->Children.size(); ++i)
+    {
+        CalculateMatrices(node->Children[i], globalTransformation, modelInfo);
+    }
+
 }
 
