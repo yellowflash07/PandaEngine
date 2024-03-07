@@ -89,25 +89,21 @@ glm::mat4 cMesh::GetTransform()
 	glm::mat4 matModel = glm::mat4(1.0f);
 
 	// Translation
-	glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
-		glm::vec3(drawPosition.x,
-			drawPosition.y,
-			drawPosition.z));
+	glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f), drawPosition);
 
 	// Rotation matrix generation
 	glm::mat4 matRotation = glm::mat4(get_qOrientation());
 
-	glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
-		glm::vec3(drawScale.x, drawScale.y, drawScale.z));
+	glm::mat4 matScale = glm::scale(glm::mat4(1.0f), drawScale);
 
 	// Combine all these transformation
-	matModel = matModel * matTranslate;
+	//matModel = 
 
-	matModel = matModel * matRotation;
+	//matModel = matModel ;
 
-	matModel = matModel * matScale;
+	//matModel = matModel ;
 
-	return matModel;
+	return matModel * matTranslate * matRotation * matScale;
 }
 
 // static
