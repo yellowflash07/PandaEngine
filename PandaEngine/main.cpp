@@ -2,8 +2,7 @@
 #include "Engine.h"
 #include "Random.h"
 #include <iostream>
-#include "SoftBodyManager.h"
-#include "Animation.h"
+#include "AnimationSystem.h"
 extern Camera* camera;
 int keyHit = 0;
 
@@ -47,30 +46,28 @@ int main(void)
     skyBoxMesh->isSkyBox = true;
     skyBoxMesh->setUniformDrawScale(5000.0f);
 
-    cMesh* mesh = engine.meshManager->FindMeshByFriendlyName("vampire");
+    cMesh* mesh = engine.meshManager->FindMeshByFriendlyName("rigged");
     mesh->useBone = true;
-    //cMesh* riggedMesh = engine.LoadMesh("Aland.FBX", "rigged");
-    //riggedMesh->bDoNotLight = true;
 
- //   Animation* anim = new Animation("idle", mesh);
- //   AnimationInfo* animInfo = mesh->modelDrawInfo.Animations[0];
- //   
- //   for (size_t i = 0; i < animInfo->NodeAnimations.size(); i++)
- //   {
- //       NodeAnimation* nodeAnim = animInfo->NodeAnimations[i];
- //       for (size_t j = 0; j < nodeAnim->PositionKeys.size(); j++)
- //       {
- //         //  glm::vec3 position = nodeAnim->PositionKeys[j].position;
-	//	//	anim->positionKeyFrames.push_back(PositionKeyFrame(nodeAnim->positionKeyFrames[j].position, nodeAnim->positionKeyFrames[j].time));
-	//	}
-	//}
+    AnimationSystem* animationSystem = new AnimationSystem();
+    animationSystem->meshManager = engine.meshManager;
+    Animation* animation = new Animation("test", mesh);
+    animationSystem->AddAnimation(animation);
 
     float currTime = 0;
     float myTime = 0;
 
+    int frameNumber = 0;
+
     while (!glfwWindowShouldClose(engine.window))
     {
-        engine.Update();   
+        engine.Update();  
+
+        frameNumber++;
+        if (frameNumber > 10000) frameNumber = 0;
+        float val = (float)frameNumber / 250.f;
+
+        animationSystem->Update(val);
     }
 
     engine.ShutDown();

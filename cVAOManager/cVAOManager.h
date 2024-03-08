@@ -39,6 +39,8 @@ public:
 						  sModelDrawInfo& updatedDrawInfo,
 						  unsigned int shaderProgramID);
 
+	void PrintMatrix(glm::mat4 theMatrix);
+	void PrintMatrix(aiMatrix4x4 theMatrix);
 private:
 	bool m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo);
 
@@ -50,6 +52,7 @@ private:
 
 	void AssimpToGLM(const aiMatrix4x4 &fromAssimp, glm::mat4 &toGLM);
 	Node* GenerateBoneHierarchy(const aiNode* node, sModelDrawInfo &drawInfo);
+
 };
 
 #endif	// _cVAOManager_HG_

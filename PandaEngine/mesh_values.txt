@@ -15,25 +15,8 @@ Texture3:
 TextureRatio3:0
 Mask Texture:
 
-Mesh Name:Aland.FBX
-Friendly Name:Aland
-Position:0 0 0
-Rotation:0 0 0
-Scale:1 1 1
-Color:1 1 1 1
-Transparency:1
-Texture0:
-TextureRatio0:0
-Texture1:
-TextureRatio1:0
-Texture2:
-TextureRatio2:0
-Texture3:
-TextureRatio3:0
-Mask Texture:
-
 Mesh Name:dancing_vampire.dae
-Friendly Name:vampire
+Friendly Name:rigged
 Position:107.269 -161.66 0
 Rotation:0 -0 0
 Scale:1 1 1

@@ -28,8 +28,6 @@ struct sVertex
 	float r, g, b, a;
 	float nx, ny, nz, nw;	// Won't use nw
 	float u, v;				// Texture coordinates
-	//float bx, by, bz, bw;	// Bone indexes
-	//float tx, ty, tz, tw;	// Bone weights
 
 	int boneIndex[4];	// Bone indexes
 	float boneWeights[4];	// Bone weights

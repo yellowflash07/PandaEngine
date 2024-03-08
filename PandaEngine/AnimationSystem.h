@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "Animation.h"
+#include "MeshManager.h"
 
 class AnimationSystem
 {
@@ -21,6 +22,8 @@ public:
 	float animationSpeed = 1.0f;	
 	// Check if the animation system is paused
 	bool IsDone() { return m_isDone; }
+
+	MeshManager* meshManager;
 private:
 	// The animations in the system
 	std::vector<Animation*> m_animations;
@@ -28,5 +31,9 @@ private:
 	bool m_isDone;
 	// Update a single animation
 	void UpdateAnimation(Animation* animation, float dt);
+
+	void UpdateBoneTransforms(Animation* animation, float dt);
+	void CalculateMatrices(Node* node, const glm::mat4& parentTransformationMatrix,
+		sModelDrawInfo& modelInfo);
 };
 
