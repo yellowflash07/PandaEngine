@@ -111,16 +111,10 @@ struct sModelDrawInfo
 	void calcExtents(void);
 
 	Node* RootNode;
-	std::map<std::string, int> NodeNameToIdMap;
-	std::map<std::string, BoneInfo> boneInfoMap;
-	std::vector<glm::mat4> NodeHeirarchyTransformations;
 	glm::mat4 GlobalInverseTransformation;
 	std::vector<BoneInfo> vecBoneInfo;
 	std::map<std::string, int> BoneNameToIdMap;
-	std::vector<glm::mat4> finalTransformations;
 	std::vector<AnimationInfo*> Animations;
-	int boneCount = 0;
-	// 
 	unsigned int getUniqueID(void);
 private:
 	unsigned int m_UniqueID;

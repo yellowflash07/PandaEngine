@@ -294,7 +294,6 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
         aiNode* root = scene->mRootNode;
         drawInfo.RootNode = GenerateBoneHierarchy(root, drawInfo);
         drawInfo.GlobalInverseTransformation = glm::inverse(drawInfo.RootNode->Transformation);
-        ExtractBoneWeightForVertices(mesh, drawInfo);
 
         unsigned int numBones = mesh->mNumBones;
         for (unsigned int boneIdx = 0; boneIdx < numBones; ++boneIdx)
@@ -306,7 +305,6 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 
             // Store the offset matrices
             BoneInfo info;
-            //info.
             AssimpToGLM(bone->mOffsetMatrix, info.BoneOffset);
             drawInfo.vecBoneInfo.emplace_back(info);
             for (int weightIdx = 0; weightIdx < bone->mNumWeights; ++weightIdx)
@@ -423,32 +421,5 @@ Node* cVAOManager::GenerateBoneHierarchy(const aiNode* node, sModelDrawInfo& dra
     return newNode;
 }
 
-void cVAOManager::ExtractBoneWeightForVertices(const aiMesh* mesh, sModelDrawInfo& drawInfo)
-{
-    auto& boneInfoMap = drawInfo.boneInfoMap;
-    int& boneCount = drawInfo.boneCount;
-    int totalVecBoneCount = 0;
-    for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
-    {
-        int boneID = -1;
-        std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
-        if (boneInfoMap.find(boneName) == boneInfoMap.end())
-        {
-            BoneInfo newBoneInfo;
-            newBoneInfo.boneName = boneName;
-            newBoneInfo.boneID = boneCount;
-            AssimpToGLM(mesh->mBones[boneIndex]->mOffsetMatrix, newBoneInfo.BoneOffset);
-            boneInfoMap[boneName] = newBoneInfo;
-            boneID = boneCount;
-            drawInfo.vecBoneInfo.push_back(newBoneInfo);
-            boneCount++;
-        }
-        else
-        {
-            boneID = boneInfoMap[boneName].boneID;
-        }
-        assert(boneID != -1);
-    }
-    
-}
+
 
