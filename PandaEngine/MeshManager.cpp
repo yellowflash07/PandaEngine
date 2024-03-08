@@ -49,6 +49,14 @@ cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyNam
     std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
     meshList.push_back(mesh);
 
+    for (int j = 0; j < 150; ++j)
+    {
+        glm::mat4 boneMatrix = glm::mat4(1.0f);
+        std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+        GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+        glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+    }
+
     return mesh;
 }
 
@@ -221,9 +229,9 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
         if (pCurrentMesh->useBone)
         {
             CalculateMatrices(modelInfo.RootNode, glm::mat4(1.0f), modelInfo);
-            for (int j = 0; j < modelInfo.finalTransformations.size(); ++j)
+            for (int j = 0; j < modelInfo.vecBoneInfo.size(); ++j)
             {
-                glm::mat4 boneMatrix = modelInfo.finalTransformations[j];
+                glm::mat4 boneMatrix = modelInfo.vecBoneInfo[j].FinalTransformation;
                 std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
                 GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
                 glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
@@ -383,10 +391,10 @@ void MeshManager::DrawTransformBox()
 
     ImGui::SameLine();
     ImGuizmo::Manipulate(glm::value_ptr(camera->matView),
-        glm::value_ptr(camera->matProjection),
-        gizmoOperation,
-        ImGuizmo::MODE::LOCAL,
-        glm::value_ptr(meshTransform));
+                        glm::value_ptr(camera->matProjection),
+                        gizmoOperation,
+                        ImGuizmo::MODE::WORLD,
+                        glm::value_ptr(meshTransform));
 
     if(ImGuizmo::IsUsing())
 	{
@@ -692,16 +700,16 @@ void MeshManager::CalculateMatrices(Node* node, const glm::mat4& parentTransform
 
     glm::mat4 globalTransformation = parentTransformationMatrix * nodeTransform;
 
-    auto boneInfoMap = modelInfo.boneInfoMap;
-    if (boneInfoMap.find(nodeName) != boneInfoMap.end())
-    {
-        int index = boneInfoMap[nodeName].boneID;
-        glm::mat4 offset = boneInfoMap[nodeName].BoneOffset;
-        boneInfoMap[nodeName].FinalTransformation = modelInfo.GlobalInverseTransformation * globalTransformation * 
-                                                                    offset;
-        modelInfo.finalTransformations.push_back(boneInfoMap[nodeName].FinalTransformation);
-    }
   
+    auto boneMapIt = modelInfo.BoneNameToIdMap.find(nodeName);
+    if (boneMapIt != modelInfo.BoneNameToIdMap.end())
+    {
+        BoneInfo& boneInfo = modelInfo.vecBoneInfo[boneMapIt->second];
+        boneInfo.FinalTransformation = modelInfo.GlobalInverseTransformation * 
+            globalTransformation * boneInfo.BoneOffset;
+       // boneInfo. = globalTransformation;
+    }
+
     // Calculate all children
     for (int i = 0; i < node->Children.size(); ++i)
     {

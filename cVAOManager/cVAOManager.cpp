@@ -191,40 +191,7 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 #pragma region BoneLoading
     if (mesh->HasBones())
     {
-        aiNode* root = scene->mRootNode;
-        drawInfo.RootNode = GenerateBoneHierarchy(root, drawInfo);
-        drawInfo.GlobalInverseTransformation = glm::inverse(drawInfo.RootNode->Transformation);
-        ExtractBoneWeightForVertices(mesh, drawInfo);
-
-        drawInfo.vecBoneWeights.resize(mesh->mNumVertices);
-        unsigned int numBones = mesh->mNumBones;
-        for (unsigned int boneIdx = 0; boneIdx < numBones; ++boneIdx)
-        {
-            aiBone* bone = mesh->mBones[boneIdx];
-
-            std::string name(bone->mName.C_Str(), bone->mName.length); //	'\0'
-            drawInfo.BoneNameToIdMap.insert(std::pair<std::string, int>(name, drawInfo.vecBoneInfo.size()));
-
-            // Store the offset matrices
-            BoneInfo info;
-            AssimpToGLM(bone->mOffsetMatrix, info.BoneOffset);
-            drawInfo.vecBoneInfo.emplace_back(info);
-            for (int weightIdx = 0; weightIdx < bone->mNumWeights; ++weightIdx)
-            {
-                aiVertexWeight& vertexWeight = bone->mWeights[weightIdx];
-
-                BoneWeightInfo& boneInfo = drawInfo.vecBoneWeights[vertexWeight.mVertexId];
-                for (int infoIdx = 0; infoIdx < 4; ++infoIdx)
-                {
-                    if (boneInfo.m_Weight[infoIdx] == 0.f)
-                    {
-                        boneInfo.m_BoneId[infoIdx] = boneIdx;
-                        boneInfo.m_Weight[infoIdx] = vertexWeight.mWeight;
-                        break;
-                    }
-                }
-            }
-        }
+        
     }
 #pragma endregion
 
@@ -305,7 +272,7 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 			drawInfo.pVertices[i].v = mesh->mTextureCoords[0][i].y;
 		} 
 
-        if (mesh->HasBones())
+      /*  if (mesh->HasBones())
         {
             drawInfo.pVertices[i].boneIndex[0] = drawInfo.vecBoneWeights[i].m_BoneId[0];
             drawInfo.pVertices[i].boneIndex[1] = drawInfo.vecBoneWeights[i].m_BoneId[1];
@@ -316,7 +283,7 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
             drawInfo.pVertices[i].boneWeights[1] = drawInfo.vecBoneWeights[i].m_Weight[1];
             drawInfo.pVertices[i].boneWeights[2] = drawInfo.vecBoneWeights[i].m_Weight[2];
             drawInfo.pVertices[i].boneWeights[3] = drawInfo.vecBoneWeights[i].m_Weight[3];
-        }
+        }*/
 
     }
 
@@ -324,7 +291,39 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 
     if (mesh->HasBones())
     {
-      
+        aiNode* root = scene->mRootNode;
+        drawInfo.RootNode = GenerateBoneHierarchy(root, drawInfo);
+        drawInfo.GlobalInverseTransformation = glm::inverse(drawInfo.RootNode->Transformation);
+        ExtractBoneWeightForVertices(mesh, drawInfo);
+
+        unsigned int numBones = mesh->mNumBones;
+        for (unsigned int boneIdx = 0; boneIdx < numBones; ++boneIdx)
+        {
+            aiBone* bone = mesh->mBones[boneIdx];
+
+            std::string name(bone->mName.C_Str(), bone->mName.length); //	'\0'
+            drawInfo.BoneNameToIdMap.insert(std::pair<std::string, int>(name, drawInfo.vecBoneInfo.size()));
+
+            // Store the offset matrices
+            BoneInfo info;
+            //info.
+            AssimpToGLM(bone->mOffsetMatrix, info.BoneOffset);
+            drawInfo.vecBoneInfo.emplace_back(info);
+            for (int weightIdx = 0; weightIdx < bone->mNumWeights; ++weightIdx)
+            {
+                aiVertexWeight& vertexWeight = bone->mWeights[weightIdx];
+
+                for (int infoIdx = 0; infoIdx < 4; ++infoIdx)
+                {
+                    if (drawInfo.pVertices[vertexWeight.mVertexId].boneWeights[infoIdx] <= 0.f)
+                    {
+                        drawInfo.pVertices[vertexWeight.mVertexId].boneIndex[infoIdx] = boneIdx;
+                        drawInfo.pVertices[vertexWeight.mVertexId].boneWeights[infoIdx] = vertexWeight.mWeight;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 
@@ -450,8 +449,6 @@ void cVAOManager::ExtractBoneWeightForVertices(const aiMesh* mesh, sModelDrawInf
         }
         assert(boneID != -1);
     }
-    bool test = true;
-    //recursively load all the children
     
 }
 

@@ -3,7 +3,7 @@
 #include "Random.h"
 #include <iostream>
 #include "SoftBodyManager.h"
-
+#include "Animation.h"
 extern Camera* camera;
 int keyHit = 0;
 
@@ -52,8 +52,18 @@ int main(void)
     //cMesh* riggedMesh = engine.LoadMesh("Aland.FBX", "rigged");
     //riggedMesh->bDoNotLight = true;
 
-    //Animation* anim = new Animation("idle", mesh);
-   // int anims = mesh->modelDrawInfo.Animations.size();
+ //   Animation* anim = new Animation("idle", mesh);
+ //   AnimationInfo* animInfo = mesh->modelDrawInfo.Animations[0];
+ //   
+ //   for (size_t i = 0; i < animInfo->NodeAnimations.size(); i++)
+ //   {
+ //       NodeAnimation* nodeAnim = animInfo->NodeAnimations[i];
+ //       for (size_t j = 0; j < nodeAnim->PositionKeys.size(); j++)
+ //       {
+ //         //  glm::vec3 position = nodeAnim->PositionKeys[j].position;
+	//	//	anim->positionKeyFrames.push_back(PositionKeyFrame(nodeAnim->positionKeyFrames[j].position, nodeAnim->positionKeyFrames[j].time));
+	//	}
+	//}
 
     float currTime = 0;
     float myTime = 0;

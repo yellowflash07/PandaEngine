@@ -32,28 +32,15 @@ void main()
 	
 //	gl_Position = MVP * vec4(finalPos, 1.0);
 //	gl_Position = MVP * vertModelPosition;
+	//vec4 finalPos = vec4(1.0f);
 	vec4 finalPos = vec4(1.0f);
 	if (useBones)
 	{
-		for(int i = 0 ; i < 4 ; i++)
-		{
-			if(vBoneId[i] == -1)
-			{
-				break;
-			}
-				
-			if(vBoneId[i] >=150) 
-			{
-				finalPos = vPos;
-				break;
-			}
-			int boneIdx = int(vBoneId[i]);
-			vec4 localPosition = BoneMatrices[boneIdx] * vPos;
-			finalPos += localPosition  * vBoneWeight[i];
-		
-		//	vec4 localNormal = finalBonesMatrices[boneIds[i]] * vec4(aNormal,0.0f);
-		//	totalNormal += localNormal * weights[i];
-		}
+		mat4 boneTransform = BoneMatrices[int(vBoneId[0])] * vBoneWeight[0] +
+						   BoneMatrices[int(vBoneId[1])] * vBoneWeight[1] +
+						   BoneMatrices[int(vBoneId[2])] * vBoneWeight[2] +
+						   BoneMatrices[int(vBoneId[3])] * vBoneWeight[3];
+		finalPos = boneTransform * vPos;
 	}
 	else
 	{
