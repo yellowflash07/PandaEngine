@@ -38,7 +38,6 @@ bool Texture::LoadTexture(std::string textureName, std::string fileNameFullPath,
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		//stbi_image_free(data);
 		return true;
 	}
 	else
@@ -50,26 +49,8 @@ bool Texture::LoadTexture(std::string textureName, std::string fileNameFullPath,
 
 bool Texture::LoadCubeMap(std::string cubeMapName, std::string posX_fileName, std::string negX_fileName, std::string posY_fileName, std::string negY_fileName, std::string posZ_fileName, std::string negZ_fileName, bool bIsSeamless, std::string& errorString)
 {
-	bool bReturnVal = true;
-
-	// Do the magic...
-
-	// Pick a texture number...
-	//GLuint textureNum = 0;
-	glGenTextures(1, &(this->textureNumber));
-	// Worked?
-	if ((glGetError() & GL_INVALID_VALUE) == GL_INVALID_VALUE)
-	{
-		bReturnVal = false;
-		return false;
-	}
-
-	//
-	//glBindTexture(GL_TEXTURE_2D, this->m_textureNumber );
-	glBindTexture(GL_TEXTURE_CUBE_MAP, this->textureNumber);
-
-	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_TRUE);
-
+	glGenTextures(1, &textureNumber);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureNumber);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE /*GL_REPEAT*/);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE /*GL_REPEAT*/);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE /*GL_REPEAT*/);
@@ -85,121 +66,37 @@ bool Texture::LoadCubeMap(std::string cubeMapName, std::string posX_fileName, st
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);	// OpenGL 4.1, maybe
 	}
 
-	//if (this->bWasThereAnOpenGLError(errorEnum, errorString, errorDetails)) { return false; }
+	std::vector<std::string> faces{ posX_fileName,
+									negX_fileName,
+									posY_fileName,
+									negY_fileName,
+									posZ_fileName,
+									negZ_fileName
+								};
+	
 
-	// Positive X image...
-	// Assume all the images are the same size. If not, then it will screw up
-	if (this->LoadTexture("PosX", posX_fileName, false))
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
 	{
-		glTexStorage2D(GL_TEXTURE_CUBE_MAP,
-			10, // Mipmap levels
-			GL_RGBA8,	// Internal format
-			this->width,	// width (pixels)
-			this->height);		// height (pixels)
-
-		//if (this->bWasThereAnOpenGLError(errorEnum, errorString, errorDetails)) { return false; }
-	}
-	else
-	{
-		//this->m_lastErrorNum = CTextureFromBMP::ERORR_FILE_WONT_OPEN;
-		return false;
-	}
-
-	// Positive X image...
-	glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-		0,   // Level
-		0, 0, // Offset
-		this->width,	// width
-		this->height,		// height
-		GL_RGB,
-		GL_UNSIGNED_BYTE,
-		this->data);
-	this->ClearTexture();
-	//this->ClearBMP();
-	//if (this->bWasThereAnOpenGLError(errorEnum, errorString, errorDetails)) { return false; }
-
-
-	// Negative X image...
-	if (this->LoadTexture("NegX", negX_fileName, false))
-	{
-		glTexSubImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, 0, 0,
-			this->width, this->height, GL_RGB, GL_UNSIGNED_BYTE, this->data);
-		this->ClearTexture();
-		//this->ClearBMP();
-		//if (this->bWasThereAnOpenGLError(errorEnum, errorString, errorDetails)) { return false; }
-	}
-	else
-	{
-		//this->m_lastErrorNum = CTextureFromBMP::ERORR_FILE_WONT_OPEN;
-		return false;
+		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+			);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+			return false;
+		}
 	}
 
-	// Positive Y image...
-	if (this->LoadTexture("PosY", posY_fileName, false))
-	{
-		glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, 0, 0, 
-			this->width, this->height, GL_RGB, GL_UNSIGNED_BYTE, this->data);
-		this->ClearTexture();
-		//this->ClearBMP();
-		//if (this->bWasThereAnOpenGLError(errorEnum, errorString, errorDetails)) { return false; }
-	}
-	else
-	{
-		//this->m_lastErrorNum = CTextureFromBMP::ERORR_FILE_WONT_OPEN;
-		return false;
-	}
 
-	// Negative Y image...
-	if (this->LoadTexture("NegY", negY_fileName, false))
-	{
-		glTexSubImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, 0, 0, 
-			this->width, this->height, GL_RGB, GL_UNSIGNED_BYTE, this->data);
-		this->ClearTexture();//this->ClearBMP();
-		//if (this->bWasThereAnOpenGLError(errorEnum, errorString, errorDetails)) { return false; }
-	}
-	else
-	{
-		//this->m_lastErrorNum = CTextureFromBMP::ERORR_FILE_WONT_OPEN;
-		return false;
-	}
 
-	// Positive Z image...
-	if (this->LoadTexture("PosZ", posZ_fileName, false))
-	{
-
-		glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, 0, 0, 
-			this->width, this->height, GL_RGB, GL_UNSIGNED_BYTE, this->data);
-		this->ClearTexture();//this->ClearBMP();
-		//if (this->bWasThereAnOpenGLError(errorEnum, errorString, errorDetails)) { return false; }
-	}
-	else
-	{
-		//this->m_lastErrorNum = CTextureFromBMP::ERORR_FILE_WONT_OPEN;
-		return false;
-	}
-
-	// Negative Z image...
-	if (this->LoadTexture("NegZ", negZ_fileName, false))
-	{
-		glTexSubImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, 0, 0, 
-			this->width, this->height, GL_RGB, GL_UNSIGNED_BYTE, this->data);
-		this->ClearTexture();//this->ClearBMP();
-		//if (this->bWasThereAnOpenGLError(errorEnum, errorString, errorDetails)) { return false; }
-	}
-	else
-	{
-		//this->m_lastErrorNum = CTextureFromBMP::ERORR_FILE_WONT_OPEN;
-		//return false;
-	}
-
-	this->textureName = cubeMapName;
-
-	//this->m_textureUnit = textureUnit;
-
-	this->m_bIsCubeMap = true;
-
-	// End of Do the magic...
-	return bReturnVal;
+	return true;
 
 }
 

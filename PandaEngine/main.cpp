@@ -27,13 +27,18 @@ int main(void)
     {
         return 1;
     }
-
+    /*"right.jpg",
+        "left.jpg",
+        "top.jpg",
+        "bottom.jpg",
+        "front.jpg",
+        "back.jpg"*/
     engine.meshManager->LoadTexture("PaletteV1.bmp");
     bool loaded = engine.meshManager->LoadCubeMap("space",
                                     "CubeMaps/TropicalSunnyDayLeft2048.bmp",
                                     "CubeMaps/TropicalSunnyDayRight2048.bmp",
-                                    "CubeMaps/TropicalSunnyDayUp2048.bmp",
                                     "CubeMaps/TropicalSunnyDayDown2048.bmp",
+                                    "CubeMaps/TropicalSunnyDayUp2048.bmp",
                                     "CubeMaps/TropicalSunnyDayFront2048.bmp",
                                     "CubeMaps/TropicalSunnyDayBack2048.bmp",
                                     true);

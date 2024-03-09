@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "../PandaEngine/GraphicsCommon.h"
-
+#include <vector>
 class Texture
 {
 public:
