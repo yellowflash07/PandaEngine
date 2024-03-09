@@ -13,9 +13,9 @@ bool cBasicTextureManager::Create2DTextureFromBMPFile( std::string textureFileNa
 {
 	std::string fileToLoadFullPath = this->m_basePath + "/" + textureFileName;
 
+	Texture* pTempTexture = new Texture();
 
-	CTextureFromBMP* pTempTexture = new CTextureFromBMP();
-	if ( ! pTempTexture->CreateNewTextureFromBMPFile2( textureFileName, fileToLoadFullPath, /*textureUnit,*/ bGenerateMIPMap ) )
+	if (!pTempTexture->LoadTexture(textureFileName, fileToLoadFullPath, bGenerateMIPMap))
 	{
 		this->m_appendErrorString( "Can't load " );
 		this->m_appendErrorString( fileToLoadFullPath );
@@ -23,10 +23,19 @@ bool cBasicTextureManager::Create2DTextureFromBMPFile( std::string textureFileNa
 		return false;
 	}
 
+	//CTextureFromBMP* pTempTexture = new CTextureFromBMP();
+	//if ( ! pTempTexture->CreateNewTextureFromBMPFile2( textureFileName, fileToLoadFullPath, /*textureUnit,*/ bGenerateMIPMap ) )
+	//{
+	//	this->m_appendErrorString( "Can't load " );
+	//	this->m_appendErrorString( fileToLoadFullPath );
+	//	this->m_appendErrorString( "\n" );
+	//	return false;
+	//}
+
 	// Texture is loaded OK
 	//this->m_nextTextureUnitOffset++;
 	
-	this->m_map_TexNameToTexture[ textureFileName ] = pTempTexture;
+	this->textureMap[ textureFileName ] = pTempTexture;
 
 	return true;
 }
@@ -41,10 +50,10 @@ void cBasicTextureManager::m_appendErrorString( std::string nextErrorText )
 
 GLuint cBasicTextureManager::getTextureIDFromName( std::string textureFileName )
 {
-	std::map< std::string, CTextureFromBMP* >::iterator itTexture
-		= this->m_map_TexNameToTexture.find( textureFileName );
+	std::map< std::string, Texture* >::iterator itTexture
+		= this->textureMap.find( textureFileName );
 	// Found it?
-	if ( itTexture == this->m_map_TexNameToTexture.end() )
+	if ( itTexture == this->textureMap.end() )
 	{
 		return 0;
 	}
@@ -66,23 +75,24 @@ void cBasicTextureManager::m_appendErrorStringLine( std::string nextErrorTextLin
 // Picks a random texture from the textures loaded
 std::string cBasicTextureManager::PickRandomTexture(void)
 {
-	if ( this->m_map_TexNameToTexture.empty() )
-	{
-		// There are no textures loaded, yet.
-		return "";
-	}
+	return "";
+	//if ( this->textureMap.empty() )
+	//{
+	//	// There are no textures loaded, yet.
+	//	return "";
+	//}
 
-	int textureIndexRand = rand() % (this->m_map_TexNameToTexture.size() + 1);
-	if ( textureIndexRand >= this->m_map_TexNameToTexture.size() )
-	{
-		textureIndexRand = 0;
-	}
+	//int textureIndexRand = rand() % (this->textureMap.size() + 1);
+	//if ( textureIndexRand >= this->textureMap.size() )
+	//{
+	//	textureIndexRand = 0;
+	//}
 
-	std::map< std::string, CTextureFromBMP* >::iterator itTex = this->m_map_TexNameToTexture.begin();
-	for ( unsigned int count = 0; count != textureIndexRand; count++, itTex++ ) 
-	{}
+	//std::map< std::string, Texture* >::iterator itTex = this->textureMap.begin();
+	//for ( unsigned int count = 0; count != textureIndexRand; count++, itTex++ ) 
+	//{}
 
-	return itTex->second->getTextureName();
+	//return itTex->second->getTextureName();
 }
 
 
@@ -102,13 +112,13 @@ bool cBasicTextureManager::CreateCubeTextureFromBMPFiles(
 
 	GLenum errorEnum;
 	std::string errorDetails;
-	CTextureFromBMP* pTempTexture = new CTextureFromBMP();
-	if ( ! pTempTexture->CreateNewCubeTextureFromBMPFiles( 
+	Texture* pTempTexture = new Texture();
+	if ( ! pTempTexture->LoadCubeMap( 
 				cubeMapName, 
 				posX_fileName_FullPath, negX_fileName_FullPath, 
 	            posY_fileName_FullPath, negY_fileName_FullPath, 
 	            posZ_fileName_FullPath, negZ_fileName_FullPath, 
-	            bIsSeamless, errorEnum, errorString, errorDetails ) )
+	            bIsSeamless, errorString) )
 	{
 		this->m_appendErrorString( "Can't load " );
 		this->m_appendErrorString( cubeMapName );
@@ -123,7 +133,7 @@ bool cBasicTextureManager::CreateCubeTextureFromBMPFiles(
 	// Texture is loaded OK
 	//this->m_nextTextureUnitOffset++;
 	
-	this->m_map_TexNameToTexture[ cubeMapName ] = pTempTexture;
+	this->textureMap[ cubeMapName ] = pTempTexture;
 
 	return true;
 }

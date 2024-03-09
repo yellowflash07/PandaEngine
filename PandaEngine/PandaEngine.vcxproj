@@ -192,6 +192,7 @@
     <ClCompile Include="SoftBody.cpp" />
     <ClCompile Include="SoftBodyManager.cpp" />
     <ClCompile Include="TCPDebug.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UdpClient.cpp" />
     <ClCompile Include="UdpServer.cpp" />
   </ItemGroup>
@@ -250,6 +251,7 @@
     <ClInclude Include="SoftBody.h" />
     <ClInclude Include="SoftBodyManager.h" />
     <ClInclude Include="TCPDebug.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="UdpClient.h" />
     <ClInclude Include="UdpServer.h" />
   </ItemGroup>

@@ -3,8 +3,8 @@
 
 #include <string>
 #include <map>
-#include "CTextureFromBMP.h"
-
+//#include "CTextureFromBMP.h"
+#include "../PandaEngine/Texture.h"
 // LoadPNG
 
 class cBasicTextureManager
@@ -33,7 +33,8 @@ private:
 	void m_appendErrorString( std::string nextErrorText );
 	void m_appendErrorStringLine( std::string nextErrorTextLine );
 
-	std::map< std::string, CTextureFromBMP* > m_map_TexNameToTexture;
+	//std::map< std::string, CTextureFromBMP* > m_map_TexNameToTexture;
+	std::map< std::string, Texture* > textureMap;
 
 
 };

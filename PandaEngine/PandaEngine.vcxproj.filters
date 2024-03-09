@@ -228,6 +228,9 @@
     <ClCompile Include="SoftBodyManager.cpp">
       <Filter>Physics\SoftBody</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>TextureManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsCommon.h">
@@ -380,9 +383,6 @@
     <ClInclude Include="AssetLibrary.h">
       <Filter>AssetLibrary</Filter>
     </ClInclude>
-    <ClInclude Include="..\TextureManager\stb_image.h">
-      <Filter>TextureManager</Filter>
-    </ClInclude>
     <ClInclude Include="..\FBO\cFBO.h">
       <Filter>FBO</Filter>
     </ClInclude>
@@ -397,6 +397,12 @@
     </ClInclude>
     <ClInclude Include="AnimationFrames.h">
       <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextureManager\stb_image.h">
+      <Filter>TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>TextureManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
