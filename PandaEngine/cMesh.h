@@ -95,13 +95,14 @@ public:
 
 	sModelDrawInfo modelDrawInfo;
 
-	float explosionOffset;
 
 	bool isChild = false;
 	void AddChild(cMesh* child);
 	bool hideParent = false;
 	bool useBone = false;
 	glm::mat4 GetTransform();
+	//glm::mat4 AnimatedTransform;
+	std::map<std::string, glm::mat4> boneTransformations;
 private:
 	unsigned int m_UniqueID;
 	static const unsigned int FIRST_UNIQUE_ID = 1000;

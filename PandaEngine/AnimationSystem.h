@@ -24,6 +24,8 @@ public:
 	bool IsDone() { return m_isDone; }
 
 	MeshManager* meshManager;
+	float debug = 0.0f;
+	void SetAnimation(int index) { currentAnimationIndex = index; }
 private:
 	// The animations in the system
 	std::vector<Animation*> m_animations;
@@ -32,8 +34,18 @@ private:
 	// Update a single animation
 	void UpdateAnimation(Animation* animation, float dt);
 
-	void UpdateBoneTransforms(Animation* animation, float dt);
-	void CalculateMatrices(Node* node, const glm::mat4& parentTransformationMatrix,
-		sModelDrawInfo& modelInfo);
+	void UpdateBoneTransforms(cMesh* mesh, Node& node,float dt);
+
+	glm::vec3 InterpolatePositions(std::vector<PositionKeyFrame> positions,
+		float dt);
+	glm::vec3 InterpolateScales(std::vector<ScaleKeyFrame> scales,
+				float dt);
+	glm::quat InterpolateRotations(std::vector<RotationKeyFrame> rotations, float dt);
+
+	int currentAnimationIndex = 0;
+
+	Animation* GetAnimation(AnimationInfo& info, std::string nodeName);
+
+	glm::mat4 InterpolateNodeTransforms(NodeAnimation* nodeAnim, float dt);
 };
 

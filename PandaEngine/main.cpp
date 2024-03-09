@@ -63,9 +63,16 @@ int main(void)
     {
         engine.Update();  
 
-        frameNumber++;
-        if (frameNumber > 10000) frameNumber = 0;
-        float val = (float)frameNumber / 250.f;
+
+        if (keyHit == GLFW_KEY_SPACE)
+        {
+            animationSystem->debug += 10.0f;
+            //keyHit = 0;
+        }
+
+        frameNumber+=10.0f;
+        if (frameNumber > 3433) frameNumber = 0;
+        float val = (float)frameNumber;
 
         animationSystem->Update(val);
     }

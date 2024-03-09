@@ -395,6 +395,9 @@
     <ClInclude Include="SoftBody.h">
       <Filter>Physics\SoftBody</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationFrames.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Assets\Shaders\fragmentshader.glsl">

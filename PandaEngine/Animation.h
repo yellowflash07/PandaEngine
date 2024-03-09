@@ -3,55 +3,7 @@
 #include <vector>
 #include <string>
 #include "cMesh.h"
-#include <functional>
-
-enum class EasingType
-{
-	Linear,
-	SineEaseIn,
-	SineEaseOut,
-	SineEaseInOut
-};
-
-struct KeyFrame
-{
-	KeyFrame(double time, EasingType type = EasingType::Linear)
-		: time(time)
-		, easingType(type)
-	{ }
-	double time;
-	EasingType easingType;
-	std::function<void()> callback;
-};
-
-
-struct PositionKeyFrame : KeyFrame
-{
-	PositionKeyFrame(const glm::vec3& position, double time, EasingType type = EasingType::Linear)
-		: position(position)
-		, KeyFrame(time, type)
-	{ }
-
-	glm::vec3 position;
-};
-
-struct RotationKeyFrame : KeyFrame
-{
-	RotationKeyFrame(const glm::vec3& rotation, double time, EasingType type = EasingType::Linear)
-		: rotation(rotation)
-		, KeyFrame(time, type)
-	{ }
-	glm::vec3 rotation;
-};
-
-struct ScaleKeyFrame : KeyFrame
-{
-	ScaleKeyFrame(const glm::vec3& scale, double time, EasingType type = EasingType::Linear)
-		: scale(scale)
-		, KeyFrame(time, type)
-	{ }
-	glm::vec3 scale;
-};
+#include "AnimationFrames.h"
 
 struct Animation
 {
@@ -77,4 +29,14 @@ struct Animation
 		}
 		return false;
 	}
+};
+
+struct SkinnedAnimation : Animation
+{
+	SkinnedAnimation(std::string name, cMesh* mesh)
+		: Animation(name, mesh)
+	{ }
+	std::vector<std::vector<PositionKeyFrame>> bonePositionKeyFrames;
+	std::vector<std::vector<RotationKeyFrame>> boneRotationKeyFrames;
+	std::vector<std::vector<ScaleKeyFrame>> boneScaleKeyFrames;
 };

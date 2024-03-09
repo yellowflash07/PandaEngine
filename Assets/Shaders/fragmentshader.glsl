@@ -77,10 +77,10 @@ void main()
 	if (useBones)
 	{
 		vec4 finalColor = vec4(0.0, 0.0, 0.0, 1.0);
-		finalColor += boneWeight[0] * boneId.x * vec4(1.0, 0.0, 0.0, 1.0); // Red for bone 1
-		finalColor += boneWeight[1] * boneId.x * vec4(0.0, 1.0, 0.0, 1.0); // Green for bone 2
-		finalColor += boneWeight[2] * boneId.x * vec4(0.0, 0.0, 1.0, 1.0); // Blue for bone 3
-		finalColor += boneWeight[3] * boneId.x * vec4(1.0, 1.0, 0.0, 1.0); // Yellow for bone 4
+		finalColor += boneWeight[0] *  vec4(1.0, 0.0, 0.0, 1.0); // Red for bone 1
+		finalColor += boneWeight[1] *  vec4(0.0, 1.0, 0.0, 1.0); // Green for bone 2
+		finalColor += boneWeight[2] *  vec4(0.0, 0.0, 1.0, 1.0); // Blue for bone 3
+		finalColor += boneWeight[3] *  vec4(1.0, 1.0, 0.0, 1.0); // Yellow for bone 4
 		//vec4 weightColor = vec4(boneWeight.x, boneWeight.y, boneWeight.z, 1.0f);
 		outputColour = finalColor;
 		return;

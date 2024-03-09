@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "../PandaEngine/AnimationFrames.h"
 // The vertex structure 
 //	that's ON THE GPU (eventually) 
 // So dictated from THE SHADER
@@ -62,9 +63,9 @@ struct NodeAnimation
 {
 	NodeAnimation(const std::string& name) : Name(name) { }
 	std::string Name;
-	std::map<float, glm::vec3> PositionKeys;
-	std::map<float, glm::vec3> ScalingKeys;
-	std::map<float, glm::vec3> RotationKeys;
+	std::vector<PositionKeyFrame> PositionKeys;
+	std::vector<RotationKeyFrame> RotationKeys;
+	std::vector<ScaleKeyFrame> ScalingKeys;
 };
 
 struct AnimationInfo
@@ -73,7 +74,7 @@ struct AnimationInfo
 	float Duration;
 	float TicksPerSecond;
 	Node* RootNode;
-	std::vector<NodeAnimation*> NodeAnimations;
+	std::map<std::string, NodeAnimation*> NodeAnimations;
 };
 
 struct sModelDrawInfo
@@ -112,7 +113,7 @@ struct sModelDrawInfo
 	glm::mat4 GlobalInverseTransformation;
 	std::vector<BoneInfo> vecBoneInfo;
 	std::map<std::string, int> BoneNameToIdMap;
-	std::vector<AnimationInfo*> Animations;
+	std::vector<AnimationInfo> Animations;
 	unsigned int getUniqueID(void);
 private:
 	unsigned int m_UniqueID;

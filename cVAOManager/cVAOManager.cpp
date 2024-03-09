@@ -195,48 +195,52 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
     drawInfo.pVertices = new sVertex[drawInfo.numberOfVertices];  
 
 #pragma region AnimationLoading
-   // if (scene->HasAnimations())
-   // {
-   //     for (unsigned int i = 0; i < scene->mNumAnimations; i++)
-   //     {
-			//aiAnimation* pAnimation = scene->mAnimations[i];
-			//AnimationInfo animInfo;
-			//animInfo.AnimationName = pAnimation->mName.C_Str();
-			//animInfo.Duration = (float)pAnimation->mDuration;
-			//animInfo.TicksPerSecond = (float)pAnimation->mTicksPerSecond;
-			//animInfo.RootNode = GenerateBoneHierarchy(scene->mRootNode, drawInfo);
-   //         for (unsigned int j = 0; j < pAnimation->mNumChannels; j++)
-   //         {
-			//	aiNodeAnim* pNodeAnim = pAnimation->mChannels[j];
-			//	NodeAnimation* nodeAnim = new NodeAnimation(pNodeAnim->mNodeName.C_Str());
-   //             for (unsigned int k = 0; k < pNodeAnim->mNumPositionKeys; k++)
-   //             {
-   //                 glm::vec3 pos = glm::vec3(pNodeAnim->mPositionKeys[k].mValue.x,
-   //                     						pNodeAnim->mPositionKeys[k].mValue.y,
-   //                     						pNodeAnim->mPositionKeys[k].mValue.z);
-   //                 PositionKeyFrame keyFrame(pos, (float)pNodeAnim->mPositionKeys[k].mTime);
-			//		nodeAnim->PositionKeys.push_back(keyFrame);
-			//	}
-   //             for (unsigned int k = 0; k < pNodeAnim->mNumRotationKeys; k++)
-   //             {
-   //                 glm::vec3 rot = glm::vec3(pNodeAnim->mRotationKeys[k].mValue.x,
-   //                     												pNodeAnim->mRotationKeys[k].mValue.y,
-   //                     												pNodeAnim->mRotationKeys[k].mValue.z);
+    if (scene->HasAnimations())
+    {
+        for (unsigned int i = 0; i < scene->mNumAnimations; i++)
+        {
+			aiAnimation* pAnimation = scene->mAnimations[i];
+			AnimationInfo animInfo;
+			animInfo.AnimationName = pAnimation->mName.C_Str();
+			animInfo.Duration = (float)pAnimation->mDuration;
+			animInfo.TicksPerSecond = (float)pAnimation->mTicksPerSecond;
+			animInfo.RootNode = GenerateBoneHierarchy(scene->mRootNode, drawInfo);
+            for (unsigned int j = 0; j < pAnimation->mNumChannels; j++)
+            {
+				aiNodeAnim* pNodeAnim = pAnimation->mChannels[j];
+				NodeAnimation* nodeAnim = new NodeAnimation(pNodeAnim->mNodeName.C_Str());
+                for (unsigned int k = 0; k < pNodeAnim->mNumPositionKeys; k++)
+                {
+                    glm::vec3 pos = glm::vec3(pNodeAnim->mPositionKeys[k].mValue.x,
+                        						pNodeAnim->mPositionKeys[k].mValue.y,
+                        						pNodeAnim->mPositionKeys[k].mValue.z);
+                    PositionKeyFrame keyFrame(pos, (float)pNodeAnim->mPositionKeys[k].mTime);
+					nodeAnim->PositionKeys.push_back(keyFrame);
+				}
+                for (unsigned int k = 0; k < pNodeAnim->mNumRotationKeys; k++)
+                {
+                    glm::vec3 rot = glm::vec3(pNodeAnim->mRotationKeys[k].mValue.x,
+                        												pNodeAnim->mRotationKeys[k].mValue.y,
+                        												pNodeAnim->mRotationKeys[k].mValue.z);
 
-			//		RotationKeyFrame keyFrame(rot, (float)pNodeAnim->mRotationKeys[k].mTime);
-			//		nodeAnim->RotationKeys.push_back(keyFrame);
-			//	}
-   //             for (unsigned int k = 0; k < pNodeAnim->mNumScalingKeys; k++)
-   //             {
-			//		glm::vec3 scale = glm::vec3(pNodeAnim->mScalingKeys[k].mValue.x,
-   //                     						pNodeAnim->mScalingKeys[k].mValue.y,
-   //                     						pNodeAnim->mScalingKeys[k].mValue.z);
-			//		ScaleKeyFrame keyFrame(scale, (float)pNodeAnim->mScalingKeys[k].mTime);
-		 //           nodeAnim->ScalingKeys.push_back(keyFrame);
-   //             }
-   //         }
-   //     }
-   // }
+					RotationKeyFrame keyFrame(rot, (float)pNodeAnim->mRotationKeys[k].mTime);
+					nodeAnim->RotationKeys.push_back(keyFrame);
+				}
+                for (unsigned int k = 0; k < pNodeAnim->mNumScalingKeys; k++)
+                {
+					glm::vec3 scale = glm::vec3(pNodeAnim->mScalingKeys[k].mValue.x,
+                        						pNodeAnim->mScalingKeys[k].mValue.y,
+                        						pNodeAnim->mScalingKeys[k].mValue.z);
+					ScaleKeyFrame keyFrame(scale, (float)pNodeAnim->mScalingKeys[k].mTime);
+		            nodeAnim->ScalingKeys.push_back(keyFrame);
+                }
+
+                animInfo.NodeAnimations.insert(std::pair<std::string, NodeAnimation*>(nodeAnim->Name, nodeAnim));
+            }
+
+            drawInfo.Animations.push_back(animInfo);
+        }
+    }
 #pragma endregion
 
     for (unsigned int i = 0; i < drawInfo.numberOfVertices; ++i)
@@ -272,6 +276,8 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 		} 
 
     }
+#pragma region BONE LOADING
+
 
     if (mesh->HasBones())
     {
@@ -311,6 +317,8 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
         }
     }
 
+
+#pragma endregion
 
     drawInfo.numberOfIndices = mesh->mNumFaces * 3; // Triangles assumed
     drawInfo.pIndices = new unsigned int[drawInfo.numberOfIndices];

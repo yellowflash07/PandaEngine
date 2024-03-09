@@ -41,8 +41,7 @@ void main()
 							BoneMatrices[int(vBoneId[1])] * vBoneWeight[1] +
 							BoneMatrices[int(vBoneId[2])] * vBoneWeight[2] +
 							BoneMatrices[int(vBoneId[3])] * vBoneWeight[3];
-		finalPos = boneTransform * vec4(vPos.xyz, 1.0);
-				
+		finalPos = boneTransform * vec4(vPos.xyz, 1.0);				
 	}
 	else
 	{

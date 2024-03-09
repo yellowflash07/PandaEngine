@@ -35,7 +35,7 @@ cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyNam
 
     cMesh* mesh = new cMesh();
     mesh->meshName = modelNameAtPath;
-  //  mesh->modelDrawInfo = drawInfo;
+    mesh->modelDrawInfo = drawInfo;
     mesh->friendlyName = friendlyName;
 
     for (size_t i = 0; i < meshList.size(); i++)
@@ -231,7 +231,7 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     {
         if (pCurrentMesh->useBone)
         {
-            CalculateMatrices(modelInfo.RootNode, glm::mat4(1.0f), modelInfo);
+            CalculateMatrices(pCurrentMesh, modelInfo.RootNode, glm::mat4(1.0f), modelInfo);
             //printf("----------------\n");
             for (int j = 0; j < modelInfo.vecBoneInfo.size(); ++j)
             {
@@ -258,20 +258,20 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     }
 
 
-    //glm::mat4 matRemoveScaling = glm::scale(glm::mat4(1.0f),
-    //    glm::vec3(
-    //        1.0f / pCurrentMesh->drawScale.x,
-    //        1.0f / pCurrentMesh->drawScale.y,
-    //        1.0f / pCurrentMesh->drawScale.z));
+    glm::mat4 matRemoveScaling = glm::scale(glm::mat4(1.0f),
+        glm::vec3(
+            1.0f / pCurrentMesh->drawScale.x,
+            1.0f / pCurrentMesh->drawScale.y,
+            1.0f / pCurrentMesh->drawScale.z));
 
-    //matModel = matModel * matRemoveScaling;
+    matModel = matModel * matRemoveScaling;
 
-    //for (cMesh* pChild : pCurrentMesh->vec_pChildMeshes)
-    //{
+    for (cMesh* pChild : pCurrentMesh->vec_pChildMeshes)
+    {
 
-    //    DrawObject(pChild, matModel, shaderProgramID);
+        DrawObject(pChild, matModel, shaderProgramID);
 
-    //}
+    }
 
     return;
 }
@@ -695,14 +695,21 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
    
 }
 
-void MeshManager::CalculateMatrices(Node* node, const glm::mat4& parentTransformationMatrix, 
+void MeshManager::CalculateMatrices(cMesh* pCurrentMesh, Node* node, const glm::mat4& parentTransformationMatrix, 
     sModelDrawInfo& modelInfo)
 {
     std::string nodeName = node->Name;
-    glm::mat4 nodeTransform = node->Transformation;
+    glm::mat4 nodeTransform = node->Transformation;  
+
+    std::map<std::string, glm::mat4>::iterator boneIt = 
+                        pCurrentMesh->boneTransformations.find(nodeName);
+
+    if (boneIt != pCurrentMesh->boneTransformations.end())
+    {
+         nodeTransform = boneIt->second;
+    }
 
     glm::mat4 globalTransformation = parentTransformationMatrix * nodeTransform;
-
 
     auto boneMapIt = modelInfo.BoneNameToIdMap.find(nodeName);
     if (boneMapIt != modelInfo.BoneNameToIdMap.end())
@@ -716,7 +723,7 @@ void MeshManager::CalculateMatrices(Node* node, const glm::mat4& parentTransform
     // Calculate all children
     for (int i = 0; i < node->Children.size(); ++i)
     {
-        CalculateMatrices(node->Children[i], globalTransformation, modelInfo);
+        CalculateMatrices(pCurrentMesh, node->Children[i], globalTransformation, modelInfo);
     }
 
 }

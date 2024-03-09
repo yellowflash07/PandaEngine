@@ -215,6 +215,7 @@
     <ClInclude Include="..\TextureManager\CTextureFromBMP.h" />
     <ClInclude Include="..\TextureManager\stb_image.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationFrames.h" />
     <ClInclude Include="AnimationSystem.h" />
     <ClInclude Include="AssetLibrary.h" />
     <ClInclude Include="AudioManager.h" />
