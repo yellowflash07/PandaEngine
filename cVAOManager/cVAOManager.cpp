@@ -134,11 +134,13 @@ bool cVAOManager::LoadModelIntoVAOAI(
     glDisableVertexAttribArray(vNormal_location);
     glDisableVertexAttribArray(vTexureCoord_location);
     glDisableVertexAttribArray(5);
-    glDisableVertexAttribArray(6);
- 
+    glDisableVertexAttribArray(6); 
 
     // Store the draw information into the map
-    this->m_map_ModelName_to_VAOID[drawInfo.meshName] = drawInfo;
+
+    std::string modelName = this->GenerateUniqueModelNameFromFile(fileName);
+    drawInfo.uniqueName = modelName;
+    this->m_map_ModelName_to_VAOID[modelName] = drawInfo;
     return true;
 }
 
@@ -356,12 +358,12 @@ bool cVAOManager::UpdateVAOBuffers(std::string fileName,
                       unsigned int shaderProgramID)
 {
     // This exists? 
-   // sModelDrawInfo updatedDrawInfo_TEMP;
-    //if ( ! this->FindDrawInfoByModelName(fileName,  updatedDrawInfo_TEMP) )
-    //{
-    //    // Didn't find this buffer
-    //    return false;
-    //}
+    sModelDrawInfo updatedDrawInfo_TEMP;
+    if ( ! this->FindDrawInfoByModelName(fileName,  updatedDrawInfo_TEMP) )
+    {
+        // Didn't find this buffer
+        return false;
+    }
 
 
     glBindBuffer(GL_ARRAY_BUFFER, updatedDrawInfo.VertexBufferID);
@@ -412,6 +414,15 @@ Node* cVAOManager::GenerateBoneHierarchy(const aiNode* node, sModelDrawInfo& dra
     }
 
     return newNode;
+}
+
+std::string cVAOManager::GenerateUniqueModelNameFromFile(std::string fileName)
+{
+    std::string modelName = fileName;
+	std::stringstream ss;
+	ss << fileName << "_" << this->m_map_ModelName_to_VAOID.size();
+	modelName = ss.str();
+	return modelName;
 }
 
 void cVAOManager::PrintMatrix(glm::mat4 theMatrix)

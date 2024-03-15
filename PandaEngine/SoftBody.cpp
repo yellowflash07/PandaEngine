@@ -28,8 +28,10 @@ void SoftBody::Init()
 		pParticle->position = glm::vec3(vert.x, vert.y, vert.z);
 
 		pParticle->old_position = pParticle->position;
+
+		pParticle->particleIndex = index;
 	
-		pParticle->pModelVertex = &(this->ModelInfo.pVertices[index]);
+	//	pParticle->pModelVertex = &(this->ModelInfo.pVertices[index]);
 
 		this->vec_pParticles.push_back(pParticle);
 	}
@@ -141,8 +143,10 @@ void SoftBody::VerletUpdate(double deltaTime)
 		glm::vec3 current_pos = pCurrentParticle->position;
 		glm::vec3 old_pos = pCurrentParticle->old_position;
 
+		glm::vec3 deltaMove = current_pos - old_pos;
+
 		// This is the actual Verlet integration step (notice there isn't a velocity)
-		pCurrentParticle->position += (current_pos - old_pos) + (this->acceleration * (float)(deltaTime * deltaTime));
+		pCurrentParticle->position += deltaMove + (this->acceleration * (float)(deltaTime * deltaTime));
 
 		pCurrentParticle->old_position = current_pos;
 
@@ -337,14 +341,13 @@ void SoftBody::ApplyCollision()
 			float distanceToSphere = glm::distance(pCurrentParticle->position,
 													sphereCentre);
 			if (distanceToSphere < sphereRadius)
-			{
-				DisconnectParticle(i);
+			{				
 				// it's 'inside' the sphere
 				// Shift or slide the point along the ray from the centre of the sphere
-				//glm::vec3 particleToCentreRay = pCurrentParticle->position - sphereCentre;
+				glm::vec3 particleToCentreRay = pCurrentParticle->position - sphereCentre;
 				// Normalize to get the direction
-				//particleToCentreRay = glm::normalize(particleToCentreRay);
-				//pCurrentParticle->position = (particleToCentreRay * sphereRadius) + sphereCentre;
+				particleToCentreRay = glm::normalize(particleToCentreRay);
+				pCurrentParticle->position = (particleToCentreRay * sphereRadius) + sphereCentre;
 			}
 		}
 	}
@@ -384,10 +387,12 @@ void SoftBody::SatisfyConstraints(void)
 				// - Setting a bool (where it doesn't check the constraint any more)
 				// - Remove the constraint (but removing from a vector is sketchy...)
 
-//				if ( diff > 0.1f )
-//				{
-//					pCurConstraint->bIsActive = false;
-//				}
+				if ( diff > breakThreshold )
+				{
+					pCurConstraint->bIsActive = false;
+					DisconnectParticle(pX1);
+					DisconnectParticle(pX2);
+				}
 
 				// Making this non-one, will change how quickly the objects move together
 				// For example, making this < 1.0 will make it "bouncier"
@@ -402,17 +407,64 @@ void SoftBody::SatisfyConstraints(void)
 				{
 					pX2->position -= delta * 0.5f * diff * tightnessFactor;
 				}
-				//pX1->position += delta * 0.5f * diff * tightnessFactor;
-				//pX2->position -= delta * 0.5f * diff * tightnessFactor;
 
 				this->cleanZeros(pX1->position);
 				this->cleanZeros(pX2->position);
-			}//if (pCurConstraint->bIsActive)
-
-		}//for (sConstraint* pCurConstraint...
-	}//for ( unsigned int iteration
+			}
+		}
+	}
 
 	return;
+}
+
+void SoftBody::DisconnectParticle(sParticle* pParticle)
+{
+	pParticle->bDisconnected = true;
+
+	// Deactivate constraints that have this particle in them
+	for (sConstraint* pCurConstraint : this->vec_pConstraints)
+	{
+		if (pCurConstraint->pParticleA == pParticle || pCurConstraint->pParticleB == pParticle)
+		{
+			pCurConstraint->bIsActive = false;
+		}
+	}
+
+	if (pMesh != NULL)
+	{
+		//update the model info to reflect the change
+	//assinging nan to the vertex will make it invisible/dead
+		this->ModelInfo.pVertices[0].x = sqrt(-1);
+		this->ModelInfo.pVertices[0].y = sqrt(-1);
+		this->ModelInfo.pVertices[0].z = sqrt(-1);
+	}
+	
+}
+
+glm::vec3 SoftBody::GetCentre(void)
+{
+	
+	glm::vec3 min = vec_pParticles[0]->position;
+	glm::vec3 max = vec_pParticles[0]->position;
+
+	for (sParticle* pParticle : vec_pParticles)
+	{
+		if (pParticle->bDisconnected)
+		{
+			continue;
+		}
+
+		if (pParticle->position.x < min.x) { min.x = pParticle->position.x; }
+		if (pParticle->position.y < min.y) { min.y = pParticle->position.y; }
+		if (pParticle->position.z < min.z) { min.z = pParticle->position.z; }
+
+		if (pParticle->position.x > max.x) { max.x = pParticle->position.x; }
+		if (pParticle->position.y > max.y) { max.y = pParticle->position.y; }
+		if (pParticle->position.z > max.z) { max.z = pParticle->position.z; }
+	}
+
+	return (min + max) * 0.5f;
+
 }
 
 

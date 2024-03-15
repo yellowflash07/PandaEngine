@@ -53,6 +53,7 @@ private:
 	void AssimpToGLM(const aiMatrix4x4 &fromAssimp, glm::mat4 &toGLM);
 	Node* GenerateBoneHierarchy(const aiNode* node, sModelDrawInfo &drawInfo);
 
+	std::string GenerateUniqueModelNameFromFile(std::string fileName);
 };
 
 #endif	// _cVAOManager_HG_

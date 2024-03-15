@@ -16,6 +16,7 @@ public:
 	~cMesh();		
 
 	std::string meshName;
+	std::string uniqueName;
 	std::string friendlyName;		
 	glm::vec3 drawPosition;
 	glm::vec3 eulerRotation;
@@ -92,7 +93,7 @@ public:
 	{
 		return (this->maxExtents_XYZ + this->minExtents_XYZ) / 2.0f;
 	}
-
+	
 	sModelDrawInfo modelDrawInfo;
 
 

@@ -46,7 +46,7 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
         glm::mat4 transform = glm::mat4(glm::quat(followOrientation));
 
         offset = transform * glm::vec4(offset, 1.0f);
-        offset = glm::normalize(offset) * 500.0f;
+        offset = glm::normalize(offset) /** 100.0f*/;
         cameraEye = offset + followPos;
 
         camControl = false;

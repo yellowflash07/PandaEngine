@@ -37,13 +37,13 @@ public:
 	glm::mat4 GetProjectionMatrix();
 	glm::mat4 GetViewProjectionMatrix();
 	float speed;
-
+	float yaw;
+	float pitch;
 private:
 
 	float near;
 	float far;
-	float yaw;
-	float pitch;
+	
 	bool stopUpdates; 
 
 	glm::vec3 followPos;

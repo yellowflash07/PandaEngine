@@ -28,26 +28,7 @@ unsigned int cMesh::getUniqueID(void)
 
 void cMesh::calcExtents(void)
 {
-	glm::mat4 matModel = glm::mat4(1.0f);
-
-	// Translation
-	glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
-		glm::vec3(drawPosition.x,
-			     drawPosition.y,
-			     drawPosition.z));
-
-	// Rotation matrix generation
-	glm::mat4 matRotation = glm::mat4(get_qOrientation());
-
-	glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
-									glm::vec3(drawScale.x,drawScale.y,drawScale.z));
-
-	// Combine all these transformation
-	matModel = matModel * matTranslate;
-
-	matModel = matModel * matRotation;
-
-	matModel = matModel * matScale;
+	glm::mat4 matModel = GetTransform();
 
 	for (size_t i = 0; i < modelDrawInfo.numberOfVertices; i++)
 	{

@@ -13,7 +13,7 @@ public:
 
 	void Update(double deltaTime);
 	SoftBody* CreateSoftBody(std::string friendlyName);
-
+    void AddSoftBody(SoftBody* pSoftBody);
 private:
 	std::vector<SoftBody*> vecSoftBodies;
 	MeshManager* meshManager;

@@ -14,6 +14,14 @@ MeshManager::MeshManager()
    vaoManager = new cVAOManager();
    textureManager = new cBasicTextureManager();
    saver = new SceneSaver();
+
+  /* for (int j = 0; j < 150; ++j)
+   {
+       glm::mat4 boneMatrix = glm::mat4(1.0f);
+       std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+       GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+       glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+   }*/
 }
 
 MeshManager::~MeshManager()
@@ -36,27 +44,19 @@ cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyNam
     cMesh* mesh = new cMesh();
     mesh->meshName = modelNameAtPath;
     mesh->modelDrawInfo = drawInfo;
+    mesh->uniqueName = drawInfo.uniqueName;
     mesh->friendlyName = friendlyName;
 
-    for (size_t i = 0; i < meshList.size(); i++)
-    {
-        if (meshList[i]->friendlyName == friendlyName)
-        {
-            mesh->friendlyName = friendlyName + std::to_string(i);
-        }
-    }
+    //for (size_t i = 0; i < meshList.size(); i++)
+    //{
+    //    if (meshList[i]->friendlyName == friendlyName)
+    //    {
+    //        mesh->friendlyName = friendlyName + std::to_string(i);
+    //    }
+    //}
 
     std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
     meshList.push_back(mesh);
-
-    for (int j = 0; j < 150; ++j)
-    {
-        glm::mat4 boneMatrix = glm::mat4(1.0f);
-        std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
-        GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
-        glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
-    }
-
     return mesh;
 }
 
@@ -227,7 +227,7 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     glUniform1f(transparency_UL, pCurrentMesh->transperancy);
 
     sModelDrawInfo modelInfo;
-    if (vaoManager->FindDrawInfoByModelName(pCurrentMesh->meshName, modelInfo))
+    if (vaoManager->FindDrawInfoByModelName(pCurrentMesh->uniqueName, modelInfo))
     {
         if (pCurrentMesh->useBone)
         {
@@ -500,7 +500,7 @@ void MeshManager::LoadSavedMeshes(unsigned int shaderProgramID)
 
 bool MeshManager::GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo)
 {  
-    return vaoManager->FindDrawInfoByModelName(FindMeshByFriendlyName(friendlyName)->meshName, drawInfo);
+    return vaoManager->FindDrawInfoByModelName(FindMeshByFriendlyName(friendlyName)->uniqueName, drawInfo);
 }
 
 bool MeshManager::GetTransformedMeshDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo)
