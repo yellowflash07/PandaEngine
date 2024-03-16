@@ -9,6 +9,17 @@
 
 #include "sModelDrawInfo.h"
 #include <assimp/scene.h> 
+#include "../PandaEngine/GraphicsCommon.h"
+
+#include <Windows.h>
+
+#include <functional>
+#define WINDOWS_LEAN_AND_MEAN
+
+typedef std::function<void(sModelDrawInfo)> OnModelLoadCallBack;
+
+struct LoadInfo;
+
 class cVAOManager
 {
 public:
@@ -16,6 +27,12 @@ public:
 	bool LoadModelIntoVAOAI(std::string fileName,
 		sModelDrawInfo& drawInfo,
 		unsigned int shaderProgramID,
+		bool bIsDynamicBuffer = false);
+
+	bool LoadModelIntoVAOAsync(std::string fileName,
+		sModelDrawInfo& drawInfo,
+		unsigned int shaderProgramID,
+		OnModelLoadCallBack callback,
 		bool bIsDynamicBuffer = false);
 
 	// We don't want to return an int, likely
@@ -41,19 +58,30 @@ public:
 
 	void PrintMatrix(glm::mat4 theMatrix);
 	void PrintMatrix(aiMatrix4x4 theMatrix);
-private:
+
 	bool m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo);
 
+	void LoadVertexToGPU(sModelDrawInfo& drawInfo, GLuint shaderProgram);
+
+	std::string GenerateUniqueModelNameFromFile(std::string fileName);
+
 	std::map< std::string /*model name*/,
-		      sModelDrawInfo /* info needed to draw*/ >
+		sModelDrawInfo /* info needed to draw*/ >
 		m_map_ModelName_to_VAOID;
+
+	void CheckQueue();
+private:
+
 
 	std::string m_basePathWithoutSlash;
 
 	void AssimpToGLM(const aiMatrix4x4 &fromAssimp, glm::mat4 &toGLM);
 	Node* GenerateBoneHierarchy(const aiNode* node, sModelDrawInfo &drawInfo);
 
-	std::string GenerateUniqueModelNameFromFile(std::string fileName);
+	//std::map<LoadInfo*, std::function<void()>> threadQueue;
+
+	std::vector<LoadInfo*> loadQueue;
+
 };
 
 #endif	// _cVAOManager_HG_

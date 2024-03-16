@@ -127,6 +127,8 @@ void Engine::Update()
     // (Usually) the default - does NOT draw "back facing" triangles
     glCullFace(GL_BACK);
 
+    meshManager->vaoManager->CheckQueue();
+
     //update lights
     lightManager->UpdateUniformValues(shaderProgramID);
 
@@ -189,14 +191,15 @@ void Engine::SetAudioPath(std::string filePath)
 cMesh* Engine::LoadMesh(std::string filePath, std::string friendlyName, bool dontDraw)
 {
     cMesh* mesh = nullptr;
-    if (dontDraw)
+    mesh = meshManager->AddMesh(filePath, friendlyName, shaderProgramID);
+   /* if (dontDraw)
     {
 		mesh = meshManager->LoadMesh(filePath, friendlyName, shaderProgramID);
 	}
     else
     {
-		mesh = meshManager->AddMesh(filePath, friendlyName, shaderProgramID);
-	}
+		
+	}*/
     //cMesh* mesh = meshManager->AddMesh(filePath, friendlyName, shaderProgramID);
     return mesh;
 }

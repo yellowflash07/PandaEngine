@@ -3,8 +3,10 @@
 #include "Random.h"
 #include <iostream>
 #include "AnimationSystem.h"
+#include <chrono>
 extern Camera* camera;
 int keyHit = 0;
+
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -22,18 +24,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 int main(void)
 {
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
     Engine engine;
     if (!engine.Initialize())
     {
         return 1;
     }
-    /*"right.jpg",
-        "left.jpg",
-        "top.jpg",
-        "bottom.jpg",
-        "front.jpg",
-        "back.jpg"*/
-    engine.meshManager->LoadTexture("PaletteV1.bmp");
+
     bool loaded = engine.meshManager->LoadCubeMap("space",
                                     "CubeMaps/TropicalSunnyDayLeft2048.bmp",
                                     "CubeMaps/TropicalSunnyDayRight2048.bmp",
@@ -51,35 +49,16 @@ int main(void)
     skyBoxMesh->isSkyBox = true;
     skyBoxMesh->setUniformDrawScale(5000.0f);
 
-    cMesh* mesh = engine.meshManager->FindMeshByFriendlyName("rigged");
-    mesh->useBone = true;
-
-    AnimationSystem* animationSystem = new AnimationSystem();
-    animationSystem->meshManager = engine.meshManager;
-    Animation* animation = new Animation("test", mesh);
-    animationSystem->AddAnimation(animation);
-
     float currTime = 0;
     float myTime = 0;
 
     int frameNumber = 0;
 
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
     while (!glfwWindowShouldClose(engine.window))
     {
         engine.Update();  
-
-
-        if (keyHit == GLFW_KEY_SPACE)
-        {
-            animationSystem->debug += 10.0f;
-            //keyHit = 0;
-        }
-
-        frameNumber+=10.0f;
-        if (frameNumber > 3433) frameNumber = 0;
-        float val = (float)frameNumber;
-
-        animationSystem->Update(val);
     }
 
     engine.ShutDown();

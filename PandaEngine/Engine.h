@@ -29,8 +29,6 @@ public:
 	double deltaTime;
 	bool IsRunning;
 	void ShutDown();
-	void SetCameraDefaults(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float near=0.1f, float far=1000.0f);
-	void SetCameraTarget(glm::vec3 target);
 	RenderTexture* CreateRenderTexture(Camera* camera, std::vector<cMesh*> offScreenMesh, int width = 1920, int height = 1080);
 	GLFWwindow* window;
 	cLightManager* lightManager;
@@ -43,8 +41,6 @@ private:
 	glm::vec3 cameraEye;
 	glm::vec3 cameraTarget;
 	glm::vec3 upVector;
-	float near;
-	float far;
 	double lastTime;
 	int frameCount;
 	AssetLibrary assetLib;

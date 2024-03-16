@@ -3,6 +3,9 @@
 #include <iostream>
 #include <imgui.h>
 
+
+#define THREADED
+
 AssetLibrary::AssetLibrary()
 {
     m_modelFiles = GetFiles("../Assets/Models");
@@ -25,19 +28,60 @@ void AssetLibrary::Init()
         m_texIDs.push_back(texID);
     }
 
- /*   for (size_t i = 0; i < m_modelFiles.size(); i++)
+    for (size_t i = 0; i < m_modelFiles.size(); i++)
     {
         std::wstring file = m_modelFiles[i];
         std::string fileStr(file.begin(), file.end());
-        cMesh* mesh = m_meshManager->LoadMesh(fileStr, fileStr,shaderProgramID);
+      
         glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 100.0f);
         Camera* camera = new Camera(cameraPos,
             glm::vec3(0.0f, 0.0f, -1.0f),
-            glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 10000.0f);
-        RenderTexture* renderTexture = new RenderTexture(camera, 512, 512, shaderProgramID, { mesh });
-        renderTexture->meshManager = m_meshManager;
-        m_renderTextures.push_back(renderTexture);
-    }*/
+            glm::vec3(0.0f, -1.0f, 0.0f), 0.1f, 10000.0f);
+#ifndef THREADED
+
+        cMesh* mesh = m_meshManager->LoadMesh(fileStr, fileStr, this->shaderProgramID);
+        mesh->bUseDebugColours = true;
+        mesh->wholeObjectDebugColourRGBA = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
+        mesh->calcExtents();
+
+        glm::vec3 extents = mesh->maxExtents_XYZ - mesh->minExtents_XYZ;
+
+        float maxExtent = extents.x;
+
+        camera->cameraEye = mesh->GetCenter() + glm::vec3(0.0f, 0.0f, maxExtent * 2.0f);
+
+        RenderTexture* rt = new RenderTexture(camera, 800, 600, shaderProgramID, { mesh });
+        m_renderTextures.push_back(rt);
+        rt->meshManager = this->m_meshManager;
+
+#endif // !THREADED
+
+
+#ifdef THREADED
+        GLuint spid = this->shaderProgramID;
+
+        std::vector<RenderTexture*>* m_rT = &this->m_renderTextures;
+        MeshManager* mM = this->m_meshManager;
+
+        m_meshManager->LoadMeshAsync(fileStr, fileStr, shaderProgramID,
+        [ camera, spid, m_rT, mM](cMesh* mesh)
+        {
+            mesh->bUseDebugColours = true;
+            mesh->wholeObjectDebugColourRGBA = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
+            mesh->calcExtents();
+
+            glm::vec3 extents = mesh->maxExtents_XYZ - mesh->minExtents_XYZ;
+
+            float maxExtent = extents.x;
+
+            camera->cameraEye = mesh->GetCenter() + glm::vec3(0.0f, 0.0f, maxExtent * 2.0f);
+
+            RenderTexture* rt = new RenderTexture(camera, 800, 600, spid, { mesh });
+            m_rT->push_back(rt);
+            rt->meshManager = mM;
+        });
+#endif // THREADED
+    }
 
 }
 
@@ -48,18 +92,18 @@ void AssetLibrary::RenderBox()
     {
         if (ImGui::BeginTabItem("Models"))
         {
-            for (int i = 0; i < m_modelFiles.size(); i++)
+            for (int i = 0; i < m_renderTextures.size(); i++)
             {
-                std::wstring file = m_modelFiles[i];
-                std::string fileStr(file.begin(), file.end());
-                ImGui::Button(fileStr.c_str(), ImVec2(200, 100));
+              //  std::wstring file = m_modelFiles[i];
+              //  std::string fileStr(file.begin(), file.end());
+               // ImGui::Button(fileStr.c_str(), ImVec2(200, 100));
 
-               // RenderTexture* rt = m_renderTextures[i];
-               // rt->Render();
-               // ImGui::ImageButton((void*)(intptr_t)rt->GetTextureID(), ImVec2(100, 100));
+                RenderTexture* rt = m_renderTextures[i];
+                rt->Render();
+                ImGui::ImageButton((void*)(intptr_t)rt->GetTextureID(), ImVec2(100, 100));
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
                 {
-                    //std::string fileStr = rt->offScreenMeshList[0]->meshName;
+                    std::string fileStr = rt->offScreenMeshList[0]->meshName;
                     // Set payload to carry the index of our item (could be anything)
                     ImGui::SetDragDropPayload("Model_DND", fileStr.c_str(), fileStr.length() * sizeof(char*));
                     ImGui::EndDragDropSource();

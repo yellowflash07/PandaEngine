@@ -7,8 +7,8 @@ Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float n
     this->cameraEye = position;
     this->cameraTarget = target;
     this->upVector = upVector;
-    this->near = near;
-    this->far = far;
+    this->nearPlane = near;
+    this->farPlane = far;
 
     this->yaw = -90.0f;
     this->pitch = 0.0f;
@@ -56,8 +56,8 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
 
     matProjection = glm::perspective(0.6f,
                                                 ratio,
-                                                near,
-                                                far);
+        nearPlane,
+                                                farPlane);
 
     if (camControl)
     {

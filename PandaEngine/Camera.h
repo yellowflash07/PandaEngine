@@ -41,8 +41,8 @@ public:
 	float pitch;
 private:
 
-	float near;
-	float far;
+	float nearPlane;
+	float farPlane;
 	
 	bool stopUpdates; 
 

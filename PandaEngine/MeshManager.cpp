@@ -9,6 +9,8 @@
 
 extern Camera* camera;
 
+typedef void (*MeshLoadCalllback)(cMesh*);
+
 MeshManager::MeshManager()
 {
    vaoManager = new cVAOManager();
@@ -47,15 +49,7 @@ cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyNam
     mesh->uniqueName = drawInfo.uniqueName;
     mesh->friendlyName = friendlyName;
 
-    //for (size_t i = 0; i < meshList.size(); i++)
-    //{
-    //    if (meshList[i]->friendlyName == friendlyName)
-    //    {
-    //        mesh->friendlyName = friendlyName + std::to_string(i);
-    //    }
-    //}
-
-    std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
+   // std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
     meshList.push_back(mesh);
     return mesh;
 }
@@ -63,7 +57,7 @@ cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyNam
 cMesh* MeshManager::LoadMesh(std::string modelNameAtPath, std::string friendlyName, unsigned int shaderProgramID)
 {
     sModelDrawInfo drawInfo;
-
+    this->shaderProgramID = shaderProgramID;
     if (!vaoManager->LoadModelIntoVAOAI(modelNameAtPath, drawInfo, shaderProgramID))
     {
         //  DoTheErrorLogging("Didn't load model");
@@ -72,10 +66,31 @@ cMesh* MeshManager::LoadMesh(std::string modelNameAtPath, std::string friendlyNa
 
     cMesh* mesh = new cMesh();
     mesh->meshName = modelNameAtPath;
-    mesh->friendlyName = friendlyName;
     mesh->modelDrawInfo = drawInfo;
-    std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
+    mesh->uniqueName = drawInfo.uniqueName;
+    mesh->friendlyName = friendlyName;
     return mesh;
+}
+
+void MeshManager::LoadMeshAsync(std::string modelNameAtPath,
+    std::string friendlyName, unsigned int shaderProgramID, OnMeshLoadCallBack callback)
+{
+    sModelDrawInfo drawInfo;
+
+    if (!vaoManager->LoadModelIntoVAOAsync(modelNameAtPath, drawInfo,
+        shaderProgramID, [modelNameAtPath, friendlyName, callback](sModelDrawInfo result)
+        { 
+            cMesh* mesh = new cMesh();
+            mesh->meshName = modelNameAtPath;
+            mesh->modelDrawInfo = result;
+            mesh->uniqueName = result.uniqueName;
+            mesh->friendlyName = friendlyName;
+            callback(mesh);
+          //  meshList.push_back(mesh);
+        }))
+    {
+        return;
+    }
 }
 
 void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProgramID)
@@ -480,7 +495,7 @@ void MeshManager::DrawTransformBox()
 
 void MeshManager::LoadSavedMeshes(unsigned int shaderProgramID)
 {
-    std::vector<cMesh*> meshes = saver->LoadMeshes();
+    /*std::vector<cMesh*> meshes = saver->LoadMeshes();
     for (size_t i = 0; i < meshes.size(); i++)
     {
         cMesh* mesh = AddMesh(meshes[i]->meshName, meshes[i]->friendlyName, shaderProgramID);
@@ -495,7 +510,7 @@ void MeshManager::LoadSavedMeshes(unsigned int shaderProgramID)
 			mesh->texture[j] = meshes[i]->texture[j];
 			mesh->textureRatio[j] = meshes[i]->textureRatio[j];
 		}
-    }
+    }*/
 }
 
 bool MeshManager::GetModelDrawInfo(std::string friendlyName, sModelDrawInfo& drawInfo)

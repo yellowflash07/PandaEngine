@@ -1,6 +1,5 @@
 #include "cVAOManager.h"
 
-#include "../PandaEngine/GraphicsCommon.h"
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -14,12 +13,44 @@
 #include <assimp/postprocess.h>     // Post processing flags
 
 #include <iostream>
+#include <chrono>
+
+
+CRITICAL_SECTION g_cs;
+
+struct LoadInfo
+{
+    LoadInfo(sModelDrawInfo& drawInfo) : drawInfo(drawInfo) {}
+
+    cVAOManager* vaoManager;
+    std::string fileName;
+    sModelDrawInfo& drawInfo;
+    sModelDrawInfo resultInfo;
+    GLuint shaderProgramID;
+    bool result = false;
+    std::function<void()> callback;
+    OnModelLoadCallBack onModelLoadCallBack;
+};
+
+DWORD WINAPI LoadTheFileAsync(LPVOID lpParameter)
+{
+    LoadInfo* loadInfo = (LoadInfo*)lpParameter;
+    cVAOManager* vaoManager = loadInfo->vaoManager;
+
+    loadInfo->result = vaoManager->m_LoadTheFile(loadInfo->fileName, loadInfo->resultInfo);
+
+    std::cout << "Thread completed" << std::endl;
+    return 0;
+}
+
 
 void cVAOManager::setBasePath(std::string basePathWithoutSlash)
 {
     this->m_basePathWithoutSlash = basePathWithoutSlash;
+    InitializeCriticalSection(&g_cs);
     return;
 }
+
 
 bool cVAOManager::LoadModelIntoVAOAI(
     std::string fileName,
@@ -29,121 +60,57 @@ bool cVAOManager::LoadModelIntoVAOAI(
 
 {
     // Load the model from file
-        // Create an instance of the Importer class
- 
-    if (!this->m_LoadTheFile(fileName, drawInfo))
+    if (!m_LoadTheFile(fileName, drawInfo))
     {
-        return false;
-    };
+		return false;
+	}
 
-    // Create a VAO (Vertex Array Object), which will 
-    //	keep track of all the 'state' needed to draw 
-    //	from this buffer...
-
-    // Ask OpenGL for a new buffer ID...
-    glGenVertexArrays(1, &(drawInfo.VAO_ID));
-    // "Bind" this buffer:
-    // - aka "make this the 'current' VAO buffer
-    glBindVertexArray(drawInfo.VAO_ID);
-
-    // Now ANY state that is related to vertex or index buffer
-    //	and vertex attribute layout, is stored in the 'state' 
-    //	of the VAO... 
-
-    glGenBuffers(1, &(drawInfo.VertexBufferID));
-
-    glBindBuffer(GL_ARRAY_BUFFER, drawInfo.VertexBufferID);
-
-    glBufferData(GL_ARRAY_BUFFER,
-        sizeof(sVertex) * drawInfo.numberOfVertices,
-        (GLvoid*)drawInfo.pVertices,
-        (bIsDynamicBuffer ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
-
-
-    // Copy the index buffer into the video card, too
-    // Create an index buffer.
-    glGenBuffers(1, &(drawInfo.IndexBufferID));
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drawInfo.IndexBufferID);
-
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,			// Type: Index element array
-        sizeof(unsigned int) * drawInfo.numberOfIndices,
-        (GLvoid*)drawInfo.pIndices,
-        GL_STATIC_DRAW);
-
-    // Set the vertex attributes.
-
-    GLint vcol_location = glGetAttribLocation(shaderProgramID, "vCol");	// program;
-    GLint vpos_location = glGetAttribLocation(shaderProgramID, "vPos");	// program
-    GLint vNormal_location = glGetAttribLocation(shaderProgramID, "vNormal");	// program;
-    GLint vTexureCoord_location = glGetAttribLocation(shaderProgramID, "vTexCoord");	// program;
-
-    // Set the vertex attributes for this shader
-    glEnableVertexAttribArray(vpos_location);	    // vPos
-    glVertexAttribPointer(vpos_location, 4,		// vPos
-        GL_FLOAT, GL_FALSE,
-        sizeof(sVertex),
-        (void*)offsetof(sVertex, x));
-
-    glEnableVertexAttribArray(vcol_location);	    // vCol
-    glVertexAttribPointer(vcol_location, 4,		// vCol
-        GL_FLOAT, GL_FALSE,
-        sizeof(sVertex),
-        (void*)offsetof(sVertex, r));
-
-    glEnableVertexAttribArray(vNormal_location);	// vNormal
-    glVertexAttribPointer(vNormal_location, 4,		// vNormal
-        GL_FLOAT, GL_FALSE,
-        sizeof(sVertex),
-        (void*)offsetof(sVertex, nx));
-
-    glEnableVertexAttribArray(vTexureCoord_location);	// vTexCoord
-    glVertexAttribPointer(vTexureCoord_location, 2,		// vTexCoord
-        		GL_FLOAT, GL_FALSE,
-        		sizeof(sVertex),
-        		(void*)offsetof(sVertex, u));
-
-    glEnableVertexAttribArray(5);	// vBoneID
-    glVertexAttribPointer(5, 4,		// vBoneID
-                    GL_INT, GL_FALSE,
-        		    sizeof(sVertex),
-        		    (void*)offsetof(sVertex, boneIndex));
-
-    glEnableVertexAttribArray(6);		// vBoneWeight
-    //glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
-    
-    glVertexAttribPointer(6, 4,		// vBoneWeight
-        				GL_FLOAT, GL_FALSE,
-        				sizeof(sVertex),
-        				(void*)offsetof(sVertex, boneWeights));
-
-    //glVertexAttribPointer(6, 4, sizeof(sVertex), GL_FALSE, stride, offset);
-    //glVertexAttribPointer(6, 4,		// vBoneWeight
-    //    				GL_FLOAT, GL_FALSE,
-    //    				sizeof(sVertex),
-    //    				(void*)offsetof(sVertex, tx));
-
-    // Now that all the parts are set up, set the VAO to zero
-    glBindVertexArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    glDisableVertexAttribArray(vpos_location);
-    glDisableVertexAttribArray(vcol_location);
-    glDisableVertexAttribArray(vNormal_location);
-    glDisableVertexAttribArray(vTexureCoord_location);
-    glDisableVertexAttribArray(5);
-    glDisableVertexAttribArray(6); 
+    // Load the model into the GPU
+    LoadVertexToGPU(drawInfo, shaderProgramID);
 
     // Store the draw information into the map
-
-    std::string modelName = this->GenerateUniqueModelNameFromFile(fileName);
+    std::string modelName = GenerateUniqueModelNameFromFile(fileName);
+    m_map_ModelName_to_VAOID[modelName] = drawInfo;
     drawInfo.uniqueName = modelName;
-    this->m_map_ModelName_to_VAOID[modelName] = drawInfo;
+
     return true;
 }
 
+bool cVAOManager::LoadModelIntoVAOAsync(std::string fileName, sModelDrawInfo& drawInfo, 
+    unsigned int shaderProgramID, OnModelLoadCallBack callback, bool bIsDynamicBuffer)
+{
+    LoadInfo* loadInfo = new LoadInfo(drawInfo);
+    loadInfo->vaoManager = this;
+    loadInfo->fileName = fileName;
+    loadInfo->shaderProgramID = shaderProgramID;
+    loadInfo->onModelLoadCallBack = callback;
+
+    HANDLE handle = CreateThread(NULL, 0, LoadTheFileAsync, loadInfo, 0, NULL);
+
+    loadQueue.push_back(loadInfo);
+    return true;
+}
+
+void cVAOManager::CheckQueue()
+{
+    for (size_t i = 0; i < loadQueue.size(); i++)
+    {
+        LoadInfo* loadInfo = loadQueue[i];
+
+        if (loadInfo->result)
+        {
+            LoadVertexToGPU(loadInfo->resultInfo, loadInfo->shaderProgramID);
+            std::string modelName = GenerateUniqueModelNameFromFile(loadInfo->fileName);
+            loadInfo->resultInfo.uniqueName = modelName;
+            m_map_ModelName_to_VAOID[modelName] = loadInfo->resultInfo;
+			loadQueue.erase(loadQueue.begin() + i);
+
+            loadInfo->onModelLoadCallBack(loadInfo->resultInfo);
+           // loadInfo->callback();
+		}
+
+    }
+}
 
 bool cVAOManager::FindDrawInfoByModelName(
 		std::string filename,
@@ -173,7 +140,7 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
     std::cout << "Loading: " << fileName << std::endl;
     Assimp::Importer importer;
     std::string filePath = this->m_basePathWithoutSlash + "/" + fileName;
-    const aiScene* scene = importer.ReadFile(filePath, aiProcess_ValidateDataStructure /*| aiProcess_GenNormals*/);
+    const aiScene* scene = importer.ReadFile(filePath, aiProcess_ValidateDataStructure | aiProcess_GenNormals);
 
     std::string errorString = importer.GetErrorString();
     if (!errorString.empty())
@@ -190,8 +157,9 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 
     const aiMesh* mesh = scene->mMeshes[0]; // Assuming there's only one mesh in the scene
 
+    EnterCriticalSection(&g_cs);
     drawInfo.meshName = fileName; // You can change this as needed
-
+    LeaveCriticalSection(&g_cs);
     // Allocate memory for vertices and indices
     drawInfo.numberOfVertices = mesh->mNumVertices;
     drawInfo.pVertices = new sVertex[drawInfo.numberOfVertices];  
@@ -239,8 +207,9 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 
                 animInfo.NodeAnimations.insert(std::pair<std::string, NodeAnimation*>(nodeAnim->Name, nodeAnim));
             }
-
+            EnterCriticalSection(&g_cs);
             drawInfo.Animations.push_back(animInfo);
+            LeaveCriticalSection(&g_cs);
         }
     }
 #pragma endregion
@@ -348,9 +317,118 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 
     }
 
-
+    std::cout << "Loaded: " << fileName 
+                << "Vertices: " << drawInfo.numberOfVertices << std::endl;
 
     return true;
+}
+
+void cVAOManager::LoadVertexToGPU(sModelDrawInfo& drawInfo, GLuint shaderProgramID)
+{
+  
+    // Create a VAO (Vertex Array Object), which will 
+//	keep track of all the 'state' needed to draw 
+//	from this buffer...
+
+// Ask OpenGL for a new buffer ID...
+    glGenVertexArrays(1, &(drawInfo.VAO_ID));
+    // "Bind" this buffer:
+    // - aka "make this the 'current' VAO buffer
+    glBindVertexArray(drawInfo.VAO_ID);
+
+    // Now ANY state that is related to vertex or index buffer
+    //	and vertex attribute layout, is stored in the 'state' 
+    //	of the VAO... 
+
+    glGenBuffers(1, &(drawInfo.VertexBufferID));
+
+    glBindBuffer(GL_ARRAY_BUFFER, drawInfo.VertexBufferID);
+
+    glBufferData(GL_ARRAY_BUFFER,
+        sizeof(sVertex) * drawInfo.numberOfVertices,
+        (GLvoid*)drawInfo.pVertices,
+        (GL_STATIC_DRAW));
+
+
+    // Copy the index buffer into the video card, too
+    // Create an index buffer.
+    glGenBuffers(1, &(drawInfo.IndexBufferID));
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drawInfo.IndexBufferID);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,			// Type: Index element array
+        sizeof(unsigned int) * drawInfo.numberOfIndices,
+        (GLvoid*)drawInfo.pIndices,
+        GL_STATIC_DRAW);
+
+    // Set the vertex attributes.
+
+    GLint vcol_location = glGetAttribLocation(shaderProgramID, "vCol");	// program;
+    GLint vpos_location = glGetAttribLocation(shaderProgramID, "vPos");	// program
+    GLint vNormal_location = glGetAttribLocation(shaderProgramID, "vNormal");	// program;
+    GLint vTexureCoord_location = glGetAttribLocation(shaderProgramID, "vTexCoord");	// program;
+
+    // Set the vertex attributes for this shader
+    glEnableVertexAttribArray(vpos_location);	    // vPos
+    glVertexAttribPointer(vpos_location, 4,		// vPos
+        GL_FLOAT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, x));
+
+    glEnableVertexAttribArray(vcol_location);	    // vCol
+    glVertexAttribPointer(vcol_location, 4,		// vCol
+        GL_FLOAT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, r));
+
+    glEnableVertexAttribArray(vNormal_location);	// vNormal
+    glVertexAttribPointer(vNormal_location, 4,		// vNormal
+        GL_FLOAT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, nx));
+
+    glEnableVertexAttribArray(vTexureCoord_location);	// vTexCoord
+    glVertexAttribPointer(vTexureCoord_location, 2,		// vTexCoord
+        GL_FLOAT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, u));
+
+    glEnableVertexAttribArray(5);	// vBoneID
+    glVertexAttribPointer(5, 4,		// vBoneID
+        GL_INT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, boneIndex));
+
+    glEnableVertexAttribArray(6);		// vBoneWeight
+    //glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
+
+    glVertexAttribPointer(6, 4,		// vBoneWeight
+        GL_FLOAT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, boneWeights));
+
+    //glVertexAttribPointer(6, 4, sizeof(sVertex), GL_FALSE, stride, offset);
+    //glVertexAttribPointer(6, 4,		// vBoneWeight
+    //    				GL_FLOAT, GL_FALSE,
+    //    				sizeof(sVertex),
+    //    				(void*)offsetof(sVertex, tx));
+
+    // Now that all the parts are set up, set the VAO to zero
+    glBindVertexArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glDisableVertexAttribArray(vpos_location);
+    glDisableVertexAttribArray(vcol_location);
+    glDisableVertexAttribArray(vNormal_location);
+    glDisableVertexAttribArray(vTexureCoord_location);
+    glDisableVertexAttribArray(5);
+    glDisableVertexAttribArray(6);
+
+    // Store the draw information into the map
+
+   
 }
 
 bool cVAOManager::UpdateVAOBuffers(std::string fileName,
@@ -420,7 +498,9 @@ std::string cVAOManager::GenerateUniqueModelNameFromFile(std::string fileName)
 {
     std::string modelName = fileName;
 	std::stringstream ss;
+    EnterCriticalSection(&g_cs);
 	ss << fileName << "_" << this->m_map_ModelName_to_VAOID.size();
+    LeaveCriticalSection(&g_cs);
 	modelName = ss.str();
 	return modelName;
 }
