@@ -13,6 +13,7 @@ public:
 	~JsonReader();
 
 	bool LoadJsonFile(const char* filename, rapidjson::Document &document);
+
 	void WriteJsonFile(const char* filename, rapidjson::Document &document);
 
 };

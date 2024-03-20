@@ -449,7 +449,8 @@ void MeshManager::DrawTransformBox()
         else
         {
             ImGui::Text("Texture Slot: %s", selectedMesh->texture[i].c_str());
-            if(ImGui::SliderFloat("Mix Ratio", &selectedMesh->textureRatio[i], 0.0f, 1.0f))
+
+            if(ImGui::SliderFloat(("Mix Ratio #" + std::to_string(i)).c_str(), &selectedMesh->textureRatio[i], 0.0f, 1.0f))
             {
             }
             if (ImGui::Button("Remove Texture"))
