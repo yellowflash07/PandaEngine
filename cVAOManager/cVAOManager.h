@@ -20,9 +20,14 @@ typedef std::function<void(sModelDrawInfo)> OnModelLoadCallBack;
 
 struct LoadInfo;
 
+
+
 class cVAOManager
 {
 public:
+	cVAOManager();
+
+	static cVAOManager* getInstance();
 
 	bool LoadModelIntoVAOAI(std::string fileName,
 		sModelDrawInfo& drawInfo,

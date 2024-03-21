@@ -93,6 +93,181 @@ void MeshManager::LoadMeshAsync(std::string modelNameAtPath,
     }
 }
 
+void MeshManager::DrawObject(cMesh* pCurrentMesh, TransformComponent* transform)
+{
+    glm::mat4 matModel = transform->GetTransform();
+
+    
+
+    GLint matModel_UL = glGetUniformLocation(shaderProgramID, "matModel");
+    glUniformMatrix4fv(matModel_UL, 1, GL_FALSE, glm::value_ptr(matModel));
+
+
+    //   // Also calculate and pass the "inverse transpose" for the model matrix
+    glm::mat4 matModel_InverseTranspose = glm::inverse(glm::transpose(matModel));
+
+    //   // uniform mat4 matModel_IT;
+    GLint matModel_IT_UL = glGetUniformLocation(shaderProgramID, "matModel_IT");
+    glUniformMatrix4fv(matModel_IT_UL, 1, GL_FALSE, glm::value_ptr(matModel_InverseTranspose));
+
+
+    if (pCurrentMesh->bIsWireframe)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+    else
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
+    GLint bDoNotLight_UL = glGetUniformLocation(shaderProgramID, "bDoNotLight");
+
+    if (pCurrentMesh->bDoNotLight)
+    {
+        glUniform1f(bDoNotLight_UL, (GLfloat)GL_TRUE);
+    }
+    else
+    {
+        glUniform1f(bDoNotLight_UL, (GLfloat)GL_FALSE);
+    }
+
+    GLint bUseDebugColour_UL = glGetUniformLocation(shaderProgramID, "bUseDebugColour");
+    if (pCurrentMesh->bUseDebugColours)
+    {
+        glUniform1f(bUseDebugColour_UL, (GLfloat)GL_TRUE);
+        //uniform vec4 debugColourRGBA;
+        GLint debugColourRGBA_UL = glGetUniformLocation(shaderProgramID, "debugColourRGBA");
+        glUniform4f(debugColourRGBA_UL,
+            pCurrentMesh->wholeObjectDebugColourRGBA.r,
+            pCurrentMesh->wholeObjectDebugColourRGBA.g,
+            pCurrentMesh->wholeObjectDebugColourRGBA.b,
+            pCurrentMesh->wholeObjectDebugColourRGBA.a);
+    }
+    else
+    {
+        glUniform1f(bUseDebugColour_UL, (GLfloat)GL_FALSE);
+    }
+
+    GLint bhasVertexColors_UL = glGetUniformLocation(shaderProgramID, "hasVertexColor");
+    if (pCurrentMesh->hasVertexColors)
+    {
+        glUniform1f(bhasVertexColors_UL, (GLfloat)GL_TRUE);
+        GLint colour_UL = glGetUniformLocation(shaderProgramID, "color");
+        glUniform4f(colour_UL,
+            pCurrentMesh->color.r,
+            pCurrentMesh->color.g,
+            pCurrentMesh->color.b,
+            pCurrentMesh->color.a);
+    }
+    else
+    {
+        glUniform1f(bhasVertexColors_UL, (GLfloat)GL_FALSE);
+    }
+
+
+    // 
+
+    GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");
+    if (pCurrentMesh->isSkyBox)
+    {
+        glUniform1f(bIsSkyBox_UL, (GLfloat)GL_TRUE);
+        glCullFace(GL_FRONT);
+    }
+    else
+    {
+        glUniform1f(bIsSkyBox_UL, (GLfloat)GL_FALSE);
+        glCullFace(GL_BACK);
+    }
+
+    GLint uvoffset_ul = glGetUniformLocation(shaderProgramID, "UV_Offset");
+
+    glUniform2f(uvoffset_ul, pCurrentMesh->UV_Offset.x, pCurrentMesh->UV_Offset.y);
+
+    GLint isReflective_UL = glGetUniformLocation(shaderProgramID, "IsReflective");
+    if (pCurrentMesh->isReflective)
+    {
+        glUniform1f(isReflective_UL, (GLfloat)GL_TRUE);
+    }
+    else
+    {
+        glUniform1f(isReflective_UL, (GLfloat)GL_FALSE);
+    }
+
+    SetUpTextures(pCurrentMesh, shaderProgramID);
+
+    if (pCurrentMesh->transperancy < 1.0f)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else
+    {
+        glDisable(GL_BLEND);
+    }
+    GLint useBone_UL = glGetUniformLocation(shaderProgramID, "useBones");
+    glUniform1f(useBone_UL, pCurrentMesh->useBone ? (GLfloat)GL_TRUE : (GLfloat)GL_FALSE);
+
+    for (int j = 0; j < 150; ++j)
+    {
+        glm::mat4 boneMatrix = glm::mat4(1.0f);
+        std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+        GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+        glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+    }
+
+    //uniform float transparency;
+    GLint transparency_UL = glGetUniformLocation(shaderProgramID, "transparency");
+    glUniform1f(transparency_UL, pCurrentMesh->transperancy);
+
+    if (!pCurrentMesh->modelDrawInfo.meshName.empty())
+    {
+        if (pCurrentMesh->useBone)
+        {
+            CalculateMatrices(pCurrentMesh, pCurrentMesh->modelDrawInfo.RootNode,
+                glm::mat4(1.0f),
+                pCurrentMesh->modelDrawInfo);
+            //printf("----------------\n");
+            for (int j = 0; j < pCurrentMesh->modelDrawInfo.vecBoneInfo.size(); ++j)
+            {
+                glm::mat4 boneMatrix = pCurrentMesh->modelDrawInfo.vecBoneInfo[j].FinalTransformation;
+                std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+                GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+                glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+            }
+        }
+
+        // Found it!!!
+        if (!pCurrentMesh->hideParent)
+        {
+            glBindVertexArray(pCurrentMesh->modelDrawInfo.VAO_ID); 		//  enable VAO (and everything else)
+            glDrawElements(GL_TRIANGLES,
+                pCurrentMesh->modelDrawInfo.numberOfIndices,
+                GL_UNSIGNED_INT,
+                0);
+            glBindVertexArray(0);
+            // return;
+        }
+        // disable VAO (and everything else)
+
+    }
+
+
+    glm::mat4 matRemoveScaling = glm::scale(glm::mat4(1.0f),
+        glm::vec3(
+            1.0f / pCurrentMesh->transform.drawScale.x,
+            1.0f / pCurrentMesh->transform.drawScale.y,
+            1.0f / pCurrentMesh->transform.drawScale.z));
+
+    matModel = matModel * matRemoveScaling;
+
+    for (cMesh* pChild : pCurrentMesh->vec_pChildMeshes)
+    {
+
+        DrawObject(pChild, matModel, shaderProgramID);
+
+    }
+}
+
 void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProgramID)
 {
     glm::mat4 matModel = matModelParent;
@@ -241,16 +416,17 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     GLint transparency_UL = glGetUniformLocation(shaderProgramID, "transparency");
     glUniform1f(transparency_UL, pCurrentMesh->transperancy);
 
-    sModelDrawInfo modelInfo;
-    if (vaoManager->FindDrawInfoByModelName(pCurrentMesh->uniqueName, modelInfo))
+    if (!pCurrentMesh->modelDrawInfo.meshName.empty())
     {
         if (pCurrentMesh->useBone)
         {
-            CalculateMatrices(pCurrentMesh, modelInfo.RootNode, glm::mat4(1.0f), modelInfo);
+            CalculateMatrices(pCurrentMesh, pCurrentMesh->modelDrawInfo.RootNode, 
+                                        glm::mat4(1.0f), 
+                                        pCurrentMesh->modelDrawInfo);
             //printf("----------------\n");
-            for (int j = 0; j < modelInfo.vecBoneInfo.size(); ++j)
+            for (int j = 0; j < pCurrentMesh->modelDrawInfo.vecBoneInfo.size(); ++j)
             {
-                glm::mat4 boneMatrix = modelInfo.vecBoneInfo[j].FinalTransformation;
+                glm::mat4 boneMatrix = pCurrentMesh->modelDrawInfo.vecBoneInfo[j].FinalTransformation;
                 std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
                 GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
                 glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));                
@@ -260,15 +436,15 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
         // Found it!!!
         if (!pCurrentMesh->hideParent)
         {
-            glBindVertexArray(modelInfo.VAO_ID); 		//  enable VAO (and everything else)
+            glBindVertexArray(pCurrentMesh->modelDrawInfo.VAO_ID); 		//  enable VAO (and everything else)
             glDrawElements(GL_TRIANGLES,
-                modelInfo.numberOfIndices,
+                pCurrentMesh->modelDrawInfo.numberOfIndices,
                 GL_UNSIGNED_INT,
                 0);
             glBindVertexArray(0);
            // return;
         }
-		            // disable VAO (and everything else)
+	            // disable VAO (and everything else)
 
     }
 

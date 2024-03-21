@@ -9,6 +9,7 @@
 #include "AudioManager.h"
 #include "AssetLibrary.h"
 #include "RenderTexture.h"
+#include "Scene.h"
 
 class Engine
 {
@@ -29,6 +30,7 @@ public:
 	double deltaTime;
 	bool IsRunning;
 	void ShutDown();
+	void AddScene(Scene* scene);
 	RenderTexture* CreateRenderTexture(Camera* camera, std::vector<cMesh*> offScreenMesh, int width = 1920, int height = 1080);
 	GLFWwindow* window;
 	cLightManager* lightManager;
@@ -36,8 +38,9 @@ public:
 	cAudioManager* audioManager;
 	PhysicsManager* physicsManager;
 	GLuint shaderProgramID;
+	int currentScene = 0;
 private:
-	cShaderManager* shaderManager;
+	//cShaderManager* shaderManager;
 	glm::vec3 cameraEye;
 	glm::vec3 cameraTarget;
 	glm::vec3 upVector;
@@ -45,5 +48,7 @@ private:
 	int frameCount;
 	AssetLibrary assetLib;
 	std::vector<RenderTexture*> renderTextures;
+	std::vector<Scene*> scenes;
+
 	//Camera* camera;
 };

@@ -15,6 +15,7 @@
 #include <iostream>
 #include <chrono>
 
+static cVAOManager* instance = nullptr;
 
 CRITICAL_SECTION g_cs;
 
@@ -39,7 +40,7 @@ DWORD WINAPI LoadTheFileAsync(LPVOID lpParameter)
 
     loadInfo->result = vaoManager->m_LoadTheFile(loadInfo->fileName, loadInfo->resultInfo);
 
-    std::cout << "Thread completed" << std::endl;
+   // std::cout << "Thread completed" << std::endl;
     return 0;
 }
 
@@ -51,6 +52,16 @@ void cVAOManager::setBasePath(std::string basePathWithoutSlash)
     return;
 }
 
+
+cVAOManager::cVAOManager()
+{
+    instance = this;
+}
+
+cVAOManager* cVAOManager::getInstance()
+{
+    return instance;
+}
 
 bool cVAOManager::LoadModelIntoVAOAI(
     std::string fileName,
@@ -137,7 +148,7 @@ bool cVAOManager::FindDrawInfoByModelName(
 
 bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 {
-    std::cout << "Loading: " << fileName << std::endl;
+   // std::cout << "Loading: " << fileName << std::endl;
     Assimp::Importer importer;
     std::string filePath = this->m_basePathWithoutSlash + "/" + fileName;
     const aiScene* scene = importer.ReadFile(filePath, aiProcess_ValidateDataStructure | aiProcess_GenNormals);
@@ -317,8 +328,8 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo)
 
     }
 
-    std::cout << "Loaded: " << fileName 
-                << "Vertices: " << drawInfo.numberOfVertices << std::endl;
+ /*   std::cout << "Loaded: " << fileName 
+                << "Vertices: " << drawInfo.numberOfVertices << std::endl;*/
 
     return true;
 }

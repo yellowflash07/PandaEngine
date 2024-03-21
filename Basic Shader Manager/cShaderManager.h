@@ -63,6 +63,8 @@ public:
 
 	// Clears last error
 	std::string getLastError(void);
+
+	static cShaderManager* getInstance(void);
 private:
 	// Returns an empty string if it didn't work
 	bool m_loadSourceFromFile( cShader &shader );

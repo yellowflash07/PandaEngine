@@ -19,6 +19,7 @@ cShaderManager::~cShaderManager()
 	return;
 }
 
+static cShaderManager* instance = nullptr;
 
 bool cShaderManager::useShaderProgram( unsigned int ID )
 {
@@ -179,6 +180,15 @@ std::string cShaderManager::getLastError(void)
 	std::string lastErrorTemp = this->m_lastError;
 	this->m_lastError = "";
 	return lastErrorTemp;
+}
+
+cShaderManager* cShaderManager::getInstance(void)
+{
+	if (instance == nullptr)
+	{
+		instance = new cShaderManager();
+	}
+	return instance;
 }
 
 #include <iostream>

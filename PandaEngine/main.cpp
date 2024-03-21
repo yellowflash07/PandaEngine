@@ -49,8 +49,12 @@ int main(void)
 
     Scene* scene = new Scene("Test.pda");
 
-    GameObject* go = scene->CreateGameObject("Cube");
-    cMesh &mesh = go->AddComponent<cMesh>("MeshName.ply", "FriendlyName");
+    engine.AddScene(scene);
+
+    GameObject* go = scene->CreateGameObject("Sphere");
+    cMesh &mesh = go->AddComponent<cMesh>("Sphere_1_unit_Radius_UV.ply", "FriendlyName");
+    
+    go->GetComponent<TransformComponent>().setUniformDrawScale(100.0f);
 
     float currTime = 0;
     float myTime = 0;

@@ -21,7 +21,7 @@ Camera* camera;
 
 Engine::Engine()
 {
-	shaderManager = new cShaderManager();
+	//shaderManager = new cShaderManager();
 	meshManager = new MeshManager();
 	lightManager = new cLightManager();
     physicsManager = new PhysicsManager(meshManager);
@@ -129,6 +129,7 @@ void Engine::Update()
 
     meshManager->vaoManager->CheckQueue();
 
+ 
     //update lights
     lightManager->UpdateUniformValues(shaderProgramID);
 
@@ -137,6 +138,12 @@ void Engine::Update()
 
     //draw meshes
     meshManager->DrawAllObjects(shaderProgramID);   
+
+    if (scenes.size() > 0)
+    {
+        scenes[currentScene]->Update(deltaTime);
+    }
+
 
     //show asset library
     assetLib.RenderBox();
@@ -175,7 +182,7 @@ void Engine::Update()
 void Engine::SetShaderPath(std::string filePath)
 {
 	//shaderManager->setBasePath("../Assets/Shaders");
-	shaderManager->setBasePath(filePath);
+	cShaderManager::getInstance()->setBasePath(filePath);
 }
 
 void Engine::SetModelPath(std::string filePath)
@@ -222,13 +229,13 @@ bool Engine::LoadDefaultShaders()
     cShaderManager::cShader fragmentShader;
     fragmentShader.fileName = "fragmentShader.glsl";
 
-    if (!shaderManager->createProgramFromFile("shader01", vertexShader, fragmentShader))
+    if (!cShaderManager::getInstance()->createProgramFromFile("shader01", vertexShader, fragmentShader))
     {
         std::cout << "Error: Couldn't compile or link:" << std::endl;
-        std::cout << shaderManager->getLastError();
+        std::cout << cShaderManager::getInstance()->getLastError();
         return false;
     }
-    shaderProgramID = shaderManager->getIDFromFriendlyName("shader01");
+    shaderProgramID = cShaderManager::getInstance()->getIDFromFriendlyName("shader01");
     std::cout << "Shader compliled! Program ID: " << shaderProgramID << std::endl;
 
     camera->shaderProgramID = shaderProgramID;
@@ -252,7 +259,7 @@ void Engine::LoadSave()
 
 void Engine::ShutDown()
 {
-    delete shaderManager;
+    //delete shaderManager;
     delete meshManager;
     delete lightManager;
     delete physicsManager;
@@ -263,6 +270,12 @@ void Engine::ShutDown()
     glfwDestroyWindow(window);
     glfwTerminate();
     //exit(EXIT_SUCCESS);
+}
+
+void Engine::AddScene(Scene* scene)
+{
+    scene->Init(this->meshManager);
+    scenes.push_back(scene);
 }
 
 RenderTexture* Engine::CreateRenderTexture(Camera* camera, std::vector<cMesh*> offScreenMesh, int width, int height)

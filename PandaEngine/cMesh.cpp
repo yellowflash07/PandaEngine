@@ -1,12 +1,10 @@
 #include "cMesh.h"
-
+#include <iostream>
+#include "../cVAOManager/cVAOManager.h"
+#include "../Basic Shader Manager/cShaderManager.h"
 // Constructor: Called on creation   c'tor
 cMesh::cMesh()
 {
-	//this->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-//	this->drawOrientation = glm::vec3(0.0f, 0.0f, 0.0f);
-//	this->setRotationFromEuler(glm::vec3(0.0f, 0.0f, 0.0f));
-//	this->drawScale = glm::vec3(1.0f);
 
 	this->bIsWireframe = false;
 	this->bDoNotLight = false;
@@ -69,6 +67,46 @@ void cMesh::AddChild(cMesh* child)
 // static
 unsigned int cMesh::m_nextUniqueID = cMesh::FIRST_UNIQUE_ID;
 
+
+cMesh::cMesh(std::string meshName, std::string friendlyName)
+{
+	//std::cout << "!!!!!!!!!!!!!!" << std::endl;
+	std::cout << meshName << "," << friendlyName << std::endl;
+	cVAOManager* pVAOManager = cVAOManager::getInstance();	
+	//HACK:
+	cShaderManager* pShaderManager = cShaderManager::getInstance();
+	GLint shaderID = pShaderManager->getIDFromFriendlyName("shader01");
+	if (!pVAOManager->LoadModelIntoVAOAI(meshName, this->modelDrawInfo, shaderID))
+	{
+	//	std::cout << "Didn't load model" << std::endl;
+	}
+	else
+	{
+	//	std::cout << "Loaded model" << std::endl;
+	}
+	this->meshName = meshName;
+	this->uniqueName = modelDrawInfo.uniqueName;
+	this->friendlyName = friendlyName;
+	this->bIsWireframe = false;
+	this->bDoNotLight = false;
+	this->bIsVisible = true;
+	this->bUseDebugColours = false;
+	this->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	this->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	this->isSkyBox = false;
+	this->hasVertexColors = false;
+	this->isReflective = false;
+	this->texture[0] = "";
+	this->texture[1] = "";
+	this->texture[2] = "";
+	this->texture[3] = "";
+	this->textureRatio[0] = 1.0f;
+	this->textureRatio[1] = 1.0f;
+	this->textureRatio[2] = 1.0f;
+	this->textureRatio[3] = 1.0f;
+	this->m_UniqueID = cMesh::m_nextUniqueID;
+	cMesh::m_nextUniqueID++;
+}
 
 // Destructor: Called on deletion   d'tor
 cMesh::~cMesh()

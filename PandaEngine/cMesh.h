@@ -13,7 +13,9 @@
 class cMesh
 {
 public:
-	cMesh();	
+	cMesh();
+
+	cMesh(std::string meshName, std::string friendlyName);
 	~cMesh();		
 
 	std::string meshName;
@@ -39,7 +41,6 @@ public:
 	std::string maskTexture;
 	GLuint renderTextureID =0;
 	glm::vec2 UV_Offset;
-
 	float transperancy = 1.0f;
 	std::vector<cMesh*> vec_pChildMeshes;
 	unsigned int getUniqueID(void);

@@ -20,6 +20,24 @@ GameObject* Scene::CreateGameObject(std::string name)
 	return pGameObject;
 }
 
+void Scene::Update(float deltaTime)
+{
+	for (auto go : m_GameObjects)
+	{
+		TransformComponent* transform = &go->GetComponent<TransformComponent>();
+		cMesh* mesh = &go->GetComponent<cMesh>();
+		if (mesh != nullptr)
+		{
+			meshManager->DrawObject(mesh, transform);
+		}
+	}
+}
+
+void Scene::Init(MeshManager* meshManager)
+{
+	this->meshManager = meshManager;
+}
+
 
 
 

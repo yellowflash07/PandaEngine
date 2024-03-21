@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "SceneSaver.h"
+#include "GameObject.h"
 #include <functional>
 
 typedef std::function<void(cMesh*)> OnMeshLoadCallBack;
@@ -21,6 +22,7 @@ public:
 	cMesh* LoadMesh(std::string modelNameAtPath, std::string friendlyName, unsigned int shaderProgramID);
 	void LoadMeshAsync(std::string modelNameAtPath, std::string friendlyName,
 		unsigned int shaderProgramID, OnMeshLoadCallBack callback);
+	void DrawObject(cMesh* pMesh, TransformComponent* transform);
 	void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProgramID);
 	void DrawAllObjects(GLuint shaderProgramID);
 	void SetBasePath(std::string basePath);
