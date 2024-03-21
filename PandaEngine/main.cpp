@@ -3,10 +3,10 @@
 #include "Random.h"
 #include <iostream>
 #include "AnimationSystem.h"
-#include <chrono>
 extern Camera* camera;
 int keyHit = 0;
 
+#include "Scene.h"
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -24,8 +24,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 int main(void)
 {
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
     Engine engine;
     if (!engine.Initialize())
     {
@@ -47,14 +45,17 @@ int main(void)
     
     cMesh* skyBoxMesh = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "skybox");
     skyBoxMesh->isSkyBox = true;
-    skyBoxMesh->setUniformDrawScale(5000.0f);
+    skyBoxMesh->transform.setUniformDrawScale(5000.0f);
+
+    Scene* scene = new Scene("Test.pda");
+
+    GameObject* go = scene->CreateGameObject("Cube");
+    cMesh &mesh = go->AddComponent<cMesh>("MeshName.ply", "FriendlyName");
 
     float currTime = 0;
     float myTime = 0;
 
     int frameNumber = 0;
-
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     while (!glfwWindowShouldClose(engine.window))
     {
