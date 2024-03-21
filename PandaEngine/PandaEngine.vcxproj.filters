@@ -79,6 +79,12 @@
     <Filter Include="Physics\SoftBody">
       <UniqueIdentifier>{8e26b1cb-dd2c-4ca2-8645-71ce86b28634}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JsonReader">
+      <UniqueIdentifier>{6c824607-cddd-4664-aed9-806de708f037}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{4844d743-c274-4551-9c5c-d6f8fcf56efb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -230,6 +236,15 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonReader.cpp">
+      <Filter>JsonReader</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -403,6 +418,21 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonReader.h">
+      <Filter>JsonReader</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Extern\include\entt\entt.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

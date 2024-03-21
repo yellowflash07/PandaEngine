@@ -23,7 +23,7 @@ void SoftBody::Init()
 		ogVertices[index] = this->ModelInfo.pVertices[index];
 
 		// Apply transformation
-		vert = pMesh->GetTransform() * vert;
+		vert = pMesh->transform.GetTransform() * vert;
 
 		pParticle->position = glm::vec3(vert.x, vert.y, vert.z);
 
@@ -77,7 +77,7 @@ void SoftBody::UpdateVertexPositions(void)
 
 		glm::vec4 vert = glm::vec4(curParticle->position, 1.0f);
 		
-		glm::mat4 matModel = pMesh->GetTransform();
+		glm::mat4 matModel = pMesh->transform.GetTransform();
 		matModel = glm::inverse((matModel));
 
 		vert = matModel * vert;
@@ -310,7 +310,7 @@ void SoftBody::Reset()
 		glm::vec4 vert = glm::vec4(this->ogVertices[i].x,
 									this->ogVertices[i].y,
 									this->ogVertices[i].z, 1.0f);
-		vert = pMesh->GetTransform() * vert;
+		vert = pMesh->transform.GetTransform() * vert;
 		vec_pParticles[i]->position = vert;
 		vec_pParticles[i]->old_position = vert;
 		vec_pParticles[i]->bDisconnected = false;
@@ -335,7 +335,7 @@ void SoftBody::ApplyCollision()
 		{
 			PhysicsShapes::sSphere* sphere = (PhysicsShapes::sSphere*)(sphereBody->shape);
 
-			glm::vec3 sphereCentre = sphereBody->mesh->drawPosition;
+			glm::vec3 sphereCentre = sphereBody->mesh->transform.drawPosition;
 			float sphereRadius = sphere->radius;
 
 			float distanceToSphere = glm::distance(pCurrentParticle->position,

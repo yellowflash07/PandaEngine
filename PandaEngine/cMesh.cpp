@@ -3,10 +3,10 @@
 // Constructor: Called on creation   c'tor
 cMesh::cMesh()
 {
-	this->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+	//this->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 //	this->drawOrientation = glm::vec3(0.0f, 0.0f, 0.0f);
-	this->setRotationFromEuler(glm::vec3(0.0f, 0.0f, 0.0f));
-	this->drawScale = glm::vec3(1.0f);
+//	this->setRotationFromEuler(glm::vec3(0.0f, 0.0f, 0.0f));
+//	this->drawScale = glm::vec3(1.0f);
 
 	this->bIsWireframe = false;
 	this->bDoNotLight = false;
@@ -28,7 +28,7 @@ unsigned int cMesh::getUniqueID(void)
 
 void cMesh::calcExtents(void)
 {
-	glm::mat4 matModel = GetTransform();
+	glm::mat4 matModel = transform.GetTransform();
 
 	for (size_t i = 0; i < modelDrawInfo.numberOfVertices; i++)
 	{
@@ -65,27 +65,6 @@ void cMesh::AddChild(cMesh* child)
 	this->vec_pChildMeshes.push_back(child);
 }
 
-glm::mat4 cMesh::GetTransform()
-{
-	glm::mat4 matModel = glm::mat4(1.0f);
-
-	// Translation
-	glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f), drawPosition);
-
-	// Rotation matrix generation
-	glm::mat4 matRotation = glm::mat4(get_qOrientation());
-
-	glm::mat4 matScale = glm::scale(glm::mat4(1.0f), drawScale);
-
-	// Combine all these transformation
-	//matModel = 
-
-	//matModel = matModel ;
-
-	//matModel = matModel ;
-
-	return matModel * matTranslate * matRotation * matScale;
-}
 
 // static
 unsigned int cMesh::m_nextUniqueID = cMesh::FIRST_UNIQUE_ID;
@@ -97,10 +76,6 @@ cMesh::~cMesh()
 
 }
 
-void cMesh::setUniformDrawScale(float scale)
-{
-	this->drawScale.x = this->drawScale.y = this->drawScale.z = scale;
-	return;
-}
+
 
 

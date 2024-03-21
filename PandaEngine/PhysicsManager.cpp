@@ -41,9 +41,9 @@ void PhysicsManager::CheckIntersections(float deltaTime)
 			// This part: (Vel * DeltaTime)	
 			glm::vec3 deltaPosition = pObject->velocity * (float)deltaTime;
 
-			pObject->mesh->drawPosition.x += deltaPosition.x;
-			pObject->mesh->drawPosition.y += deltaPosition.y;
-			pObject->mesh->drawPosition.z += deltaPosition.z;
+			pObject->mesh->transform.drawPosition.x += deltaPosition.x;
+			pObject->mesh->transform.drawPosition.y += deltaPosition.y;
+			pObject->mesh->transform.drawPosition.z += deltaPosition.z;
 
 			// Update the AABBs
 			for (cAABB* pAABB : pObject->aabbs)
@@ -321,7 +321,7 @@ bool PhysicsManager::m_Sphere_Sphere_IntersectionTest(PhysicsBody* pSphereA, Phy
 	PhysicsShapes::sSphere* sphereB = (PhysicsShapes::sSphere*)(pShpereB->shape);
 
 
-	float distance = glm::distance(pSphereA->mesh->drawPosition, pShpereB->mesh->drawPosition);
+	float distance = glm::distance(pSphereA->mesh->transform.drawPosition, pShpereB->mesh->transform.drawPosition);
 	float radiusSum = sphereA->radius + sphereB->radius;
 
 	if (distance < radiusSum)
@@ -329,7 +329,7 @@ bool PhysicsManager::m_Sphere_Sphere_IntersectionTest(PhysicsBody* pSphereA, Phy
 
 		// impact speed
 		glm::vec3 v = (pSphereA->velocity - pShpereB->velocity);
-		glm::vec3 normal = (pSphereA->mesh->drawPosition - pShpereB->mesh->drawPosition);
+		glm::vec3 normal = (pSphereA->mesh->transform.drawPosition - pShpereB->mesh->transform.drawPosition);
 		
 		normal = glm::normalize(normal);
 
@@ -434,10 +434,10 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 
 		// ******************************************************
 
-		glm::vec3 thisTriangleClosestPoint = this->ClosestPtPointTriangle(sphere->mesh->drawPosition,v1, v2, v3);
+		glm::vec3 thisTriangleClosestPoint = this->ClosestPtPointTriangle(sphere->mesh->transform.drawPosition,v1, v2, v3);
 
 		// Is this the closest so far
-		float distanceToThisTriangle = glm::distance(thisTriangleClosestPoint, sphere->mesh->drawPosition);
+		float distanceToThisTriangle = glm::distance(thisTriangleClosestPoint, sphere->mesh->transform.drawPosition);
 
 		if (distanceToThisTriangle < closestDistanceSoFar)
 		{

@@ -8,6 +8,7 @@
 #include <vector>
 #include "../cVAOManager/sModelDrawInfo.h"
 #include "../PandaEngine/GraphicsCommon.h"
+#include "TransformComponent.h"
 
 class cMesh
 {
@@ -18,51 +19,10 @@ public:
 	std::string meshName;
 	std::string uniqueName;
 	std::string friendlyName;		
-	glm::vec3 drawPosition;
-	glm::vec3 eulerRotation;
 
-	void setRotationFromEuler(glm::vec3 newEulerAngleXYZ)
-	{
-		eulerRotation = newEulerAngleXYZ;
-		this->m_qOrientation = glm::quat(eulerRotation);
-	}
-
-	void setRotationFromQuat(glm::quat newQuat)
-	{
-		eulerRotation = glm::eulerAngles(newQuat);
-		this->m_qOrientation = newQuat;
-	}
-
-	void Rotate(glm::vec3 EulerAngleXYZ_Adjust)
-	{
-		glm::quat qChange = glm::quat(EulerAngleXYZ_Adjust);
-		this->m_qOrientation *= qChange;
-	}
-
-	glm::quat get_qOrientation(void)
-	{
-		return this->m_qOrientation;
-	}
-
-	glm::vec3 GetForwardVector(void)
-	{
-		glm::mat4 matRotation = glm::mat4(this->m_qOrientation);
-		glm::vec4 forward4 = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-		glm::vec4 newForward4 = matRotation * forward4;
-		glm::vec3 newForward = newForward4;
-		return newForward;
-	}
-
-	glm::vec3 GetRightVector(void)
-	{
-		glm::vec3 newRight = glm::cross(this->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
-		return newRight;
-	}
+	TransformComponent transform;
 
 
-
-	glm::vec3 drawScale;
-	void setUniformDrawScale(float scale);
 	bool bIsVisible;
 
 	bool bUseDebugColours;
@@ -96,19 +56,16 @@ public:
 	
 	sModelDrawInfo modelDrawInfo;
 
-
 	bool isChild = false;
 	void AddChild(cMesh* child);
 	bool hideParent = false;
 	bool useBone = false;
-	glm::mat4 GetTransform();
 	//glm::mat4 AnimatedTransform;
 	std::map<std::string, glm::mat4> boneTransformations;
 private:
 	unsigned int m_UniqueID;
 	static const unsigned int FIRST_UNIQUE_ID = 1000;
 	static unsigned int m_nextUniqueID;
-	glm::quat m_qOrientation;
 };
 
 #endif

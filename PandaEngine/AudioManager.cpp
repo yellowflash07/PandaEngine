@@ -143,12 +143,12 @@ void cAudioManager::AddGeometry(cMesh* mesh, float direct, float reverb, bool do
     FMODCheckError(result);
 
     FMOD_VECTOR fmodPosition;
-    GLMToFMOD(mesh->drawPosition, fmodPosition);
+    GLMToFMOD(mesh->transform.drawPosition, fmodPosition);
     result = geometry->setPosition(&fmodPosition);
     FMODCheckError(result);
 
     FMOD_VECTOR fmodScale;
-    GLMToFMOD(mesh->drawScale, fmodScale);
+    GLMToFMOD(mesh->transform.drawScale, fmodScale);
     result = geometry->setScale(&fmodScale);
     FMODCheckError(result);
 

@@ -59,7 +59,7 @@ struct PhysicsBody
 			pAABB->minXYZ *= pAABB->scale;
 			pAABB->maxXYZ *= pAABB->scale;
 
-			aabbs[i]->UpdateAABBPosition(mesh->drawPosition);
+			aabbs[i]->UpdateAABBPosition(mesh->transform.drawPosition);
 		}
 	}
 

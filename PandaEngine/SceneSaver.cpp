@@ -25,9 +25,9 @@ void SceneSaver::SaveMeshes(std::vector<cMesh*> meshes)
 
             file << "Mesh Name:" << mesh->meshName << "\n";
             file << "Friendly Name:" << mesh->friendlyName << "\n";
-            file << "Position:" << mesh->drawPosition.x << " " << mesh->drawPosition.y << " " << mesh->drawPosition.z << "\n";
-            file << "Rotation:" << mesh->eulerRotation.x << " " << mesh->eulerRotation.y << " " << mesh->eulerRotation.z << "\n";
-            file << "Scale:" << mesh->drawScale.x << " " << mesh->drawScale.y << " " << mesh->drawScale.z << "\n";
+            file << "Position:" << mesh->transform.drawPosition.x << " " << mesh->transform.drawPosition.y << " " << mesh->transform.drawPosition.z << "\n";
+            file << "Rotation:" << mesh->transform.eulerRotation.x << " " << mesh->transform.eulerRotation.y << " " << mesh->transform.eulerRotation.z << "\n";
+            file << "Scale:" << mesh->transform.drawScale.x << " " << mesh->transform.drawScale.y << " " << mesh->transform.drawScale.z << "\n";
             file << "Color:" << mesh->color.x << " " << mesh->color.y << " " << mesh->color.z << " " << mesh->color.w << "\n";
             file << "Transparency:" << mesh->transperancy << "\n";
 
@@ -73,9 +73,9 @@ std::vector<cMesh*> SceneSaver::LoadMeshes()
                         cMesh* newMesh = new cMesh;
                         newMesh->meshName = currentMesh.meshName;
                         newMesh->friendlyName = currentMesh.friendlyName;
-                        newMesh->drawPosition = currentMesh.drawPosition;
-                        newMesh->eulerRotation = currentMesh.eulerRotation;
-                        newMesh->drawScale = currentMesh.drawScale;
+                        newMesh->transform.drawPosition = currentMesh.transform.drawPosition;
+                        newMesh->transform.eulerRotation = currentMesh.transform.eulerRotation;
+                        newMesh->transform.drawScale = currentMesh.transform.drawScale;
                         newMesh->color = currentMesh.color;
                         newMesh->transperancy = currentMesh.transperancy;
                         newMesh->texture[0] = currentMesh.texture[0];
@@ -98,15 +98,15 @@ std::vector<cMesh*> SceneSaver::LoadMeshes()
                 }
                 else if (token == "Position")
                 {
-                    iss >> currentMesh.drawPosition.x >> currentMesh.drawPosition.y >> currentMesh.drawPosition.z;
+                    iss >> currentMesh.transform.drawPosition.x >> currentMesh.transform.drawPosition.y >> currentMesh.transform.drawPosition.z;
                 }
                 else if (token == "Rotation") 
                 {
-                    iss >> currentMesh.eulerRotation.x >> currentMesh.eulerRotation.y >> currentMesh.eulerRotation.z;
+                    iss >> currentMesh.transform.eulerRotation.x >> currentMesh.transform.eulerRotation.y >> currentMesh.transform.eulerRotation.z;
                 }
                 else if (token == "Scale") 
                 {
-                    iss >> currentMesh.drawScale.x >> currentMesh.drawScale.y >> currentMesh.drawScale.z;
+                    iss >> currentMesh.transform.drawScale.x >> currentMesh.transform.drawScale.y >> currentMesh.transform.drawScale.z;
                 }
                 else if (token == "Color")
                 {
@@ -166,9 +166,9 @@ std::vector<cMesh*> SceneSaver::LoadMeshes()
             cMesh* newMesh = new cMesh;
             newMesh->meshName = currentMesh.meshName;
             newMesh->friendlyName = currentMesh.friendlyName;
-            newMesh->drawPosition = currentMesh.drawPosition;
-            newMesh->eulerRotation = currentMesh.eulerRotation;
-            newMesh->drawScale = currentMesh.drawScale;
+            newMesh->transform.drawPosition = currentMesh.transform.drawPosition;
+            newMesh->transform.eulerRotation = currentMesh.transform.eulerRotation;
+            newMesh->transform.drawScale = currentMesh.transform.drawScale;
             newMesh->color = currentMesh.color;
             newMesh->transperancy = currentMesh.transperancy;
             newMesh->texture[0] = currentMesh.texture[0];

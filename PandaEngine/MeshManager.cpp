@@ -99,19 +99,19 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
 
     // Translation
     glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
-        glm::vec3(pCurrentMesh->drawPosition.x,
-            pCurrentMesh->drawPosition.y,
-            pCurrentMesh->drawPosition.z));
+        glm::vec3(pCurrentMesh->transform.drawPosition.x,
+            pCurrentMesh->transform.drawPosition.y,
+            pCurrentMesh->transform.drawPosition.z));
 
     //rotation
-    glm::mat4 matRotation = glm::mat4(pCurrentMesh->get_qOrientation());
+    glm::mat4 matRotation = glm::mat4(pCurrentMesh->transform.get_qOrientation());
 
 
     // Scaling matrix
     glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
-        glm::vec3(pCurrentMesh->drawScale.x,
-            pCurrentMesh->drawScale.y,
-            pCurrentMesh->drawScale.z));
+        glm::vec3(pCurrentMesh->transform.drawScale.x,
+            pCurrentMesh->transform.drawScale.y,
+            pCurrentMesh->transform.drawScale.z));
     //--------------------------------------------------------------
 
     // Combine all these transformation
@@ -275,9 +275,9 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
 
     glm::mat4 matRemoveScaling = glm::scale(glm::mat4(1.0f),
         glm::vec3(
-            1.0f / pCurrentMesh->drawScale.x,
-            1.0f / pCurrentMesh->drawScale.y,
-            1.0f / pCurrentMesh->drawScale.z));
+            1.0f / pCurrentMesh->transform.drawScale.x,
+            1.0f / pCurrentMesh->transform.drawScale.y,
+            1.0f / pCurrentMesh->transform.drawScale.z));
 
     matModel = matModel * matRemoveScaling;
 
@@ -366,25 +366,25 @@ void MeshManager::DrawTransformBox()
 
     ImGui::SetNextWindowContentSize(ImVec2(250, 250));
     ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
-    ImGui::InputFloat("xP", &selectedMesh->drawPosition.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
-    ImGui::InputFloat("yP", &selectedMesh->drawPosition.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
-    ImGui::InputFloat("zP", &selectedMesh->drawPosition.z); 
+    ImGui::InputFloat("xP", &selectedMesh->transform.drawPosition.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("yP", &selectedMesh->transform.drawPosition.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("zP", &selectedMesh->transform.drawPosition.z);
 
     ImGui::Text("Rotation"); ImGui::SetNextItemWidth(40);
-    glm::vec3 euler = selectedMesh->eulerRotation;
+    glm::vec3 euler = selectedMesh->transform.eulerRotation;
     ImGui::InputFloat("xR", &euler.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("yR", &euler.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
     ImGui::InputFloat("zR", &euler.z);
-    selectedMesh->setRotationFromEuler(euler);
+    selectedMesh->transform.setRotationFromEuler(euler);
 
     ImGui::Text("Scale"); ImGui::SetNextItemWidth(40);
-    ImGui::InputFloat("xS", &selectedMesh->drawScale.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
-    ImGui::InputFloat("yS", &selectedMesh->drawScale.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
-    ImGui::InputFloat("zS", &selectedMesh->drawScale.z); ImGui::SetNextItemWidth(100);
+    ImGui::InputFloat("xS", &selectedMesh->transform.drawScale.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("yS", &selectedMesh->transform.drawScale.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+    ImGui::InputFloat("zS", &selectedMesh->transform.drawScale.z); ImGui::SetNextItemWidth(100);
 
     ImGui::SliderFloat("Transparency", &selectedMesh->transperancy, 0.0f, 1.0f); ImGui::SameLine();
 
-    glm::mat4 meshTransform = selectedMesh->GetTransform();
+    glm::mat4 meshTransform = selectedMesh->transform.GetTransform();
 
     static ImGuizmo::OPERATION gizmoOperation(ImGuizmo::OPERATION::UNIVERSAL);
     bool isTranslateRadio = false;
@@ -421,9 +421,9 @@ void MeshManager::DrawTransformBox()
 		glm::vec3 skew;
 		glm::vec4 perspective;
 		glm::decompose(meshTransform, scale, rotation, position, skew, perspective);
-		selectedMesh->drawPosition = position;
-		selectedMesh->drawScale = scale;
-		selectedMesh->setRotationFromQuat(rotation);
+		selectedMesh->transform.drawPosition = position;
+		selectedMesh->transform.drawScale = scale;
+		selectedMesh->transform.setRotationFromQuat(rotation);
 	}
 
     ImGui::NewLine();
@@ -531,16 +531,16 @@ bool MeshManager::GetTransformedMeshDrawInfo(std::string friendlyName, sModelDra
 
     glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
     glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
-        		                glm::vec3(pCurrentMesh->drawPosition.x,
-                    			pCurrentMesh->drawPosition.y,
-                    			pCurrentMesh->drawPosition.z));
+        		                glm::vec3(pCurrentMesh->transform.drawPosition.x,
+                    			pCurrentMesh->transform.drawPosition.y,
+                    			pCurrentMesh->transform.drawPosition.z));
 
-    glm::mat4 matRotation = glm::mat4(pCurrentMesh->get_qOrientation());
+    glm::mat4 matRotation = glm::mat4(pCurrentMesh->transform.get_qOrientation());
 
     glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
-        		                glm::vec3(pCurrentMesh->drawScale.x,
-                    			pCurrentMesh->drawScale.y,
-                    			pCurrentMesh->drawScale.z));
+        		                glm::vec3(pCurrentMesh->transform.drawScale.x,
+                    			pCurrentMesh->transform.drawScale.y,
+                    			pCurrentMesh->transform.drawScale.z));
 
     matModel = matModel * matTranslate;         // Done last
     matModel = matModel * matRotation;

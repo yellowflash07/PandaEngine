@@ -40,10 +40,10 @@ bool FollowObject::Execute(double deltaTime)
 		return false;
 	}
 
-	glm::vec3 position = target->drawPosition + offset;
+	glm::vec3 position = target->transform.drawPosition + offset;
 	//mesh->drawPosition = position;
 	
-	mesh->drawPosition = lerp(mesh->drawPosition, position, (float)deltaTime * minSpeed);
+	mesh->transform.drawPosition = lerp(mesh->transform.drawPosition, position, (float)deltaTime * minSpeed);
 
 	return false;
 }

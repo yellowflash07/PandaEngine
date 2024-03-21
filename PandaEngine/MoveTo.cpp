@@ -39,21 +39,21 @@ bool MoveTo::Execute(double deltaTime)
 
 	if (toSet)
 	{
-		float distance = glm::distance(mesh->drawPosition, to);
+		float distance = glm::distance(mesh->transform.drawPosition, to);
 		if (distance > 0.1f)
 		{
-			glm::vec3 direction = glm::normalize(to - mesh->drawPosition);
-			mesh->drawPosition += direction * speed * (float)deltaTime;
+			glm::vec3 direction = glm::normalize(to - mesh->transform.drawPosition);
+			mesh->transform.drawPosition += direction * speed * (float)deltaTime;
 			return false;
 		}
 	}
 	if (targetSet)
 	{
-		float distance = glm::distance(mesh->drawPosition, target->drawPosition);
+		float distance = glm::distance(mesh->transform.drawPosition, target->transform.drawPosition);
 		if (distance > 0.1f)
 		{
-			glm::vec3 direction = glm::normalize(target->drawPosition - mesh->drawPosition);
-			mesh->drawPosition += direction * speed * (float)deltaTime;
+			glm::vec3 direction = glm::normalize(target->transform.drawPosition - mesh->transform.drawPosition);
+			mesh->transform.drawPosition += direction * speed * (float)deltaTime;
 			return false;
 		}
 	}

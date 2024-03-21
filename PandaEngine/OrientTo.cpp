@@ -49,7 +49,7 @@ bool OrientTo::Execute(double deltaTime)
 	glm::quat targetOrientation = glm::quat(0,0,0,0);
 	if (targetPositionSet)
 	{
-		glm::vec3 direction = glm::normalize(mesh->drawPosition - to->drawPosition);
+		glm::vec3 direction = glm::normalize(mesh->transform.drawPosition - to->transform.drawPosition);
 		targetOrientation = glm::quatLookAt(direction, glm::vec3(0, 1, 0));
 	}
 	if(targetRotationSet)
@@ -62,7 +62,7 @@ bool OrientTo::Execute(double deltaTime)
 
 	if (speed > 0)
 	{
-		resultQuat = glm::slerp(glm::normalize(mesh->get_qOrientation()), glm::normalize(targetOrientation), speed * (float)deltaTime);
+		resultQuat = glm::slerp(glm::normalize(mesh->transform.get_qOrientation()), glm::normalize(targetOrientation), speed * (float)deltaTime);
 		float length = glm::length(glm::normalize(targetOrientation) - glm::normalize(resultQuat));
 		if (length <= 0.001f)
 		{
@@ -70,15 +70,15 @@ bool OrientTo::Execute(double deltaTime)
 			return true;  // Return false to indicate completion
 		}
 
-		mesh->setRotationFromQuat(glm::normalize(resultQuat));
+		mesh->transform.setRotationFromQuat(glm::normalize(resultQuat));
 		// Check if the interpolation is complete based on speed
 		//std::cout << "Result: " << length << std::endl;
 	}
 	
 	if (time > 0)
 	{
-		resultQuat = glm::slerp(glm::normalize(mesh->get_qOrientation()), targetOrientation, (float)deltaTime/ time);
-		mesh->setRotationFromQuat(resultQuat);
+		resultQuat = glm::slerp(glm::normalize(mesh->transform.get_qOrientation()), targetOrientation, (float)deltaTime/ time);
+		mesh->transform.setRotationFromQuat(resultQuat);
 		
 		if (glm::length(targetOrientation - resultQuat) < 0.001f)
 		{
