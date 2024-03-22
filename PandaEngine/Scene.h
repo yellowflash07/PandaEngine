@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "TransformComponent.h"
 #include "MeshManager.h"
+#include "PhysicsManager.h"
+#include "AnimationSystem.h"
 class Scene
 {
 public:
@@ -16,14 +18,16 @@ public:
 	GameObject* CreateGameObject(std::string name);
 
 	void Update(float deltaTime);
-	MeshManager* meshManager;
 
-	void Init(MeshManager* meshManager);
+
+	void Init(MeshManager* meshManager, PhysicsManager* phyManager);
 
 private:
 	entt::registry m_Registry;
 	entt::entity m_currentEntity;
 	std::string name;
 	std::vector<GameObject*> m_GameObjects;
+	MeshManager* meshManager;
+	PhysicsManager* phyManager;
 };
 

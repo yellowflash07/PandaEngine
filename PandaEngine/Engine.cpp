@@ -84,7 +84,7 @@ bool Engine::Initialize()
 
     LoadDefaultLights();
 
-
+    meshManager->shaderProgramID = shaderProgramID;
     assetLib.m_texManager = meshManager->GetTextureManager();
     assetLib.m_meshManager = meshManager;
     assetLib.shaderProgramID = shaderProgramID;
@@ -127,6 +127,11 @@ void Engine::Update()
     // (Usually) the default - does NOT draw "back facing" triangles
     glCullFace(GL_BACK);
 
+    // Time per frame
+    double currentTime = glfwGetTime();
+    deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+
     meshManager->vaoManager->CheckQueue();
 
  
@@ -137,21 +142,18 @@ void Engine::Update()
     camera->Update(window, deltaTime);
 
     //draw meshes
-    meshManager->DrawAllObjects(shaderProgramID);   
+  //  meshManager->DrawAllObjects(shaderProgramID);   
 
     if (scenes.size() > 0)
     {
-        scenes[currentScene]->Update(deltaTime);
+        scenes[currentScene]->Update((float)deltaTime);
     }
 
 
     //show asset library
     assetLib.RenderBox();
 
-    // Time per frame
-    double currentTime = glfwGetTime();
-    deltaTime = currentTime - lastTime;
-    lastTime = currentTime;
+   
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
@@ -274,7 +276,7 @@ void Engine::ShutDown()
 
 void Engine::AddScene(Scene* scene)
 {
-    scene->Init(this->meshManager);
+    scene->Init(this->meshManager, this->physicsManager);
     scenes.push_back(scene);
 }
 

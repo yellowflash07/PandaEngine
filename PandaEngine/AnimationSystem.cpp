@@ -4,6 +4,10 @@
 
 AnimationSystem::AnimationSystem()
 {
+	m_isPaused = false;
+	animationSpeed = 1.0f;
+	frameCount = 0.0f;
+	currentAnimationIndex = 0;
 }
 
 AnimationSystem::~AnimationSystem()
@@ -13,17 +17,17 @@ AnimationSystem::~AnimationSystem()
 void AnimationSystem::Update(float dt)
 {
 	// Update all animations
-	for (Animation* anim : m_animations)
-	{
-		// Skip if paused
-		if (m_isPaused)
-		{
-			continue;
-		}
-		//std::cout << dt << std::endl;
-		UpdateAnimation(anim, dt);
-		UpdateBoneTransforms(anim->mesh, *anim->mesh->modelDrawInfo.RootNode, dt);
-	}
+	//for (Animation* anim : m_animations)
+	//{
+	//	// Skip if paused
+	//	if (m_isPaused)
+	//	{
+	//		continue;
+	//	}
+	//	//std::cout << dt << std::endl;
+	//	UpdateAnimation(anim, dt);
+	//	UpdateBoneTransforms(anim->mesh, *anim->mesh->modelDrawInfo.RootNode, dt);
+	//}
 
 }
 
@@ -268,11 +272,25 @@ void AnimationSystem::UpdateAnimation(Animation* anim, float dt)
 
 }
 
+void AnimationSystem::UpdateSkeleton(cMesh* mesh, Node& node, float dt)
+{
+	AnimationInfo info = mesh->modelDrawInfo.Animations[currentAnimationIndex];
+
+	frameCount += dt * info.TicksPerSecond;
+	if (frameCount > info.Duration)
+	{
+		frameCount = 0.0f;
+	}
+
+	UpdateBoneTransforms(mesh, node, frameCount);
+}
+
 void AnimationSystem::UpdateBoneTransforms(cMesh* mesh, Node& node, float dt)
 {
+	AnimationInfo info = mesh->modelDrawInfo.Animations[currentAnimationIndex];
+
 	std::string nodeName = node.Name;
 
-	AnimationInfo info = mesh->modelDrawInfo.Animations[currentAnimationIndex];
 	std::map<std::string, NodeAnimation*>::iterator animIt = info.NodeAnimations.find(nodeName);
 	
 

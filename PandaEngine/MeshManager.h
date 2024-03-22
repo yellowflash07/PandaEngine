@@ -41,8 +41,9 @@ public:
 	void RemoveMesh(std::string friendlyName);
 	cVAOManager* vaoManager;
 	void UpdateVAOBuffers(std::string friendlyName, sModelDrawInfo& drawInfo);
-private:
 	GLuint shaderProgramID;
+
+private:
 	std::vector< cMesh* > meshList;
 	cMesh* selectedMesh;
 	SceneSaver* saver;

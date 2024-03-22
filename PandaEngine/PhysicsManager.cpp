@@ -17,9 +17,7 @@ PhysicsManager::~PhysicsManager()
 
 void PhysicsManager::Update(float deltaTime)
 {
-
-
-	CheckIntersections(deltaTime);
+	//CheckIntersections(deltaTime);
 }
 
 void PhysicsManager::CheckIntersections(float deltaTime)
@@ -192,6 +190,125 @@ void PhysicsManager::GenerateAABBs(PhysicsBody* body, int numberOfAABBs, int sca
 	std::cout << "Generated " << body->aabbs.size() << " AABBs" << std::endl;
 }
 
+void PhysicsManager::UpdatePhysicsBody(PhysicsBody* body, TransformComponent* transform, float deltaTime)
+{
+	body->transform = transform;
+	// Infinite mass? 
+	if (body->inverseMass > 0.0f)
+	{
+		// Velocity change is based on the acceleration over this time frame 
+		// This part: (Accel * DeltaTime)
+		glm::vec3 deltaVelocityThisFrame = body->acceleration * (float)deltaTime;
+
+		// Update the velocity based on this delta velocity
+		// Then this part: NewVelocity = LastVel + ...
+		body->velocity += deltaVelocityThisFrame;
+
+		// Position change is based on the velocity over this time frame
+		// This part: (Vel * DeltaTime)	
+		glm::vec3 deltaPosition = body->velocity * (float)deltaTime;
+
+		transform->drawPosition.x += deltaPosition.x;
+		transform->drawPosition.y += deltaPosition.y;
+		transform->drawPosition.z += deltaPosition.z;
+
+		// Update the AABBs
+		for (cAABB* pAABB : body->aabbs)
+		{
+			pAABB->minXYZ += deltaPosition;
+			pAABB->maxXYZ += deltaPosition;
+		}
+	}
+
+	if (bodies.empty())
+	{
+		this->bodies.push_back(body);
+	}
+
+	//check if the manager has this physics body
+	for (PhysicsBody* pObjectA : this->bodies)
+	{
+		if (pObjectA != body)
+		{
+			this->bodies.push_back(pObjectA);
+		}
+	}
+
+	for (PhysicsBody* pObjectA : this->bodies)
+	{
+		for (PhysicsBody* pObjectB : this->bodies)
+		{
+			// Are "A" and "B" the same object
+			if (pObjectA == pObjectB)
+			{
+				// Yup, so skip this
+				continue;
+			}
+
+			switch (pObjectA->shapeType)
+			{
+				case PhysicsShapes::SPHERE:
+					switch (pObjectB->shapeType)
+					{
+						case PhysicsShapes::SPHERE:
+							// Sphere - Sphere
+							this->m_Sphere_Sphere_IntersectionTest(pObjectA, pObjectB);
+							break;
+						case PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT: 
+							// Sphere - Mesh triangle (indirect)
+							if (this->m_Sphere_TriMeshIndirect_IntersectionTest(pObjectA, pObjectB))
+							{
+								std::cout << "Hazzah!" << std::endl;
+							}
+							break;
+					}
+					break;
+			}
+
+			//// Check if the two AABBs overlap
+			//if (CheckAABBOverlap(pObjectA, pObjectB))
+			//{
+			//	// Narrow phase
+			//	switch (pObjectA->shapeType)
+			//	{
+			//	case PhysicsShapes::SPHERE:
+			//		switch (pObjectB->shapeType)
+			//		{
+			//		case PhysicsShapes::SPHERE:
+			//			// Sphere - Sphere
+			//			this->m_Sphere_Sphere_IntersectionTest(pObjectA, pObjectB);
+			//			break;
+			//		case PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT:
+			//			// Sphere - Mesh triangle (indirect)
+			//			if (this->m_Sphere_TriMeshIndirect_IntersectionTest(pObjectA, pObjectB))
+			//			{
+			//				std::cout << "Hazzah!" << std::endl;
+			//			}
+			//			break;
+			//		}
+			//		break;
+			//	case PhysicsShapes::AABB:
+			//		switch (pObjectB->shapeType)
+			//		{
+			//		case PhysicsShapes::MESH_OF_TRIANGLES_INDIRECT:
+			//			// Mesh triangle (indirect) - Mesh triangle (indirect)
+			//			if (this->m_AABB_TriMeshIndirect_IntersectionTest(pObjectA, pObjectB))
+			//			{
+			//				//std::cout << "AABB-Tri T_T!!" << std::endl;
+			//			}
+			//			break;
+			//		}
+			//		break;
+			//	}
+			//}
+		}
+	}
+
+
+
+
+}
+
 bool PhysicsManager::CheckAABBOverlap(PhysicsBody* pBodyA, PhysicsBody* pBodyB)
 {
 	// Temporary vector to store currently overlapping AABB pairs
@@ -321,7 +438,8 @@ bool PhysicsManager::m_Sphere_Sphere_IntersectionTest(PhysicsBody* pSphereA, Phy
 	PhysicsShapes::sSphere* sphereB = (PhysicsShapes::sSphere*)(pShpereB->shape);
 
 
-	float distance = glm::distance(pSphereA->mesh->transform.drawPosition, pShpereB->mesh->transform.drawPosition);
+	float distance = glm::distance(pSphereA->transform->drawPosition, 
+		pShpereB->transform->drawPosition);
 	float radiusSum = sphereA->radius + sphereB->radius;
 
 	if (distance < radiusSum)
@@ -329,7 +447,8 @@ bool PhysicsManager::m_Sphere_Sphere_IntersectionTest(PhysicsBody* pSphereA, Phy
 
 		// impact speed
 		glm::vec3 v = (pSphereA->velocity - pShpereB->velocity);
-		glm::vec3 normal = (pSphereA->mesh->transform.drawPosition - pShpereB->mesh->transform.drawPosition);
+		glm::vec3 normal = (pSphereA->transform->drawPosition - 
+			pShpereB->transform->drawPosition);
 		
 		normal = glm::normalize(normal);
 
@@ -374,14 +493,14 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 
 	PhysicsShapes::sSphere* pSphere = (PhysicsShapes::sSphere*)(sphere->shape);
 
-	sModelDrawInfo theMeshDrawInfo;
+	//sModelDrawInfo theMeshDrawInfo;
 
-	// Find the raw mesh information from the VAO manager
-	if (!this->meshManager->GetModelDrawInfo(pTriangleMesh->meshName, theMeshDrawInfo))
-	{
-		// Didn't find it
-		return false;
-	}
+	//// Find the raw mesh information from the VAO manager
+	//if (!this->meshManager->GetModelDrawInfo(pTriangleMesh->meshName, theMeshDrawInfo))
+	//{
+	//	// Didn't find it
+	//	return false;
+	//}
 
 	int numberOfTriangles = triMesh->activeAABB->vecTrianglesInside.size();
 
@@ -456,22 +575,23 @@ bool PhysicsManager::m_Sphere_TriMeshIndirect_IntersectionTest(PhysicsBody* sphe
 
 	if (closestDistanceSoFar < pSphere->radius)
 	{
-		//glm::vec3 sphereDirection = sphere->velocity;
-		//// Normalize... 
-		//sphereDirection = glm::normalize(sphereDirection);
+		glm::vec3 sphereDirection = sphere->velocity;
+		// Normalize... 
+		sphereDirection = glm::normalize(sphereDirection);
 
-		//// Calcualte the current normal from the TRANSFORMED vertices
-		//glm::vec3 edgeA = closestTriangleVertices[1] - closestTriangleVertices[0];
-		//glm::vec3 edgeB = closestTriangleVertices[2] - closestTriangleVertices[0];
+		// Calcualte the current normal from the TRANSFORMED vertices
+		glm::vec3 edgeA = closestTriangleVertices[1] - closestTriangleVertices[0];
+		glm::vec3 edgeB = closestTriangleVertices[2] - closestTriangleVertices[0];
 
-		//glm::vec3 triNormal = glm::normalize(glm::cross(edgeA, edgeB));
-		//glm::vec3 reflectionVec = glm::reflect(sphereDirection, triNormal);
+		glm::vec3 triNormal = glm::normalize(glm::cross(edgeA, edgeB));
+		glm::vec3 reflectionVec = glm::reflect(sphereDirection, triNormal);
 
-		//// Update the  velocity based on this reflection vector
-		//float sphereSpeed = glm::length(sphere->velocity);
-		//glm::vec3 newVelocity = reflectionVec * sphereSpeed;
+		// Update the  velocity based on this reflection vector
+		float sphereSpeed = glm::length(sphere->velocity);
+		glm::vec3 newVelocity = reflectionVec * sphereSpeed;
+		sphere->velocity = newVelocity;
 
-		sphere->velocity = glm::vec3(0,0,0);
+		//sphere->velocity = glm::vec3(0,0,0);
 
 		return true;
 	}

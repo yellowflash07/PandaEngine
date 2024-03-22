@@ -20,6 +20,7 @@ struct CollisionEvent
 struct PhysicsBody
 {
 	cMesh* mesh;
+	TransformComponent* transform;
 	glm::vec3 acceleration;
 	glm::vec3 velocity;
 	glm::vec3 angularVelocity;
@@ -78,6 +79,7 @@ public:
 	void CheckIntersections(float deltaTime);
 	void AddMesh(PhysicsBody* physicsBody);
 	void GenerateAABBs(PhysicsBody* body,int numberOfAABBs, int scaleExtents = 1);
+	void UpdatePhysicsBody(PhysicsBody* body, TransformComponent* transform, float deltaTime);
 private:
 	MeshManager* meshManager;
 	std::vector<PhysicsBody*> bodies;

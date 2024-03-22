@@ -42,24 +42,23 @@ int main(void)
     camera->SetPosition(glm::vec3(35.0f, 150.0f, 500.0f));
 
     engine.LoadSave();
-    
-    cMesh* skyBoxMesh = engine.LoadMesh("Sphere_1_unit_Radius_UV.ply", "skybox");
-    skyBoxMesh->isSkyBox = true;
-    skyBoxMesh->transform.setUniformDrawScale(5000.0f);
+   
 
     Scene* scene = new Scene("Test.pda");
 
     engine.AddScene(scene);
 
+    GameObject* skyBox = scene->CreateGameObject("SkyBox");
+    cMesh& skyBoxMesh = skyBox->AddComponent<cMesh>("Sphere_1_unit_Radius_UV.ply", "SkyBox");
+    skyBoxMesh.isSkyBox = true;
+    skyBox->GetComponent<TransformComponent>()->setUniformDrawScale(5000.0f);
+
     GameObject* go = scene->CreateGameObject("Sphere");
-    cMesh &mesh = go->AddComponent<cMesh>("Sphere_1_unit_Radius_UV.ply", "FriendlyName");
-    
-    go->GetComponent<TransformComponent>().setUniformDrawScale(100.0f);
+    cMesh &mesh = go->AddComponent<cMesh>("dancing_vampire.dae", "FriendlyName");
+    go->AddComponent<AnimationSystem>();
 
     float currTime = 0;
     float myTime = 0;
-
-    int frameNumber = 0;
 
     while (!glfwWindowShouldClose(engine.window))
     {

@@ -19,22 +19,37 @@ GameObject* Scene::CreateGameObject(std::string name)
 	m_GameObjects.push_back(pGameObject);
 	return pGameObject;
 }
-
 void Scene::Update(float deltaTime)
 {
-	for (auto go : m_GameObjects)
+
+	for (GameObject* go : m_GameObjects)
 	{
-		TransformComponent* transform = &go->GetComponent<TransformComponent>();
-		cMesh* mesh = &go->GetComponent<cMesh>();
+		TransformComponent* transform = go->GetComponent<TransformComponent>();
+		cMesh* mesh = go->GetComponent<cMesh>();
 		if (mesh != nullptr)
 		{
+			AnimationSystem* anim = go->GetComponent<AnimationSystem>();
+			if (anim != nullptr)
+			{
+				mesh->useBone = true;
+				anim->UpdateSkeleton(mesh, *mesh->modelDrawInfo.RootNode,deltaTime);
+			}
 			meshManager->DrawObject(mesh, transform);
 		}
+
+		PhysicsBody* body = go->GetComponent<PhysicsBody>();
+		if (body != nullptr)
+		{
+			phyManager->UpdatePhysicsBody(body, transform, deltaTime);
+		}
+
+		
 	}
 }
 
-void Scene::Init(MeshManager* meshManager)
+void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager)
 {
+	this->phyManager = phyManager;
 	this->meshManager = meshManager;
 }
 

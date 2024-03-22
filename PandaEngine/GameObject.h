@@ -21,10 +21,13 @@ public:
 	}
 
 	template <class T>
-	T& GetComponent()
+	T* GetComponent()
 	{
-		assert(m_Registry->all_of<T>(entity));
-		return m_Registry->get<T>(entity);
+		//assert(m_Registry->all_of<T>(entity));
+		if (!m_Registry->all_of<T>(entity))
+			return nullptr;
+
+		return &m_Registry->get<T>(entity);
 	}
 
 private:
