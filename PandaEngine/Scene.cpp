@@ -21,9 +21,15 @@ GameObject* Scene::CreateGameObject(std::string name)
 }
 void Scene::Update(float deltaTime)
 {
-
+	ImGui::Begin("Scene");
 	for (GameObject* go : m_GameObjects)
 	{
+
+		if (ImGui::Button(go->m_Name.c_str()))
+		{
+			m_pCurrentGameObject = go;
+		}
+
 		TransformComponent* transform = go->GetComponent<TransformComponent>();
 		cMesh* mesh = go->GetComponent<cMesh>();
 		if (mesh != nullptr)
@@ -41,16 +47,40 @@ void Scene::Update(float deltaTime)
 		if (body != nullptr)
 		{
 			phyManager->UpdatePhysicsBody(body, transform, deltaTime);
-		}
+		}			
 
-		
 	}
+	ImGui::End();
+	ImGui::Begin("Inspector");
+	if (m_pCurrentGameObject != nullptr)
+	{
+		DrawUI(m_pCurrentGameObject);
+	}
+	ImGui::End();
 }
 
 void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager)
 {
 	this->phyManager = phyManager;
 	this->meshManager = meshManager;
+}
+
+void Scene::DrawUI(GameObject* go)
+{
+
+	ImGui::BeginChild(go->m_Name.c_str(), ImVec2(0, 20));
+	ImGui::Text(go->m_Name.c_str());
+	ImGui::Separator();
+	ImGui::EndChild();
+
+	for (IEditorUI* ui : go->m_UIComponents)
+	{
+		if (ui != nullptr)
+		{
+			ui->Render();
+		}
+	}
+	
 }
 
 

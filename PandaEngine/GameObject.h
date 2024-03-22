@@ -2,6 +2,7 @@
 #include <entt/entt.hpp>
 #include <string>
 #include "TransformComponent.h"
+#include "IEditorUI.h"
 
 class GameObject
 {
@@ -17,8 +18,12 @@ public:
 	{
 		//a game object can only have one of each component
 		assert(!m_Registry->all_of<T>(entity));
-		return m_Registry->emplace<T>(entity, std::forward<Args>(args)...);
+		T& comp = m_Registry->emplace<T>(entity, std::forward<Args>(args)...);
+		IEditorUI* ui = dynamic_cast<IEditorUI*>(&comp);
+		m_UIComponents.push_back(ui);
+		return comp;
 	}
+	std::vector<IEditorUI*> m_UIComponents;
 
 	template <class T>
 	T* GetComponent()
@@ -29,8 +34,7 @@ public:
 
 		return &m_Registry->get<T>(entity);
 	}
-
-private:
 	std::string m_Name;
+private:
 };
 

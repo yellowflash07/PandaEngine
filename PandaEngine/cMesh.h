@@ -9,8 +9,9 @@
 #include "../cVAOManager/sModelDrawInfo.h"
 #include "../PandaEngine/GraphicsCommon.h"
 #include "TransformComponent.h"
+#include "IEditorUI.h"
 
-class cMesh
+class cMesh : public IEditorUI
 {
 public:
 	cMesh();
@@ -63,6 +64,7 @@ public:
 	bool useBone = false;
 	//glm::mat4 AnimatedTransform;
 	std::map<std::string, glm::mat4> boneTransformations;
+	void Render();
 private:
 	unsigned int m_UniqueID;
 	static const unsigned int FIRST_UNIQUE_ID = 1000;

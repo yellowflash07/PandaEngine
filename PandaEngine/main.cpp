@@ -54,8 +54,8 @@ int main(void)
     skyBox->GetComponent<TransformComponent>()->setUniformDrawScale(5000.0f);
 
     GameObject* go = scene->CreateGameObject("Sphere");
-    cMesh &mesh = go->AddComponent<cMesh>("dancing_vampire.dae", "FriendlyName");
-    go->AddComponent<AnimationSystem>();
+    cMesh &mesh = go->AddComponent<cMesh>("Sphere_1_unit_Radius_UV.ply", "FriendlyName");
+   // go->AddComponent<AnimationSystem>();
 
     float currTime = 0;
     float myTime = 0;

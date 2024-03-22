@@ -8,6 +8,7 @@ AnimationSystem::AnimationSystem()
 	animationSpeed = 1.0f;
 	frameCount = 0.0f;
 	currentAnimationIndex = 0;
+	m_mesh = nullptr;
 }
 
 AnimationSystem::~AnimationSystem()
@@ -287,6 +288,10 @@ void AnimationSystem::UpdateSkeleton(cMesh* mesh, Node& node, float dt)
 
 void AnimationSystem::UpdateBoneTransforms(cMesh* mesh, Node& node, float dt)
 {
+	if (m_mesh == nullptr)
+	{
+		m_mesh = mesh;
+	}
 	AnimationInfo info = mesh->modelDrawInfo.Animations[currentAnimationIndex];
 
 	std::string nodeName = node.Name;
@@ -307,6 +312,18 @@ void AnimationSystem::UpdateBoneTransforms(cMesh* mesh, Node& node, float dt)
 	{
 		UpdateBoneTransforms(mesh, *child, dt);
 	}
+}
+
+void AnimationSystem::Render()
+{
+	ImGui::BeginChild("Animation", ImVec2(0, 150));
+	ImGui::Text("Animation");
+	ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("Speed", &animationSpeed);
+	ImGui::Combo("Animation", &currentAnimationIndex, 
+		m_mesh->modelDrawInfo.Animations[currentAnimationIndex].AnimationName.c_str(), m_animations.size()-1);
+	ImGui::Separator();
+	ImGui::EndChild();
 }
 
 glm::vec3 AnimationSystem::InterpolatePositions(std::vector<PositionKeyFrame> positions,

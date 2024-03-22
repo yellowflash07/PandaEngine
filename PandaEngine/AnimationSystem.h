@@ -3,8 +3,9 @@
 #include <vector>
 #include "Animation.h"
 #include "MeshManager.h"
+#include "IEditorUI.h"
 
-class AnimationSystem
+class AnimationSystem : public IEditorUI
 {
 public:
 	AnimationSystem();
@@ -31,6 +32,9 @@ public:
 
 	void UpdateBoneTransforms(cMesh* mesh, Node& node, float dt);
 
+	void Render();
+
+
 private:
 	// The animations in the system
 	std::vector<Animation*> m_animations;
@@ -39,6 +43,7 @@ private:
 	// Update a single animation
 	void UpdateAnimation(Animation* animation, float dt);
 
+	cMesh* m_mesh;
 
 	glm::vec3 InterpolatePositions(std::vector<PositionKeyFrame> positions,
 		float dt);

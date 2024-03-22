@@ -242,6 +242,7 @@
     <ClInclude Include="GLFWCallbacks.h" />
     <ClInclude Include="GraphicsCommon.h" />
     <ClInclude Include="iCommand.h" />
+    <ClInclude Include="IEditorUI.h" />
     <ClInclude Include="ImGuizmo.h" />
     <ClInclude Include="JsonReader.h" />
     <ClInclude Include="LightControl.h" />

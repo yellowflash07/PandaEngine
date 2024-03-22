@@ -434,6 +434,9 @@
     <ClInclude Include="GameObject.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="IEditorUI.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Assets\Shaders\fragmentshader.glsl">

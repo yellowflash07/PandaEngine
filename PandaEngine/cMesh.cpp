@@ -63,6 +63,68 @@ void cMesh::AddChild(cMesh* child)
 	this->vec_pChildMeshes.push_back(child);
 }
 
+void cMesh::Render()
+{
+	ImGui::BeginChild("Mesh", ImVec2(0, 125));
+	ImGui::Text("Mesh");
+	ImGui::SliderFloat("Transparency", &transperancy, 0.0f, 1.0f);
+	for (size_t i = 0; i < NUM_OF_TEXTURES; i++)
+	{
+		if (texture[i].empty())
+		{
+			ImGui::Text("Texture Slot: %d EMPTY", i);
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture_DND"))
+				{
+					const char* payload_n = (const char*)payload->Data;
+					texture[i] = payload_n;
+					textureRatio[i] = 1.0f;
+					hasVertexColors = false;
+					bUseDebugColours = false;
+				}
+				ImGui::EndDragDropTarget();
+			}
+			// break;
+		}
+		else
+		{
+			ImGui::Text("Texture Slot: %s", texture[i].c_str());
+
+			if (ImGui::SliderFloat(("Mix Ratio #" + std::to_string(i)).c_str(), &textureRatio[i], 0.0f, 1.0f))
+			{
+			}
+			if (ImGui::Button("Remove Texture"))
+			{
+				texture[i] = "";
+				textureRatio[i] = 0.0f;
+			}
+		}
+	}
+
+	//ImGui::NewLine();
+	ImGui::Text("Mask Texture: %s", maskTexture.c_str());
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture_DND"))
+		{
+			const char* payload_n = (const char*)payload->Data;
+			maskTexture = payload_n;
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	if (!maskTexture.empty())
+	{
+		if (ImGui::Button("Remove Mask"))
+		{
+			maskTexture = "";
+		}
+	}
+	ImGui::Separator();
+	ImGui::EndChild();
+}
+
 
 // static
 unsigned int cMesh::m_nextUniqueID = cMesh::FIRST_UNIQUE_ID;

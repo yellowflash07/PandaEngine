@@ -7,6 +7,8 @@
 #include "MeshManager.h"
 #include "PhysicsManager.h"
 #include "AnimationSystem.h"
+#include <imgui.h>
+
 class Scene
 {
 public:
@@ -29,5 +31,8 @@ private:
 	std::vector<GameObject*> m_GameObjects;
 	MeshManager* meshManager;
 	PhysicsManager* phyManager;
+	GameObject* m_pCurrentGameObject;
+
+	void DrawUI(GameObject* go);
 };
 

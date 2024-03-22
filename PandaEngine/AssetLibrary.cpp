@@ -3,7 +3,6 @@
 #include <iostream>
 #include <imgui.h>
 
-
 #define THREADED
 
 AssetLibrary::AssetLibrary()
