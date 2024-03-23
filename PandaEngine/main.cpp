@@ -52,10 +52,17 @@ int main(void)
     cMesh& skyBoxMesh = skyBox->AddComponent<cMesh>("Sphere_1_unit_Radius_UV.ply", "SkyBox");
     skyBoxMesh.isSkyBox = true;
     skyBox->GetComponent<TransformComponent>()->setUniformDrawScale(5000.0f);
+    
 
     GameObject* go = scene->CreateGameObject("Sphere");
     cMesh &mesh = go->AddComponent<cMesh>("Sphere_1_unit_Radius_UV.ply", "FriendlyName");
    // go->AddComponent<AnimationSystem>();
+
+    GameObject* lightGo = scene->CreateGameObject("Light1");
+    lightGo->AddComponent<cLight>();
+
+   // go->AddComponent<cLight>();
+    //go->AddComponent<cLight>();
 
     float currTime = 0;
     float myTime = 0;

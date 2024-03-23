@@ -7,7 +7,7 @@
 #include "Camera.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
-
+#include "../Basic Shader Manager/cShaderManager.h"
 
 extern Camera* camera;
 
@@ -21,16 +21,15 @@ cLight::cLight()
 	this->atten = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);	
 	// Spot, directional lights
 	// (Default is stright down)
-	this->direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);	
+	this->direction = glm::vec4(-1.0, -1.0, -1.0, 1);
 	// x = lightType, y = inner angle, z = outer angle, w = TBD
 	// type = 0 => point light
-	this->param1 = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	this->param1 = glm::vec4(2.0f, 0.0f, 0.0f, 1.0f);
 					// 0 = pointlight
 					// 1 = spot light
 					// 2 = directional light
 	// x = 0 for off, 1 for on
-	this->param2 = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
+	this->param2 = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	this->position_UL = -1;
 	this->diffuse_UL = -1;
@@ -40,6 +39,7 @@ cLight::cLight()
 	this->param1_UL = -1;
 	this->param2_UL = -1;
 
+	uniformLocationIsSet = false;
 }
 
 	// And the uniforms:
@@ -55,6 +55,123 @@ void cLight::TurnOff(void)
 	// x = 0 for off, 1 for on
 	this->param2.x = 0.0f;		// Turn off 
 	return;
+}
+
+void cLight::SetUniformLocations(GLuint shaderID, int lightIndex)
+{
+	std::string lightPositon = "theLights[" + std::to_string(lightIndex) + "]" + ".position";
+	std::string lightdiffuse = "theLights[" + std::to_string(lightIndex) + "]" + ".diffuse";
+	std::string lightspecular = "theLights[" + std::to_string(lightIndex) + "]" + ".specular";
+	std::string lightatten = "theLights[" + std::to_string(lightIndex) + "]" + ".atten";
+	std::string lightdirection = "theLights[" + std::to_string(lightIndex) + "]" + ".direction";
+	std::string lightparam1 = "theLights[" + std::to_string(lightIndex) + "]" + ".param1";
+	std::string lightparam2 = "theLights[" + std::to_string(lightIndex) + "]" + ".param2";
+	//vec4 position
+	position_UL = glGetUniformLocation(shaderID, lightPositon.c_str());
+	//        vec4 diffuse;	// Colour of the light (used for diffuse)
+	diffuse_UL = glGetUniformLocation(shaderID, lightdiffuse.c_str());
+	//        vec4 specular;	// rgb = highlight colour, w = power
+	specular_UL = glGetUniformLocation(shaderID, lightspecular.c_str());
+	//        vec4 atten;		// x = constant, y = linear, z = quadratic, w = DistanceCutOff
+	atten_UL = glGetUniformLocation(shaderID, lightatten.c_str());
+	//        vec4 direction;	// Spot, directional lights
+	direction_UL = glGetUniformLocation(shaderID, lightdirection.c_str());
+	//        vec4 param1;	// x = lightType, y = inner angle, z = outer angle, w = TBD
+	param1_UL = glGetUniformLocation(shaderID, lightparam1.c_str());
+	//        vec4 param2;	// x = 0 for off, 1 for on
+	param2_UL = glGetUniformLocation(shaderID, lightparam2.c_str());
+}
+
+void cLight::UpdateLight(TransformComponent* transform)
+{
+	this->position = glm::vec4(transform->drawPosition, 1.0f);
+
+	glUniform4f(this->position_UL,
+		position.x,
+		position.y,
+		position.z,
+		1.0f);
+
+	glUniform4f(this->diffuse_UL,
+		this->diffuse.x,
+		this->diffuse.y,
+		this->diffuse.z,
+		this->diffuse.w);
+
+	glUniform4f(this->specular_UL,
+		this->specular.x,
+		this->specular.y,
+		this->specular.z,
+		this->specular.w);
+
+	glUniform4f(this->atten_UL,
+		this->atten.x,
+		this->atten.y,
+		this->atten.z,
+		this->atten.w);
+
+	glUniform4f(this->direction_UL,
+		this->direction.x,
+		this->direction.y,
+		this->direction.z,
+		this->direction.w);
+
+	glUniform4f(this->param1_UL,
+		this->param1.x,
+		this->param1.y,
+		this->param1.z,
+		this->param1.w);
+
+	glUniform4f(this->param2_UL,
+		this->param2.x,
+		this->param2.y,
+		this->param2.z,
+		this->param2.w);
+}
+
+void cLight::Render()
+{
+	ImGui::BeginChild("Light", ImVec2(0, 200));
+
+	ImGui::Text("On?"); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("On", &param2.x);
+
+	ImGui::Text("Type"); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("Type", &param1.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("inner angle", &param1.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("outer angle", &param1.z);
+
+	ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("xL", &position.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("yL", &position.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("zL", &position.z);
+	position.w = 1;
+
+	ImGui::Text("Diffuse"); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("xD", &diffuse.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("yD", &diffuse.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("zD", &diffuse.z);
+	diffuse.w = 1;
+
+	ImGui::Text("Specular"); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("xS", &specular.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("yS", &specular.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("zS", &specular.z);
+	specular.w = 1;
+
+	// x = constant, y = linear, z = quadratic, w = DistanceCutOff
+	ImGui::Text("Attenuation"); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("constant", &atten.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("linear", &atten.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("quadratic", &atten.z); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("DistanceCutOff", &atten.w);
+
+	ImGui::Text("Direction"); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("xDi", &direction.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("yDi", &direction.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("zDi", &direction.z);
+
+	ImGui::EndChild();
 }
 
 
@@ -108,6 +225,52 @@ void cLightManager::UpdateUniformValues(GLuint shaderID)
 
 	DrawBox();
 	return;
+}
+
+void cLightManager::UpdateLight(cLight* light, TransformComponent* transform)
+{
+
+	glUniform4f(light->position_UL,
+				transform->drawPosition.x,
+				transform->drawPosition.y,
+				transform->drawPosition.z,
+				1.0f);
+
+	glUniform4f(light->diffuse_UL,
+				light->diffuse.x,
+				light->diffuse.y,
+				light->diffuse.z,
+				light->diffuse.w);
+
+	glUniform4f(light->specular_UL,
+				light->specular.x,
+				light->specular.y,
+				light->specular.z,
+				light->specular.w);
+
+	glUniform4f(light->atten_UL,
+				light->atten.x,
+				light->atten.y,
+				light->atten.z,
+				light->atten.w);
+
+	glUniform4f(light->direction_UL,
+				light->direction.x,
+				light->direction.y,
+				light->direction.z,
+				light->direction.w);
+
+	glUniform4f(light->param1_UL,
+				light->param1.x,
+				light->param1.y,
+				light->param1.z,
+				light->param1.w);
+
+	glUniform4f(light->param2_UL,
+				light->param2.x,
+				light->param2.y,
+				light->param2.z,
+				light->param2.w);
 }
 
 void cLightManager::UpdateLights(GLuint shaderID)

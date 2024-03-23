@@ -142,7 +142,7 @@ void Engine::Update()
 
  
     //update lights
-    lightManager->UpdateUniformValues(shaderProgramID);
+   // lightManager->UpdateUniformValues(shaderProgramID);
 
     //update camera
     camera->Update(window, deltaTime);
@@ -282,7 +282,7 @@ void Engine::ShutDown()
 
 void Engine::AddScene(Scene* scene)
 {
-    scene->Init(this->meshManager, this->physicsManager);
+    scene->Init(this->meshManager, this->physicsManager, this->lightManager, cShaderManager::getInstance());
     scenes.push_back(scene);
 }
 

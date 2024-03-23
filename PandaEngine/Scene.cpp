@@ -19,6 +19,7 @@ GameObject* Scene::CreateGameObject(std::string name)
 	m_GameObjects.push_back(pGameObject);
 	return pGameObject;
 }
+
 void Scene::Update(float deltaTime)
 {
 	ImGui::Begin("Scene");
@@ -47,10 +48,25 @@ void Scene::Update(float deltaTime)
 		if (body != nullptr)
 		{
 			phyManager->UpdatePhysicsBody(body, transform, deltaTime);
-		}			
+		}
+
+		cLight* light = go->GetComponent<cLight>();
+		if (light != nullptr)
+		{
+			if (!light->uniformLocationIsSet)
+			{
+				light->uniformLocationIsSet = true;
+				GLint shaderID = shaderManager->getIDFromFriendlyName("shader01");
+				light->SetUniformLocations(shaderID, lightIndex);
+				lightIndex++;
+			}
+
+			light->UpdateLight(transform);
+		}
 
 	}
 	ImGui::End();
+
 	ImGui::Begin("Inspector");
 	if (m_pCurrentGameObject != nullptr)
 	{
@@ -59,10 +75,13 @@ void Scene::Update(float deltaTime)
 	ImGui::End();
 }
 
-void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager)
+void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightManager* lightManager,
+	cShaderManager* shaderManager)
 {
 	this->phyManager = phyManager;
 	this->meshManager = meshManager;
+	this->lightManager = lightManager;
+	this->shaderManager = shaderManager;
 }
 
 void Scene::DrawUI(GameObject* go)

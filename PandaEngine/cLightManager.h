@@ -3,9 +3,11 @@
 #include "../PandaEngine/GraphicsCommon.h"
 #include <glm/glm.hpp>
 #include <glm/vec4.hpp>
+#include "TransformComponent.h"
+#include "IEditorUI.h"
 
 // This structure matches what's in the shader
-class cLight
+class cLight : public IEditorUI
 {
 public:
     cLight();
@@ -32,6 +34,14 @@ public:
     GLint direction_UL;
     GLint param1_UL;
     GLint param2_UL;
+
+    bool uniformLocationIsSet;
+
+    void SetUniformLocations(GLuint shaderID, int lightIndex);
+
+    void UpdateLight(TransformComponent* transform);
+
+    void Render();
 };
 
 class cLightManager
@@ -44,6 +54,8 @@ public:
 
     // This is called every frame
     void UpdateUniformValues(GLuint shaderID);
+
+    void UpdateLight(cLight* light, TransformComponent* transform);
 
     void UpdateLights(GLuint shaderID);
 
