@@ -44,6 +44,8 @@ public:
     void UpdateLight(TransformComponent* transform);
 
     void Render();
+
+    int index = -1;
 };
 
 class cLightManager

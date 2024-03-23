@@ -119,7 +119,7 @@ struct TransformComponent : public IEditorUI
 		ImGuizmo::Manipulate(glm::value_ptr(camera->matView),
 			glm::value_ptr(camera->matProjection),
 			gizmoOperation,
-			ImGuizmo::MODE::WORLD,
+			ImGuizmo::MODE::LOCAL,
 			glm::value_ptr(meshTransform));
 
 		if (ImGuizmo::IsUsing())

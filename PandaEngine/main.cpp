@@ -39,7 +39,7 @@ int main(void)
                                     "CubeMaps/TropicalSunnyDayBack2048.bmp",
                                     true);
 
-    camera->SetPosition(glm::vec3(35.0f, 150.0f, 500.0f));
+    camera->SetPosition(glm::vec3(0.0f,0.0f, 10.0f));
 
     engine.LoadSave();
    

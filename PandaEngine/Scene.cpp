@@ -36,7 +36,7 @@ void Scene::Update(float deltaTime)
 		if (ImGui::TreeNode(go->m_Name.c_str()))
 		{
 			m_pCurrentGameObject = go;
-			DrawContextMenu(m_pCurrentGameObject);			
+			DrawContextMenu(m_pCurrentGameObject);	
 			ImGui::TreePop();
 		}
 
@@ -135,28 +135,34 @@ void Scene::CreateChildObject(GameObject* go, std::string childName)
 
 void Scene::DrawContextMenu(GameObject* go)
 {
-	if (ImGui::BeginMenu("Add Component"))
+	if (ImGui::BeginPopupContextItem())
 	{
-		if (ImGui::MenuItem("Mesh"))
+		if (ImGui::BeginMenu("Add Component"))
 		{
-			go->AddComponent<cMesh>();
-		}
-		if (ImGui::MenuItem("Light"))
-		{
-			go->AddComponent<cLight>();
-		}
-		if (ImGui::MenuItem("Animation System"))
-		{
-			go->AddComponent<AnimationSystem>();
-		}
-		if (ImGui::MenuItem("Child Object"))
-		{
-			std::string name = "Child" + std::to_string(go->m_Children.size());
-			CreateChildObject(go, name);
-		}
+			if (ImGui::MenuItem("Mesh"))
+			{
+				go->AddComponent<cMesh>();
+			}
+			if (ImGui::MenuItem("Light"))
+			{
+				go->AddComponent<cLight>();
+			}
+			if (ImGui::MenuItem("Animation System"))
+			{
+				go->AddComponent<AnimationSystem>();
+			}
+			/*if (ImGui::MenuItem("Child Object"))
+			{
+				std::string name = "Child" + std::to_string(go->m_Children.size());
+				CreateChildObject(go, name);
+			}*/
 
-		ImGui::EndMenu();
+			ImGui::EndMenu();
+		}
+		ImGui::EndPopup();
 	}
+
+	
 }
 
 

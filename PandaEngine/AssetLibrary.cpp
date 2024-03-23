@@ -65,6 +65,7 @@ void AssetLibrary::Init()
         m_meshManager->LoadMeshAsync(fileStr, fileStr, shaderProgramID,
         [ camera, spid, m_rT, mM](cMesh* mesh)
         {
+            mesh->bDoNotLight= true;
             mesh->bUseDebugColours = true;
             mesh->wholeObjectDebugColourRGBA = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
             mesh->calcExtents();

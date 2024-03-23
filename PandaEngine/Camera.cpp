@@ -55,9 +55,9 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
 	}
 
     matProjection = glm::perspective(0.6f,
-                                                ratio,
-        nearPlane,
-                                                farPlane);
+                                    ratio,
+                                    nearPlane,
+                                    farPlane);
 
     if (camControl)
     {
@@ -72,7 +72,9 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
             			upVector);
 	}
    
-
+    plainMatView = glm::lookAt(cameraEye,
+        		                cameraTarget,
+        		                upVector);
 
     GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
     glUniformMatrix4fv(matProjection_UL, 1, GL_FALSE, glm::value_ptr(matProjection));

@@ -32,7 +32,7 @@ public:
 
 	glm::mat4 matProjection;
 	glm::mat4 matView;
-
+	glm::mat4 plainMatView;
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix();
 	glm::mat4 GetViewProjectionMatrix();

@@ -59,6 +59,7 @@ void cLight::TurnOff(void)
 
 void cLight::SetUniformLocations(GLuint shaderID, int lightIndex)
 {
+	this->index = lightIndex;
 	std::string lightPositon = "theLights[" + std::to_string(lightIndex) + "]" + ".position";
 	std::string lightdiffuse = "theLights[" + std::to_string(lightIndex) + "]" + ".diffuse";
 	std::string lightspecular = "theLights[" + std::to_string(lightIndex) + "]" + ".specular";
@@ -131,7 +132,7 @@ void cLight::UpdateLight(TransformComponent* transform)
 
 void cLight::Render()
 {
-	ImGui::BeginChild("Light", ImVec2(0, 200));
+	ImGui::BeginChild(("Light" + std::to_string(index)).c_str(), ImVec2(0, 200));
 
 	//ImGui::Text("On?"); ImGui::SetNextItemWidth(40);
 	//ImGui::InputFloat("On", &param2.x);
@@ -149,13 +150,18 @@ void cLight::Render()
 	}
 
 	ImGui::SetNextItemWidth(100);
-	static int type = param1.x;
-	//ImGui::Combo("LightType", &param1.x, "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0");
-	ImGui::Combo("Light Type", &type, "Point Light\0Spot Light\0Directional\0\0");
+	int type = param1.x;
+	ImGui::Combo("Light Type", &type, "Point Light\0Spot Light\0Directional\0\0"); ImGui::SetNextItemWidth(40);
 	param1.x = type;
-
-	ImGui::InputFloat("inner angle", &param1.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("inner angle", &param1.y); ImGui::SameLine();
+	ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("outer angle", &param1.z);
+
+	ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("xP", &position.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("yP", &position.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	ImGui::InputFloat("zP", &position.z);
+	position.w = 1;
 
 	ImGui::Text("Diffuse"); ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("xD", &diffuse.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);

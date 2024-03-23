@@ -126,7 +126,8 @@ void Engine::Update()
 
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::BeginFrame();
-    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, width, height);
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
     // While drawing a pixel, see if the pixel that's already there is closer or not?
     glEnable(GL_DEPTH_TEST);
