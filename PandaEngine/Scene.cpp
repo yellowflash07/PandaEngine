@@ -69,6 +69,19 @@ void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightMan
 	this->shaderManager = shaderManager;
 }
 
+GameObject* Scene::GetGameObjectByName(std::string name)
+{
+	for (GameObject* go :  m_GameObjects)
+	{
+		if (go->m_Name == name)
+		{
+			return go;
+		}
+	}
+
+	return nullptr;
+}
+
 void Scene::DrawUI(GameObject* go)
 {
 

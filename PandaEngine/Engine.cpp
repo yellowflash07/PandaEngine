@@ -154,9 +154,37 @@ void Engine::Update()
     if (scenes.size() > 0)
     {
         scenes[currentScene]->Update((float)deltaTime);
+
+       /* if (ImGui::Button("Save", ImVec2(100,100)))
+        {
+            sceneSaver.SaveScene(scenes[currentScene]);
+		}*/
     }
 
+    ImGuiWindowFlags window_flags = 0;
+    window_flags |= ImGuiWindowFlags_MenuBar;
+    window_flags |= ImGuiWindowFlags_NoTitleBar;
+    ImGui::Begin("X", &loadFile, window_flags);
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("Menu"))
+        {
+            if (ImGui::MenuItem("Save Scene", "Ctrl + S"))
+            {
+                sceneSaver.SaveScene(scenes[currentScene]);
+            }
+            if (ImGui::MenuItem("Load Scene", NULL))
+            {
+                LoadSave();
+            }
+               
+            ImGui::EndMenu();
+        }
 
+        ImGui::EndMenuBar();
+    }
+  
+    ImGui::End();
     //show asset library
     assetLib.RenderBox();
 
@@ -262,7 +290,10 @@ void Engine::LoadDefaultLights()
 
 void Engine::LoadSave()
 {
-    meshManager->LoadSavedMeshes(shaderProgramID);
+    Scene* scene = sceneSaver.LoadScene("scene.json");
+   // scene->Init(this->meshManager, this->physicsManager, this->lightManager, cShaderManager::getInstance());
+    AddScene(scene);
+    //meshManager->LoadSavedMeshes(shaderProgramID);
 	//lightManager->LoadLights();
 }
 

@@ -15,7 +15,7 @@ MeshManager::MeshManager()
 {
    vaoManager = new cVAOManager();
    textureManager = new cBasicTextureManager();
-   saver = new SceneSaver();
+  // saver = new SceneSaver();
 
   /* for (int j = 0; j < 150; ++j)
    {
@@ -30,7 +30,6 @@ MeshManager::~MeshManager()
 {
 	delete vaoManager;
 	delete textureManager;
-	delete saver;
 }
 
 cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyName, unsigned int shaderProgramID)
@@ -655,10 +654,7 @@ void MeshManager::DrawTransformBox()
         }
     }
 
-    if (ImGui::Button("Save"))
-    {
-        saver->SaveMeshes(meshList);
-    }
+  
     ImGui::SameLine();
     if (ImGui::Button("Delete"))
     {

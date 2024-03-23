@@ -5,7 +5,8 @@
 #include "rapidjson/stringbuffer.h"
 #include <rapidjson/filereadstream.h>
 #include <rapidjson/filewritestream.h>
-
+#include <sstream>
+#include "rapidjson/prettywriter.h"
 class JsonReader
 {
 public:

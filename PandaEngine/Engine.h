@@ -10,6 +10,7 @@
 #include "AssetLibrary.h"
 #include "RenderTexture.h"
 #include "Scene.h"
+#include "SceneSaver.h"
 
 class Engine
 {
@@ -49,6 +50,8 @@ private:
 	AssetLibrary assetLib;
 	std::vector<RenderTexture*> renderTextures;
 	std::vector<Scene*> scenes;
-
+	SceneSaver sceneSaver;
+	bool saveFile = false;
+	bool loadFile = false;
 	//Camera* camera;
 };

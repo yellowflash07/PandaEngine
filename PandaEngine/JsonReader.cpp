@@ -1,6 +1,6 @@
 #include "JsonReader.h"
 #include <iostream>
-
+#include <fstream>
 
 JsonReader::JsonReader()
 {
@@ -12,45 +12,47 @@ JsonReader::~JsonReader()
 
 bool JsonReader::LoadJsonFile(const char* filename, rapidjson::Document& document)
 {
-    using namespace rapidjson;
-    FILE* fp = 0;
-    fopen_s(&fp, filename, "rb");
-
-    if (fp == 0)
-    {
-		return false;
-	}
-
-    char readBuffer[65536];
-    FileReadStream is(fp, readBuffer, sizeof(readBuffer));
-    document.ParseStream(is);
-
-    if (!document.IsObject())
-    {
+    std::ifstream inputFile(filename);
+    if (!inputFile.is_open()) {
+        std::cerr << "Failed to open filename\n";
         return false;
     }
 
-  
-    fclose(fp);
+    std::string jsonString;
+    std::string line;
+    while (std::getline(inputFile, line)) {
+        jsonString += line;
+    }
+    inputFile.close();
+
+    rapidjson::Document doc;
+    document.Parse(jsonString.c_str());
+
+    if (document.HasParseError()) {
+		std::cerr << "Failed to parse JSON data\n";
+		return false;
+	}
 
     return true;
 }
 
 void JsonReader::WriteJsonFile(const char* filename, rapidjson::Document &document)
 {
-    using namespace rapidjson;
-	FILE* fp = 0;
-	fopen_s(&fp, filename, "wb");
 
-    if (fp == 0)
-    {
-		return;
-	}
+    rapidjson::StringBuffer buffer;
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+    document.Accept(writer);
 
-	char writeBuffer[65536];
-	FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
-	Writer<FileWriteStream> writer(os);
-	document.Accept(writer);
+    std::string jsonString = buffer.GetString();
 
-	fclose(fp);
+    std::ofstream outputFile(filename);
+    if (outputFile.is_open()) {
+        outputFile << jsonString;
+        outputFile.close();
+        std::cout << "JSON data has been written to output.json\n";
+    }
+    else {
+        std::cerr << "Failed to open output.json for writing\n";
+    }
+
 }

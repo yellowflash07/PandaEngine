@@ -41,28 +41,7 @@ int main(void)
 
     camera->SetPosition(glm::vec3(0.0f,0.0f, 10.0f));
 
-    engine.LoadSave();
-   
-
-    Scene* scene = new Scene("Test.pda");
-
-    engine.AddScene(scene);
-
-    GameObject* skyBox = scene->CreateGameObject("SkyBox");
-    cMesh& skyBoxMesh = skyBox->AddComponent<cMesh>("Sphere_1_unit_Radius_UV.ply", "SkyBox");
-    skyBoxMesh.isSkyBox = true;
-    skyBox->GetComponent<TransformComponent>()->setUniformDrawScale(5000.0f);
-    
-
-    GameObject* go = scene->CreateGameObject("Sphere");
-    cMesh &mesh = go->AddComponent<cMesh>("Sphere_1_unit_Radius_UV.ply", "FriendlyName");
-   // go->AddComponent<AnimationSystem>();
-
-    GameObject* directionalLight = scene->CreateGameObject("Directional Light");
-    directionalLight->AddComponent<cLight>();
-
-    GameObject* pointLight = scene->CreateGameObject("Point Light");    
-    pointLight->AddComponent<cLight>();
+    engine.LoadSave(); 
 
     float currTime = 0;
     float myTime = 0;

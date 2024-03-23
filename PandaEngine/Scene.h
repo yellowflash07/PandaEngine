@@ -23,14 +23,18 @@ public:
 
 	void Update(float deltaTime);
 
+	std::vector<GameObject*> GetGameObjects() { return m_GameObjects; }
+
+	std::string name;
 
 	void Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightManager* lightManager
 	 , cShaderManager* shaderManager);
 
+	GameObject* GetGameObjectByName(std::string name);
+
 private:
 	entt::registry m_Registry;
 	entt::entity m_currentEntity;
-	std::string name;
 	std::vector<GameObject*> m_GameObjects;
 	MeshManager* meshManager;
 	PhysicsManager* phyManager;

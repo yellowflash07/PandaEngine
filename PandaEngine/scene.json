@@ -1,0 +1,231 @@
+{
+    "sceneName": "Test.pda",
+    "gameObjects": [
+        {
+            "name": "SkyBox",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    5000.0,
+                    5000.0,
+                    5000.0
+                ]
+            },
+            "mesh": {
+                "fileName": "Sphere_1_unit_Radius_UV.ply",
+                "friendlyName": "SkyBox",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": true,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": ""
+            }
+        },
+        {
+            "name": "Sphere",
+            "transform": {
+                "position": [
+                    0.0,
+                    -1.770050048828125,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh": {
+                "fileName": "Sphere_1_unit_Radius_UV.ply",
+                "friendlyName": "FriendlyName",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": ""
+            }
+        },
+        {
+            "name": "Directional Light",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "light": {
+                "index": 0,
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "diffuse": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "specular": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "atten": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "direction": [
+                    -1.0,
+                    -1.0,
+                    -1.0
+                ],
+                "param1": [
+                    2.0,
+                    0.0,
+                    0.0
+                ],
+                "param2": [
+                    1.0
+                ]
+            }
+        },
+        {
+            "name": "Point Light",
+            "transform": {
+                "position": [
+                    0.0,
+                    1.437835693359375,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "light": {
+                "index": 1,
+                "position": [
+                    0.0,
+                    1.437835693359375,
+                    0.0
+                ],
+                "diffuse": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "specular": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "atten": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "direction": [
+                    -1.0,
+                    -1.0,
+                    -1.0
+                ],
+                "param1": [
+                    2.0,
+                    0.0,
+                    0.0
+                ],
+                "param2": [
+                    1.0
+                ]
+            }
+        }
+    ]
+}

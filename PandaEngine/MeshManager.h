@@ -6,7 +6,7 @@
 #include "cMesh.h"
 #include <string>
 #include <vector>
-#include "SceneSaver.h"
+//#include "SceneSaver.h"
 #include "GameObject.h"
 #include <functional>
 
@@ -46,7 +46,7 @@ public:
 private:
 	std::vector< cMesh* > meshList;
 	cMesh* selectedMesh;
-	SceneSaver* saver;
+	//SceneSaver* saver;
 	cBasicTextureManager* textureManager;
 	std::string basePath;
 	void SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID);

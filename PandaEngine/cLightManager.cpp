@@ -1,5 +1,4 @@
 #pragma once
-#include "SceneSaver.h"
 #include "cLightManager.h"
 #include <sstream> //"string stream"
 #include <imgui.h>
@@ -418,12 +417,6 @@ void cLightManager::DrawBox()
 	ImGui::InputFloat("yDi", &selectedLight->direction.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("zDi", &selectedLight->direction.z);
 	//ImGui::InputFloat("xDi", &selectedLight->atten.z); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
-
-	if (ImGui::Button("Save"))
-	{
-		SceneSaver saver;
-		saver.SaveLights(theLights, NUMBER_OF_LIGHTS_IM_USING);
-	}
 
 	ImGui::End();
 }
