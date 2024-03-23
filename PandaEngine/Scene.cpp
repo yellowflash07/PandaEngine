@@ -36,28 +36,7 @@ void Scene::Update(float deltaTime)
 		if (ImGui::TreeNode(go->m_Name.c_str()))
 		{
 			m_pCurrentGameObject = go;
-			if (ImGui::BeginMenu("Add Component"))
-			{
-				if (ImGui::MenuItem("Mesh"))
-				{
-					go->AddComponent<cMesh>();
-				}	
-				if (ImGui::MenuItem("Light"))
-				{
-					go->AddComponent<cLight>();
-				}
-				if (ImGui::MenuItem("Animation System"))
-				{
-					go->AddComponent<AnimationSystem>();
-				}
-				if (ImGui::MenuItem("Child Object"))
-				{
-					std::string name = "Child" + std::to_string(go->m_Children.size());
-					go->m_Children.push_back(CreateGameObject(name));
-				}
-
-				ImGui::EndMenu();
-			}
+			DrawContextMenu(m_pCurrentGameObject);			
 			ImGui::TreePop();
 		}
 
@@ -70,6 +49,8 @@ void Scene::Update(float deltaTime)
 
 	}
 	ImGui::End();
+
+	
 
 	ImGui::Begin("Inspector");
 	if (m_pCurrentGameObject != nullptr)
@@ -140,6 +121,41 @@ void Scene::UpdateGameObject(GameObject* go, float deltaTime)
 		}
 
 		light->UpdateLight(transform);
+	}
+}
+
+void Scene::CreateChildObject(GameObject* go, std::string childName)
+{
+	GameObject* pGameObject = new GameObject(childName);
+	pGameObject->entity = m_Registry.create();
+	pGameObject->m_Registry = &m_Registry;
+	pGameObject->AddComponent<TransformComponent>();
+	go->m_Children.push_back(pGameObject);
+}
+
+void Scene::DrawContextMenu(GameObject* go)
+{
+	if (ImGui::BeginMenu("Add Component"))
+	{
+		if (ImGui::MenuItem("Mesh"))
+		{
+			go->AddComponent<cMesh>();
+		}
+		if (ImGui::MenuItem("Light"))
+		{
+			go->AddComponent<cLight>();
+		}
+		if (ImGui::MenuItem("Animation System"))
+		{
+			go->AddComponent<AnimationSystem>();
+		}
+		if (ImGui::MenuItem("Child Object"))
+		{
+			std::string name = "Child" + std::to_string(go->m_Children.size());
+			CreateChildObject(go, name);
+		}
+
+		ImGui::EndMenu();
 	}
 }
 

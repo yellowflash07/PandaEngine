@@ -41,5 +41,9 @@ private:
 	void DrawUI(GameObject* go);
 
 	void UpdateGameObject(GameObject* go, float deltaTime);
+
+	void CreateChildObject(GameObject* go, std::string childName);
+
+	void DrawContextMenu(GameObject* go);
 };
 
