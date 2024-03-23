@@ -39,5 +39,7 @@ private:
 	GameObject* m_pCurrentGameObject;
 	int lightIndex = 0;
 	void DrawUI(GameObject* go);
+
+	void UpdateGameObject(GameObject* go, float deltaTime);
 };
 

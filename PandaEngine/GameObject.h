@@ -35,6 +35,9 @@ public:
 		return &m_Registry->get<T>(entity);
 	}
 	std::string m_Name;
+
+	std::vector<GameObject*> m_Children;
+
 private:
 };
 

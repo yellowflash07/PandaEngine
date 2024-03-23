@@ -58,11 +58,11 @@ int main(void)
     cMesh &mesh = go->AddComponent<cMesh>("Sphere_1_unit_Radius_UV.ply", "FriendlyName");
    // go->AddComponent<AnimationSystem>();
 
-    GameObject* lightGo = scene->CreateGameObject("Light1");
-    lightGo->AddComponent<cLight>();
+    GameObject* directionalLight = scene->CreateGameObject("Directional Light");
+    directionalLight->AddComponent<cLight>();
 
-   // go->AddComponent<cLight>();
-    //go->AddComponent<cLight>();
+    GameObject* pointLight = scene->CreateGameObject("Point Light");    
+    pointLight->AddComponent<cLight>();
 
     float currTime = 0;
     float myTime = 0;

@@ -12,6 +12,8 @@ class cLight : public IEditorUI
 public:
     cLight();
 
+    bool bIsOn;
+
     glm::vec4 position;
     glm::vec4 diffuse;	// Colour of the light (used for diffuse)
     glm::vec4 specular;	// rgb = highlight colour, w = power

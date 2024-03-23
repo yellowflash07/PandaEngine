@@ -133,19 +133,29 @@ void cLight::Render()
 {
 	ImGui::BeginChild("Light", ImVec2(0, 200));
 
-	ImGui::Text("On?"); ImGui::SetNextItemWidth(40);
-	ImGui::InputFloat("On", &param2.x);
+	//ImGui::Text("On?"); ImGui::SetNextItemWidth(40);
+	//ImGui::InputFloat("On", &param2.x);
 
-	ImGui::Text("Type"); ImGui::SetNextItemWidth(40);
-	ImGui::InputFloat("Type", &param1.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
+	if (ImGui::Checkbox("On", &bIsOn))
+	{
+		if (bIsOn)
+		{
+			TurnOn();
+		}
+		else
+		{
+			TurnOff();
+		}
+	}
+
+	ImGui::SetNextItemWidth(100);
+	static int type = param1.x;
+	//ImGui::Combo("LightType", &param1.x, "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0");
+	ImGui::Combo("Light Type", &type, "Point Light\0Spot Light\0Directional\0\0");
+	param1.x = type;
+
 	ImGui::InputFloat("inner angle", &param1.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("outer angle", &param1.z);
-
-	ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
-	ImGui::InputFloat("xL", &position.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
-	ImGui::InputFloat("yL", &position.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
-	ImGui::InputFloat("zL", &position.z);
-	position.w = 1;
 
 	ImGui::Text("Diffuse"); ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("xD", &diffuse.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);

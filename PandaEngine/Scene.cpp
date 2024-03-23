@@ -31,37 +31,11 @@ void Scene::Update(float deltaTime)
 			m_pCurrentGameObject = go;
 		}
 
-		TransformComponent* transform = go->GetComponent<TransformComponent>();
-		cMesh* mesh = go->GetComponent<cMesh>();
-		if (mesh != nullptr)
-		{
-			AnimationSystem* anim = go->GetComponent<AnimationSystem>();
-			if (anim != nullptr)
-			{
-				mesh->useBone = true;
-				anim->UpdateSkeleton(mesh, *mesh->modelDrawInfo.RootNode,deltaTime);
-			}
-			meshManager->DrawObject(mesh, transform);
-		}
+		UpdateGameObject(go, deltaTime);
 
-		PhysicsBody* body = go->GetComponent<PhysicsBody>();
-		if (body != nullptr)
+		for (GameObject* child : go->m_Children)
 		{
-			phyManager->UpdatePhysicsBody(body, transform, deltaTime);
-		}
-
-		cLight* light = go->GetComponent<cLight>();
-		if (light != nullptr)
-		{
-			if (!light->uniformLocationIsSet)
-			{
-				light->uniformLocationIsSet = true;
-				GLint shaderID = shaderManager->getIDFromFriendlyName("shader01");
-				light->SetUniformLocations(shaderID, lightIndex);
-				lightIndex++;
-			}
-
-			light->UpdateLight(transform);
+			UpdateGameObject(child, deltaTime);
 		}
 
 	}
@@ -100,6 +74,43 @@ void Scene::DrawUI(GameObject* go)
 		}
 	}
 	
+}
+
+void Scene::UpdateGameObject(GameObject* go, float deltaTime)
+{
+
+	TransformComponent* transform = go->GetComponent<TransformComponent>();
+	cMesh* mesh = go->GetComponent<cMesh>();
+	if (mesh != nullptr)
+	{
+		AnimationSystem* anim = go->GetComponent<AnimationSystem>();
+		if (anim != nullptr)
+		{
+			mesh->useBone = true;
+			anim->UpdateSkeleton(mesh, *mesh->modelDrawInfo.RootNode, deltaTime);
+		}
+		meshManager->DrawObject(mesh, transform);
+	}
+
+	PhysicsBody* body = go->GetComponent<PhysicsBody>();
+	if (body != nullptr)
+	{
+		phyManager->UpdatePhysicsBody(body, transform, deltaTime);
+	}
+
+	cLight* light = go->GetComponent<cLight>();
+	if (light != nullptr)
+	{
+		if (!light->uniformLocationIsSet)
+		{
+			light->uniformLocationIsSet = true;
+			GLint shaderID = shaderManager->getIDFromFriendlyName("shader01");
+			light->SetUniformLocations(shaderID, lightIndex);
+			lightIndex++;
+		}
+
+		light->UpdateLight(transform);
+	}
 }
 
 
