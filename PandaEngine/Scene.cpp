@@ -23,12 +23,42 @@ GameObject* Scene::CreateGameObject(std::string name)
 void Scene::Update(float deltaTime)
 {
 	ImGui::Begin("Scene");
+
+	if (ImGui::Button("Create GameObject"))
+	{
+		CreateGameObject("GameObject");
+	}
+
 	for (GameObject* go : m_GameObjects)
 	{
 
-		if (ImGui::Button(go->m_Name.c_str()))
+		//if (ImGui::Button(go->m_Name.c_str()))
+		if (ImGui::TreeNode(go->m_Name.c_str()))
 		{
 			m_pCurrentGameObject = go;
+			if (ImGui::BeginMenu("Add Component"))
+			{
+				if (ImGui::MenuItem("Mesh"))
+				{
+					go->AddComponent<cMesh>();
+				}	
+				if (ImGui::MenuItem("Light"))
+				{
+					go->AddComponent<cLight>();
+				}
+				if (ImGui::MenuItem("Animation System"))
+				{
+					go->AddComponent<AnimationSystem>();
+				}
+				if (ImGui::MenuItem("Child Object"))
+				{
+					std::string name = "Child" + std::to_string(go->m_Children.size());
+					go->m_Children.push_back(CreateGameObject(name));
+				}
+
+				ImGui::EndMenu();
+			}
+			ImGui::TreePop();
 		}
 
 		UpdateGameObject(go, deltaTime);

@@ -67,6 +67,17 @@ void cMesh::Render()
 {
 	ImGui::BeginChild("Mesh", ImVec2(0, 125));
 	ImGui::Text("Mesh");
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model_DND"))
+		{
+			const char* payload_n = (const char*)payload->Data;
+			LoadMesh(payload_n, payload_n);
+			//std::cout << "Accepted: " << payload_n << std::endl;
+		}
+		ImGui::EndDragDropTarget();
+	}
+
 	ImGui::SliderFloat("Transparency", &transperancy, 0.0f, 1.0f);
 	for (size_t i = 0; i < NUM_OF_TEXTURES; i++)
 	{
@@ -125,28 +136,19 @@ void cMesh::Render()
 	ImGui::EndChild();
 }
 
-
-// static
-unsigned int cMesh::m_nextUniqueID = cMesh::FIRST_UNIQUE_ID;
-
-
-cMesh::cMesh(std::string meshName, std::string friendlyName)
+void cMesh::LoadMesh(std::string fileName, std::string friendlyName)
 {
-	//std::cout << "!!!!!!!!!!!!!!" << std::endl;
-	std::cout << meshName << "," << friendlyName << std::endl;
-	cVAOManager* pVAOManager = cVAOManager::getInstance();	
+	cVAOManager* pVAOManager = cVAOManager::getInstance();
 	//HACK:
 	cShaderManager* pShaderManager = cShaderManager::getInstance();
 	GLint shaderID = pShaderManager->getIDFromFriendlyName("shader01");
-	if (!pVAOManager->LoadModelIntoVAOAI(meshName, this->modelDrawInfo, shaderID))
+	if (!pVAOManager->LoadModelIntoVAOAI(fileName, this->modelDrawInfo, shaderID))
 	{
-	//	std::cout << "Didn't load model" << std::endl;
+		std::cout << "Didn't load model" << std::endl;
+		return;
 	}
-	else
-	{
-	//	std::cout << "Loaded model" << std::endl;
-	}
-	this->meshName = meshName;
+
+	this->meshName = fileName;
 	this->uniqueName = modelDrawInfo.uniqueName;
 	this->friendlyName = friendlyName;
 	this->bIsWireframe = false;
@@ -166,6 +168,21 @@ cMesh::cMesh(std::string meshName, std::string friendlyName)
 	this->textureRatio[1] = 1.0f;
 	this->textureRatio[2] = 1.0f;
 	this->textureRatio[3] = 1.0f;
+}
+
+
+// static
+unsigned int cMesh::m_nextUniqueID = cMesh::FIRST_UNIQUE_ID;
+
+
+cMesh::cMesh(std::string meshName, std::string friendlyName)
+{
+	//std::cout << "!!!!!!!!!!!!!!" << std::endl;
+	std::cout << meshName << "," << friendlyName << std::endl;
+	
+	this->LoadMesh(meshName, friendlyName);
+
+
 	this->m_UniqueID = cMesh::m_nextUniqueID;
 	cMesh::m_nextUniqueID++;
 }

@@ -69,6 +69,7 @@ private:
 	unsigned int m_UniqueID;
 	static const unsigned int FIRST_UNIQUE_ID = 1000;
 	static unsigned int m_nextUniqueID;
+	void LoadMesh(std::string fileName, std::string friendlyName);
 };
 
 #endif
