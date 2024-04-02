@@ -33,24 +33,13 @@ void Scene::Update(float deltaTime)
 	{
 
 		//if (ImGui::Button(go->m_Name.c_str()))
-		if (ImGui::TreeNode(go->m_Name.c_str()))
-		{
-			m_pCurrentGameObject = go;
-			DrawContextMenu(m_pCurrentGameObject);	
-			ImGui::TreePop();
-		}
 
-		UpdateGameObject(go, deltaTime);
+		DrawTreeNode(go);
 
-		for (GameObject* child : go->m_Children)
-		{
-			UpdateGameObject(child, deltaTime);
-		}
+		UpdateGameObject(go, glm::mat4(1.0f), deltaTime);
 
 	}
-	ImGui::End();
-
-	
+	ImGui::End();	
 
 	ImGui::Begin("Inspector");
 	if (m_pCurrentGameObject != nullptr)
@@ -100,10 +89,12 @@ void Scene::DrawUI(GameObject* go)
 	
 }
 
-void Scene::UpdateGameObject(GameObject* go, float deltaTime)
+void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime)
 {
 
 	TransformComponent* transform = go->GetComponent<TransformComponent>();
+
+	matModel = transform->GetTransform() * matModel;
 	cMesh* mesh = go->GetComponent<cMesh>();
 	if (mesh != nullptr)
 	{
@@ -113,7 +104,8 @@ void Scene::UpdateGameObject(GameObject* go, float deltaTime)
 			mesh->useBone = true;
 			anim->UpdateSkeleton(mesh, *mesh->modelDrawInfo.RootNode, deltaTime);
 		}
-		meshManager->DrawObject(mesh, transform);
+
+		meshManager->DrawObject(mesh, matModel);
 	}
 
 	PhysicsBody* body = go->GetComponent<PhysicsBody>();
@@ -135,7 +127,27 @@ void Scene::UpdateGameObject(GameObject* go, float deltaTime)
 
 		light->UpdateLight(transform);
 	}
+
+	for (GameObject* child : go->m_Children)
+	{
+		UpdateGameObject(child, transform->GetTransform(), deltaTime);
+	}
 }
+
+void Scene::DrawTreeNode(GameObject* go)
+{
+	if (ImGui::TreeNode(go->m_Name.c_str()))
+	{
+		m_pCurrentGameObject = go;
+		DrawContextMenu(m_pCurrentGameObject);
+		for (GameObject* child : go->m_Children)
+		{
+			DrawTreeNode(child);
+		}
+		ImGui::TreePop();
+	}
+}
+
 
 void Scene::CreateChildObject(GameObject* go, std::string childName)
 {
@@ -164,11 +176,11 @@ void Scene::DrawContextMenu(GameObject* go)
 			{
 				go->AddComponent<AnimationSystem>();
 			}
-			/*if (ImGui::MenuItem("Child Object"))
+			if (ImGui::MenuItem("Child Object"))
 			{
-				std::string name = "Child" + std::to_string(go->m_Children.size());
+				std::string name = "Child" + go->m_Name + std::to_string(go->m_Children.size());
 				CreateChildObject(go, name);
-			}*/
+			}
 
 			ImGui::EndMenu();
 		}

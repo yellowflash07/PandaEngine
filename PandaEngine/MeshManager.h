@@ -22,7 +22,7 @@ public:
 	cMesh* LoadMesh(std::string modelNameAtPath, std::string friendlyName, unsigned int shaderProgramID);
 	void LoadMeshAsync(std::string modelNameAtPath, std::string friendlyName,
 		unsigned int shaderProgramID, OnMeshLoadCallBack callback);
-	void DrawObject(cMesh* pMesh, TransformComponent* transform);
+	void DrawObject(cMesh* pMesh, glm::mat4 matModelParent);
 	void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProgramID);
 	void DrawAllObjects(GLuint shaderProgramID);
 	void SetBasePath(std::string basePath);

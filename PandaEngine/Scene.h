@@ -44,7 +44,9 @@ private:
 	int lightIndex = 0;
 	void DrawUI(GameObject* go);
 
-	void UpdateGameObject(GameObject* go, float deltaTime);
+	void UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime);
+
+	void DrawTreeNode(GameObject* go);
 
 	void CreateChildObject(GameObject* go, std::string childName);
 

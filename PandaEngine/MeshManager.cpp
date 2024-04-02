@@ -92,9 +92,9 @@ void MeshManager::LoadMeshAsync(std::string modelNameAtPath,
     }
 }
 
-void MeshManager::DrawObject(cMesh* pCurrentMesh, TransformComponent* transform)
+void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModel)
 {
-    glm::mat4 matModel = transform->GetTransform();
+   // glm::mat4 matModel = transform->GetTransform();
 
     GLint matModel_UL = glGetUniformLocation(shaderProgramID, "matModel");
     glUniformMatrix4fv(matModel_UL, 1, GL_FALSE, glm::value_ptr(matModel));
