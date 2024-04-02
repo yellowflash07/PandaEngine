@@ -53,6 +53,7 @@ struct GameObjectConfig
 	MeshConfig mesh;
  	LightConfig light;
 	AnimationConfig animation;
+	std::vector<GameObjectConfig> children;
 };
 
 struct SceneConfig
@@ -75,4 +76,9 @@ public:
 	Scene* LoadScene(std::string sceneName);
 private:
 	JsonReader* jsonReader;
+
+	void GetGameObjectConifg(GameObject* go, GameObjectConfig& config);
+	void SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjectValue, rapidjson::Document& document);
+
+	GameObject* LoadGameObject(rapidjson::Value& gameObjectValue, Scene* scene);
 };

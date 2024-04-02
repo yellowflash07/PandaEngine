@@ -32,6 +32,10 @@ public:
 
 	GameObject* GetGameObjectByName(std::string name);
 
+	GameObject* NewGameObject(std::string name);
+
+	void AddGameObject(GameObject* go);
+
 private:
 	entt::registry m_Registry;
 	entt::entity m_currentEntity;

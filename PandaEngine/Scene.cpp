@@ -71,6 +71,20 @@ GameObject* Scene::GetGameObjectByName(std::string name)
 	return nullptr;
 }
 
+GameObject* Scene::NewGameObject(std::string name)
+{
+	GameObject* go = new GameObject(name);
+	go->entity = m_Registry.create();
+	go->m_Registry = &m_Registry;
+	return go;
+}
+
+void Scene::AddGameObject(GameObject* go)
+{
+	m_GameObjects.push_back(go);
+}
+
+
 void Scene::DrawUI(GameObject* go)
 {
 
