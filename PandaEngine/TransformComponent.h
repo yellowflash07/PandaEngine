@@ -70,7 +70,7 @@ struct TransformComponent : public IEditorUI
 		glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f), drawPosition);
 
 		// Rotation matrix generation
-		glm::mat4 matRotation = glm::mat4(get_qOrientation());
+		glm::mat4 matRotation = glm::mat4(glm::quat(eulerRotation));
 
 		glm::mat4 matScale = glm::scale(glm::mat4(1.0f), drawScale);
 

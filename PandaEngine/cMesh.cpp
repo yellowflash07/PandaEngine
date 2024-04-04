@@ -66,7 +66,8 @@ void cMesh::AddChild(cMesh* child)
 void cMesh::Render()
 {
 	ImGui::BeginChild("Mesh", ImVec2(0, 125));
-	ImGui::Text("Mesh");
+	std::string name = "Mesh: " + friendlyName;
+	ImGui::Text(name.c_str());
 	if (ImGui::BeginDragDropTarget())
 	{
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model_DND"))

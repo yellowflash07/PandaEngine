@@ -99,7 +99,7 @@ bool Engine::Initialize()
     return true;
 }
 
-void Engine::Update()
+void Engine::BeginRender()
 {
 
     //render render textures
@@ -122,12 +122,27 @@ void Engine::Update()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode );
+    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::BeginFrame();
     ImGuiIO& io = ImGui::GetIO();
     ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+}
+
+void Engine::EndRender()
+{
+    //render the frame
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+
+void Engine::Update()
+{
 
     // While drawing a pixel, see if the pixel that's already there is closer or not?
     glEnable(GL_DEPTH_TEST);
@@ -207,13 +222,6 @@ void Engine::Update()
                                         camera->GetCameraRotation() * glm::vec3(0, 0, 1),
                                         camera->upVector);
 
-    //render the frame
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
-    glfwSwapBuffers(window);
-    glfwPollEvents();
 }
 
 void Engine::SetShaderPath(std::string filePath)
@@ -325,5 +333,10 @@ RenderTexture* Engine::CreateRenderTexture(Camera* camera, std::vector<cMesh*> o
     rt->lightManager = this->lightManager;
     renderTextures.push_back(rt);
     return rt;
+}
+
+Scene* Engine::GetCurrentScene()
+{
+    return scenes[currentScene];
 }
 

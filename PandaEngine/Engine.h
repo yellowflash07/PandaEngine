@@ -40,6 +40,9 @@ public:
 	PhysicsManager* physicsManager;
 	GLuint shaderProgramID;
 	int currentScene = 0;
+	Scene* GetCurrentScene();
+	void BeginRender();
+	void EndRender();
 private:
 	//cShaderManager* shaderManager;
 	glm::vec3 cameraEye;

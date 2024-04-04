@@ -55,6 +55,7 @@ public:
 	{
 		return (this->maxExtents_XYZ + this->minExtents_XYZ) / 2.0f;
 	}
+
 	
 	sModelDrawInfo modelDrawInfo;
 

@@ -296,6 +296,7 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
         gameObjectConfig.mesh = meshConfig;
     }
 
+
     cLight* light = go->GetComponent<cLight>();
     if (light != nullptr)
     {
@@ -545,6 +546,7 @@ GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scen
         m->textureRatio[2] = meshConfig.textureRatio[2];
         m->textureRatio[3] = meshConfig.textureRatio[3];
         m->maskTexture = meshConfig.maskTexture;
+        m->transform = *t;
     }
 
     if (gameObject.HasMember("light"))

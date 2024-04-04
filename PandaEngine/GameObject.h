@@ -38,6 +38,8 @@ public:
 
 	std::vector<GameObject*> m_Children;
 
+	void Destroy();
+
 private:
 };
 

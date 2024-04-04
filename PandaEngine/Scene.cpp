@@ -88,8 +88,13 @@ void Scene::AddGameObject(GameObject* go)
 void Scene::DrawUI(GameObject* go)
 {
 
-	ImGui::BeginChild(go->m_Name.c_str(), ImVec2(0, 20));
+	ImGui::BeginChild(go->m_Name.c_str(), ImVec2(0, 40));
 	ImGui::Text(go->m_Name.c_str());
+	std::string friendName = go->m_Name;
+	if (ImGui::InputText("Name", &friendName[0], 100, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		go->m_Name = friendName.c_str();
+	}
 	ImGui::Separator();
 	ImGui::EndChild();
 
@@ -105,8 +110,12 @@ void Scene::DrawUI(GameObject* go)
 
 void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime)
 {
-
 	TransformComponent* transform = go->GetComponent<TransformComponent>();
+
+	if (go->m_Name == "Plane")
+	{
+				int x = 0;
+	}
 
 	matModel = transform->GetTransform() * matModel;
 	cMesh* mesh = go->GetComponent<cMesh>();
@@ -119,7 +128,7 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 			anim->UpdateSkeleton(mesh, *mesh->modelDrawInfo.RootNode, deltaTime);
 		}
 
-		meshManager->DrawObject(mesh, matModel);
+		meshManager->DrawObject(mesh, transform->GetTransform());
 	}
 
 	PhysicsBody* body = go->GetComponent<PhysicsBody>();
@@ -195,6 +204,12 @@ void Scene::DrawContextMenu(GameObject* go)
 				std::string name = "Child" + go->m_Name + std::to_string(go->m_Children.size());
 				CreateChildObject(go, name);
 			}
+			if (ImGui::MenuItem("Remove Object"))
+			{
+				//go->Destroy();
+				m_GameObjects.erase(std::remove(m_GameObjects.begin(), m_GameObjects.end(), go), m_GameObjects.end());
+			}
+
 
 			ImGui::EndMenu();
 		}
