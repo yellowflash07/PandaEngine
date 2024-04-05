@@ -189,6 +189,8 @@
     <ClCompile Include="MoveTo.cpp" />
     <ClCompile Include="OrientTo.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
+    <ClCompile Include="PhysXBody.cpp" />
+    <ClCompile Include="PhysXManager.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="ScaleUp.cpp" />
@@ -253,6 +255,8 @@
     <ClInclude Include="OrientTo.h" />
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PhysicsShapes.h" />
+    <ClInclude Include="PhysXBody.h" />
+    <ClInclude Include="PhysXManager.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="ScaleUp.h" />

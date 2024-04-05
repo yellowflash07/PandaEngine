@@ -10,6 +10,8 @@
 #include "cLightManager.h"
 #include "../Basic Shader Manager/cShaderManager.h"
 #include <imgui.h>
+#include "PhysXManager.h"
+#include "PhysXBody.h"
 
 class Scene
 {
@@ -36,6 +38,10 @@ public:
 
 	void AddGameObject(GameObject* go);
 
+	void Play();
+
+	void Stop();
+
 private:
 	entt::registry m_Registry;
 	entt::entity m_currentEntity;
@@ -55,5 +61,7 @@ private:
 	void CreateChildObject(GameObject* go, std::string childName);
 
 	void DrawContextMenu(GameObject* go);
+
+	bool play = false;
 };
 

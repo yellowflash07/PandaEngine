@@ -4,6 +4,8 @@ Scene::Scene(std::string name)
 {
 	this->name = name;
 	m_Registry = entt::registry();
+	PhysXManager::getInstance()->Init(true);
+	this->play = false;
 }
 
 Scene::~Scene()
@@ -39,6 +41,13 @@ void Scene::Update(float deltaTime)
 		UpdateGameObject(go, glm::mat4(1.0f), deltaTime);
 
 	}
+
+	if (play)
+	{
+		PhysXManager::getInstance()->Update(deltaTime);
+	}
+	
+
 	ImGui::End();	
 
 	ImGui::Begin("Inspector");
@@ -84,6 +93,15 @@ void Scene::AddGameObject(GameObject* go)
 	m_GameObjects.push_back(go);
 }
 
+void Scene::Play()
+{
+	this->play = true;
+}
+
+void Scene::Stop()
+{
+	this->play = false;
+}
 
 void Scene::DrawUI(GameObject* go)
 {
@@ -131,12 +149,6 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		meshManager->DrawObject(mesh, transform->GetTransform());
 	}
 
-	PhysicsBody* body = go->GetComponent<PhysicsBody>();
-	if (body != nullptr)
-	{
-		phyManager->UpdatePhysicsBody(body, transform, deltaTime);
-	}
-
 	cLight* light = go->GetComponent<cLight>();
 	if (light != nullptr)
 	{
@@ -149,6 +161,12 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		}
 
 		light->UpdateLight(transform);
+	}
+
+	PhysXBody* physXBody = go->GetComponent<PhysXBody>();
+	if (physXBody != nullptr)
+	{
+		physXBody->Update(deltaTime);
 	}
 
 	for (GameObject* child : go->m_Children)
@@ -203,6 +221,10 @@ void Scene::DrawContextMenu(GameObject* go)
 			{
 				std::string name = "Child" + go->m_Name + std::to_string(go->m_Children.size());
 				CreateChildObject(go, name);
+			}
+			if (ImGui::MenuItem("Physics Body"))
+			{
+				go->AddComponent<PhysXBody>(go->GetComponent<TransformComponent>());
 			}
 			if (ImGui::MenuItem("Remove Object"))
 			{

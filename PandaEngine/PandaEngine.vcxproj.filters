@@ -76,14 +76,20 @@
     <Filter Include="RenderTexture">
       <UniqueIdentifier>{ec411256-17c3-4232-a8b7-6acb66e8e138}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics\SoftBody">
-      <UniqueIdentifier>{8e26b1cb-dd2c-4ca2-8645-71ce86b28634}</UniqueIdentifier>
-    </Filter>
     <Filter Include="JsonReader">
       <UniqueIdentifier>{6c824607-cddd-4664-aed9-806de708f037}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{4844d743-c274-4551-9c5c-d6f8fcf56efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\PhysX">
+      <UniqueIdentifier>{1c97881d-13b1-4271-bad5-88e340a9a31f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Custom">
+      <UniqueIdentifier>{763d5039-fd7c-41fc-a49c-5348253034b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Custom\SoftBody">
+      <UniqueIdentifier>{8e26b1cb-dd2c-4ca2-8645-71ce86b28634}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -149,9 +155,6 @@
     </ClCompile>
     <ClCompile Include="SceneSaver.cpp">
       <Filter>SceneSaver</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsManager.cpp">
-      <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Camera</Filter>
@@ -229,10 +232,10 @@
       <Filter>RenderTexture</Filter>
     </ClCompile>
     <ClCompile Include="SoftBody.cpp">
-      <Filter>Physics\SoftBody</Filter>
+      <Filter>Physics\Custom\SoftBody</Filter>
     </ClCompile>
     <ClCompile Include="SoftBodyManager.cpp">
-      <Filter>Physics\SoftBody</Filter>
+      <Filter>Physics\Custom\SoftBody</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>TextureManager</Filter>
@@ -245,6 +248,15 @@
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysXBody.cpp">
+      <Filter>Physics\PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysXManager.cpp">
+      <Filter>Physics\PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsManager.cpp">
+      <Filter>Physics\Custom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -311,12 +323,6 @@
     <ClInclude Include="SceneSaver.h">
       <Filter>SceneSaver</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsManager.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsShapes.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
     <ClInclude Include="GLFWCallbacks.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -337,9 +343,6 @@
     </ClInclude>
     <ClInclude Include="..\TextureManager\cBasicTextureManager.h">
       <Filter>TextureManager</Filter>
-    </ClInclude>
-    <ClInclude Include="cAABB.h">
-      <Filter>Physics</Filter>
     </ClInclude>
     <ClInclude Include="OrientTo.h">
       <Filter>Commands</Filter>
@@ -405,10 +408,10 @@
       <Filter>RenderTexture</Filter>
     </ClInclude>
     <ClInclude Include="SoftBodyManager.h">
-      <Filter>Physics\SoftBody</Filter>
+      <Filter>Physics\Custom\SoftBody</Filter>
     </ClInclude>
     <ClInclude Include="SoftBody.h">
-      <Filter>Physics\SoftBody</Filter>
+      <Filter>Physics\Custom\SoftBody</Filter>
     </ClInclude>
     <ClInclude Include="AnimationFrames.h">
       <Filter>Animation</Filter>
@@ -436,6 +439,21 @@
     </ClInclude>
     <ClInclude Include="IEditorUI.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysXManager.h">
+      <Filter>Physics\PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysXBody.h">
+      <Filter>Physics\PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsShapes.h">
+      <Filter>Physics\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="cAABB.h">
+      <Filter>Physics\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsManager.h">
+      <Filter>Physics\Custom</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

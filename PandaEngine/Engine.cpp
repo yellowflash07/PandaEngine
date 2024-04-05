@@ -196,6 +196,15 @@ void Engine::Update()
             ImGui::EndMenu();
         }
 
+        if (ImGui::Button("Play"))
+        {
+			scenes[currentScene]->Play();
+		}
+        if (ImGui::Button("Stop"))
+        {
+            scenes[currentScene]->Stop();
+        }
+
         ImGui::EndMenuBar();
     }
   
