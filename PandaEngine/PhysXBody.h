@@ -3,13 +3,16 @@
 #include <PhysX/pvd/PxPvd.h>
 #include "TransformComponent.h"
 #include "PhysXManager.h"
+#include "cMesh.h"
 #include "IEditorUI.h"
 using namespace physx;
 
 enum ColliderType
 {
+	NONE,
 	BOX,
 	SPHERE,
+	MESH
 };
 
 
@@ -23,15 +26,19 @@ public:
 	void SetBody(bool isDynamic);
 	void Update(float deltaTime);
 	void Render() override;
-private:
+	ColliderType type;
 	PxShape* shape;
+	bool isDynamic;
+	void createBV34TriangleMesh(cMesh* mesh,
+		bool skipMeshCleanup, bool skipEdgeData, bool inserted, const PxU32 numTrisPerLeaf);
+private:
 	PxRigidActor* body;
 	PxMaterial* material;
 	PxPhysics* gPhysics = NULL;
 	PxScene* gScene = NULL;
 	PxMaterial* gMaterial = NULL;
 	TransformComponent* transform;
-	ColliderType type;	
-	bool isDynamic;
+	bool setMesh = false;
+	void SetupCommonCookingParams(PxCookingParams& params, bool skipMeshCleanup, bool skipEdgeData);
 };
 

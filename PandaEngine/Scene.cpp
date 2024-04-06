@@ -167,6 +167,10 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 	if (physXBody != nullptr)
 	{
 		physXBody->Update(deltaTime);
+		if (physXBody->type == MESH)
+		{
+			physXBody->createBV34TriangleMesh(mesh, false, false, false, 1);
+		}
 	}
 
 	for (GameObject* child : go->m_Children)

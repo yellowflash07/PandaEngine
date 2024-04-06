@@ -52,6 +52,7 @@ void PhysXManager::Init(bool connectToPvd)
     }
 
     gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+    gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 }
 
 void PhysXManager::Update(float deltaTime)

@@ -18,6 +18,8 @@ struct TransformComponent : public IEditorUI
 	glm::vec3 drawScale = glm::vec3(1);
 	glm::quat m_qOrientation = glm::quat(eulerRotation);
 
+	bool isDirty = false;
+
 	void setRotationFromEuler(glm::vec3 newEulerAngleXYZ)
 	{
 		eulerRotation = newEulerAngleXYZ;

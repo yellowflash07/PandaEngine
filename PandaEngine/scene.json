@@ -175,27 +175,27 @@
             "children": []
         },
         {
-            "name": "Plane",
+            "name": "GameObject",
             "transform": {
                 "position": [
                     0.0,
-                    -13.860530853271484,
-                    0.000004956913471687585
+                    0.0,
+                    0.0
                 ],
                 "rotation": [
-                    1.6171425580978394,
-                    -2.086162567138672e-7,
-                    0.3760954737663269
+                    0.0,
+                    0.0,
+                    0.0
                 ],
                 "scale": [
-                    252.4041290283203,
-                    89.54976654052734,
-                    8.123013496398926
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             },
             "mesh": {
-                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "fileName": "Terrain_xyz_n_rgba_uv.ply",
+                "friendlyName": "Terrain_xyz_n_rgba_uv.ply",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -231,198 +231,10 @@
                 "maskTexture": ""
             },
             "light": {
-                "index": 1,
+                "index": 0,
                 "position": [
-                    0.0,
-                    -13.860530853271484,
-                    0.000004956913471687585
-                ],
-                "diffuse": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "specular": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "atten": [
-                    0.5,
-                    0.5,
-                    0.5
-                ],
-                "direction": [
-                    0.0,
-                    -0.5,
-                    0.0
-                ],
-                "param1": [
-                    2.0,
-                    0.0,
-                    0.0
-                ],
-                "param2": [
-                    1.0
-                ]
-            },
-            "children": []
-        },
-        {
-            "name": "DebugCube",
-            "transform": {
-                "position": [
-                    0.0,
-                    -11.160531044006348,
-                    0.000004956913471687585
-                ],
-                "rotation": [
-                    1.6171427965164185,
-                    1.4901161193847656e-8,
-                    0.37609562277793884
-                ],
-                "scale": [
-                    77.50052642822266,
-                    89.54976654052734,
-                    8.123013496398926
-                ]
-            },
-            "mesh": {
-                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "bIsWireframe": true,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": true,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": ""
-            },
-            "light": {
-                "index": 2,
-                "position": [
-                    0.0,
-                    -11.160531044006348,
-                    0.000004956913471687585
-                ],
-                "diffuse": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "specular": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "atten": [
-                    0.5,
-                    0.5,
-                    0.5
-                ],
-                "direction": [
-                    0.0,
-                    -0.5,
-                    0.0
-                ],
-                "param1": [
-                    2.0,
-                    0.0,
-                    0.0
-                ],
-                "param2": [
-                    1.0
-                ]
-            },
-            "children": []
-        },
-        {
-            "name": "DebugSphere",
-            "transform": {
-                "position": [
-                    0.0,
-                    50.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    5.4499993324279785,
-                    5.4499993324279785,
-                    5.4499993324279785
-                ]
-            },
-            "mesh": {
-                "fileName": "Sphere_1_unit_Radius.ply",
-                "friendlyName": "DebugSphere",
-                "bIsWireframe": true,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": ""
-            },
-            "light": {
-                "index": 3,
-                "position": [
-                    0.0,
-                    50.0,
+                    130.5989532470703,
+                    153.91659545898438,
                     0.0
                 ],
                 "diffuse": [

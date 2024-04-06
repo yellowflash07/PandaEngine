@@ -23,6 +23,7 @@ public:
 	PxPhysics* gPhysics = NULL;
 	PxScene* gScene = NULL;
 	PxMaterial* gMaterial = NULL;
+	PxCooking* gCooking = NULL;
 
 private:
 	PxDefaultAllocator		gAllocator;
