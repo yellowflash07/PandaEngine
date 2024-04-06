@@ -169,7 +169,7 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		physXBody->Update(deltaTime);
 		if (physXBody->type == MESH)
 		{
-			physXBody->createBV34TriangleMesh(mesh, false, false, false, 1);
+			physXBody->CreateMeshCollider(mesh, false, false, false, 1);
 		}
 	}
 

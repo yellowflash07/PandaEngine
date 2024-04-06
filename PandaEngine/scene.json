@@ -184,18 +184,18 @@
                 ],
                 "rotation": [
                     0.0,
-                    0.0,
+                    -0.0,
                     0.0
                 ],
                 "scale": [
-                    1.0,
-                    1.0,
-                    1.0
+                    166.3255615234375,
+                    7.458257675170898,
+                    100.0
                 ]
             },
             "mesh": {
-                "fileName": "Terrain_xyz_n_rgba_uv.ply",
-                "friendlyName": "Terrain_xyz_n_rgba_uv.ply",
+                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,

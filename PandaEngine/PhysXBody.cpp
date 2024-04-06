@@ -34,17 +34,16 @@ void PhysXBody::SetShape(ColliderType type)
 		float halfZ = halfExtentsVec.z;
 		PxVec3 halfExtents = PxVec3(halfX, halfY, halfZ);
 
-		shape = gPhysics->createShape(PxBoxGeometry(halfExtents), *gMaterial);
+		shape = gPhysics->createShape(PxBoxGeometry(halfExtents), *gMaterial, true);
 	}
 	else if (type == SPHERE)
 	{
-		shape = gPhysics->createShape(PxSphereGeometry(transform->drawScale.x), *gMaterial);
+		shape = gPhysics->createShape(PxSphereGeometry(transform->drawScale.x), *gMaterial, true);
 	}
 	else if (type == MESH)
 	{
 		return;
 	}
-
 	body->attachShape(*shape);
 	shape->release();
 }
@@ -102,6 +101,12 @@ void PhysXBody::Render()
 		SetBody(isDynamic);
 		SetShape(this->type);
 	}
+
+	if (ImGui::Checkbox("Trigger", &isTrigger))
+	{
+		SetTrigger();
+	}
+
 
 	ImGui::EndChild();
 }
@@ -164,7 +169,9 @@ void PhysXBody::CreateMeshCollider(cMesh* mesh, bool skipMeshCleanup, bool skipE
 
 	triMesh = gCooking->createTriangleMesh(meshDesc, gPhysics->getPhysicsInsertionCallback());
 
-	body->attachShape(*gPhysics->createShape(PxTriangleMeshGeometry(triMesh), *gMaterial));
+	this->shape = gPhysics->createShape(PxTriangleMeshGeometry(triMesh), *gMaterial, true);
+
+	body->attachShape(*shape);
 
 	triMesh->release();
 }
@@ -195,4 +202,18 @@ void PhysXBody::SetupCommonCookingParams(PxCookingParams& params, bool skipMeshC
 	else
 		params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
 
+}
+
+void PhysXBody::SetTrigger()
+{
+	if (isTrigger)
+	{
+		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	}
+	else
+	{
+		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+	}
 }

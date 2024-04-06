@@ -29,7 +29,7 @@ public:
 	ColliderType type;
 	PxShape* shape;
 	bool isDynamic;
-	void createBV34TriangleMesh(cMesh* mesh,
+	void CreateMeshCollider(cMesh* mesh,
 		bool skipMeshCleanup, bool skipEdgeData, bool inserted, const PxU32 numTrisPerLeaf);
 private:
 	PxRigidActor* body;
@@ -39,6 +39,8 @@ private:
 	PxMaterial* gMaterial = NULL;
 	TransformComponent* transform;
 	bool setMesh = false;
+	bool isTrigger = false;
 	void SetupCommonCookingParams(PxCookingParams& params, bool skipMeshCleanup, bool skipEdgeData);
+	void SetTrigger();
 };
 
