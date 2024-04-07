@@ -65,13 +65,13 @@ int main(void)
 		std::cout << "Sphere contact at" << glm::to_string(contactPoint)<< std::endl;
 	};
 
-    sphereBody->onTriggerEnter = []() {
+    sphereBody->onTriggerEnter = [](PhysXBody* other) {
 		std::cout << "Sphere entered trigger" << std::endl;
 	};
 
-    sphereBody->onTriggerExit = []() {
+    sphereBody->onTriggerExit = [](PhysXBody* other) {
         std::cout << "Sphere exit trigger" << std::endl;
-        };
+    };
 
 
 

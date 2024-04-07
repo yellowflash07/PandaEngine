@@ -76,7 +76,9 @@ class ContactReportCallback : public PxSimulationEventCallback
 
 				if (itActor->second->onTriggerEnter)
 				{
-					itActor->second->onTriggerEnter();
+					std::map< PxActor*, PhysXBody*>::iterator
+						otherActor = ::gActorMap.find(current.otherActor);
+					itActor->second->onTriggerEnter(otherActor->second);
 				}
 
 				//printf("Shape is entering trigger volume\n");
@@ -94,7 +96,9 @@ class ContactReportCallback : public PxSimulationEventCallback
 
 				if (itActor->second->onTriggerExit)
 				{
-					itActor->second->onTriggerExit();
+					std::map< PxActor*, PhysXBody*>::iterator
+						otherActor = ::gActorMap.find(current.otherActor);
+					itActor->second->onTriggerExit(otherActor->second);
 				}
 			}
 		

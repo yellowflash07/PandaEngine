@@ -34,8 +34,8 @@ public:
 	void CreateMeshCollider(cMesh* mesh,
 		bool skipMeshCleanup, bool skipEdgeData, bool inserted, const PxU32 numTrisPerLeaf);
 	unsigned int uniqueID;
-	std::function<void()> onTriggerEnter;
-	std::function<void()> onTriggerExit;
+	std::function<void(PhysXBody* other)> onTriggerEnter;
+	std::function<void(PhysXBody* other)> onTriggerExit;
 	std::function<void(glm::vec3)> onContactStart;
 	std::function<void(glm::vec3)> onContactEnd;
 	bool isTrigger = false;
