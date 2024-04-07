@@ -5,6 +5,8 @@
 #include "PhysXManager.h"
 #include "cMesh.h"
 #include "IEditorUI.h"
+#include <functional>
+
 using namespace physx;
 
 enum ColliderType
@@ -31,6 +33,12 @@ public:
 	bool isDynamic;
 	void CreateMeshCollider(cMesh* mesh,
 		bool skipMeshCleanup, bool skipEdgeData, bool inserted, const PxU32 numTrisPerLeaf);
+	unsigned int uniqueID;
+	std::function<void()> onTriggerEnter;
+	std::function<void()> onTriggerExit;
+	bool isTrigger = false;
+	void SetTrigger();
+
 private:
 	PxRigidActor* body;
 	PxMaterial* material;
@@ -39,8 +47,6 @@ private:
 	PxMaterial* gMaterial = NULL;
 	TransformComponent* transform;
 	bool setMesh = false;
-	bool isTrigger = false;
 	void SetupCommonCookingParams(PxCookingParams& params, bool skipMeshCleanup, bool skipEdgeData);
-	void SetTrigger();
 };
 

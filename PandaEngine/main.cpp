@@ -55,6 +55,24 @@ int main(void)
 
     camera->speed = 150.0f;
 
+    Scene* scene = engine.GetCurrentScene();
+
+    //sphere
+    GameObject* sphere = scene->GetGameObjectByName("Sphere");
+ //   TransformComponent* sphereTransform = sphere->GetComponent<TransformComponent>();
+    PhysXBody* sphereBody = sphere->GetComponent<PhysXBody>();
+
+    sphereBody->onTriggerEnter = []() {
+		std::cout << "Sphere entered trigger" << std::endl;
+	};
+
+    sphereBody->onTriggerExit = []() {
+        std::cout << "Sphere exit trigger" << std::endl;
+        };
+
+
+
+
     while (!glfwWindowShouldClose(engine.window))
     {
 

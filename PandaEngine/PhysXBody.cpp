@@ -1,6 +1,8 @@
 #include "PhysXBody.h"
 #include <iostream>
 
+std::map<PxActor*, PhysXBody*> gActorMap;
+
 PhysXBody::PhysXBody(TransformComponent* transform)
 {
 	gPhysics = PhysXManager::getInstance()->gPhysics;
@@ -10,6 +12,8 @@ PhysXBody::PhysXBody(TransformComponent* transform)
 	SetBody(false);
 	shape = NULL;
 	this->type = NONE;
+
+	this->uniqueID = rand() % 10000 + 1;
 }
 
 PhysXBody::~PhysXBody()
@@ -68,6 +72,7 @@ void PhysXBody::SetBody(bool isDynamic)
 	std::string dynamic = isDynamic ? "Dynamic" : "Static";
 	std::cout << "Body created: " << dynamic << std::endl;
 	gScene->addActor(*body);
+	gActorMap[this->body] = this;
 }
 
 void PhysXBody::Update(float deltaTime)
@@ -95,6 +100,7 @@ void PhysXBody::Render()
 	int dynamic = isDynamic;
 	if (ImGui::Combo("Body Type", &dynamic, "Static\0Dynamic\0\0"))
 	{
+		::gActorMap.erase(body);
 		gScene->removeActor(*body);
 		//body->release();
 		bool isDynamic = dynamic == 1;

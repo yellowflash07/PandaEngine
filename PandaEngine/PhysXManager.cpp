@@ -1,6 +1,8 @@
 #include "PhysXManager.h"
+#include "PhysXBody.h"
 
 static PhysXManager* gPhysXManager = NULL;
+extern std::map<PxActor*, PhysXBody*> gActorMap;
 
 PhysXManager::PhysXManager()
 {
@@ -43,9 +45,39 @@ class ContactReportCallback : public PxSimulationEventCallback
 		{
 			const PxTriggerPair& current = *pairs++;
 			if (current.status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
-				printf("Shape is entering trigger volume\n");
+			{
+				std::map< PxActor*, PhysXBody*>::iterator
+					itActor = ::gActorMap.find(current.triggerActor);
+				if ( itActor == ::gActorMap.end() )
+				{
+					// Didn't find it
+					return;		// or 0 or nullptr
+				}
+
+				if (itActor->second->onTriggerEnter)
+				{
+					itActor->second->onTriggerEnter();
+				}
+
+				//printf("Shape is entering trigger volume\n");
+			}
+				
 			if (current.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
-				printf("Shape is leaving trigger volume\n");
+			{
+				std::map< PxActor*, PhysXBody*>::iterator
+					itActor = ::gActorMap.find(current.triggerActor);
+				if (itActor == ::gActorMap.end())
+				{
+					// Didn't find it
+					return;		// or 0 or nullptr
+				}
+
+				if (itActor->second->onTriggerExit)
+				{
+					itActor->second->onTriggerExit();
+				}
+			}
+		
 		}
 	}
 
