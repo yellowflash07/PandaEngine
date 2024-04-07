@@ -68,9 +68,9 @@
                     0.0
                 ],
                 "rotation": [
-                    -0.2213643342256546,
-                    0.4217892587184906,
-                    -0.957712709903717
+                    -0.22136424481868744,
+                    0.4217893183231354,
+                    -0.9577126502990723
                 ],
                 "scale": [
                     5.4499993324279785,
@@ -114,6 +114,11 @@
                     1.0
                 ],
                 "maskTexture": ""
+            },
+            "physXObj": {
+                "type": 2,
+                "isDynamic": true,
+                "isTrigger": true
             },
             "children": []
         },
@@ -175,7 +180,7 @@
             "children": []
         },
         {
-            "name": "GameObject",
+            "name": "Cube",
             "transform": {
                 "position": [
                     0.0,
@@ -231,10 +236,10 @@
                 "maskTexture": ""
             },
             "light": {
-                "index": 0,
+                "index": 1,
                 "position": [
-                    130.5989532470703,
-                    153.91659545898438,
+                    0.0,
+                    0.0,
                     0.0
                 ],
                 "diffuse": [
@@ -265,6 +270,11 @@
                 "param2": [
                     1.0
                 ]
+            },
+            "physXObj": {
+                "type": 1,
+                "isDynamic": false,
+                "isTrigger": false
             },
             "children": []
         }

@@ -313,6 +313,16 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
         gameObjectConfig.light = lightConfig;
     }
 
+    PhysXBody* physXBody = go->GetComponent<PhysXBody>();
+    if (physXBody != nullptr)
+    {
+		PhysXConfig physXConfig;
+		physXConfig.type = physXBody->type;
+		physXConfig.isDynamic = physXBody->isDynamic;
+        physXConfig.isTrigger = physXBody->isTrigger;
+		gameObjectConfig.physXObj = physXConfig;
+	}
+
     gameObjectConfig.children.clear();
     for (GameObject* child : go->m_Children)
     {
@@ -459,6 +469,15 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
 
     }
 
+    if (go.physXObj.type != NONE)
+    {
+		rapidjson::Value physXObj(rapidjson::kObjectType);
+		physXObj.AddMember("type", go.physXObj.type, jsonDocument.GetAllocator());
+		physXObj.AddMember("isDynamic", go.physXObj.isDynamic, jsonDocument.GetAllocator());
+		physXObj.AddMember("isTrigger", go.physXObj.isTrigger, jsonDocument.GetAllocator());
+        gameObjectValue.AddMember("physXObj", physXObj, jsonDocument.GetAllocator());
+	}
+
     rapidjson::Value children(rapidjson::kArrayType);
     for (size_t i = 0; i < go.children.size(); i++)
     {
@@ -586,6 +605,21 @@ GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scen
         l->param1 = glm::vec4(lightConfig.param1, 1.0);
         l->param2 = glm::vec4(lightConfig.param2, 1.0);
     }
+
+    if (gameObject.HasMember("physXObj"))
+    {
+		const rapidjson::Value& physXObj = gameObject["physXObj"];
+		PhysXConfig physXConfig;
+		physXConfig.type = (ColliderType)physXObj["type"].GetInt();
+		physXConfig.isDynamic = physXObj["isDynamic"].GetBool();
+        physXConfig.isTrigger = physXObj["isTrigger"].GetBool();
+
+		PhysXBody* p = &go->AddComponent<PhysXBody>(t);
+		p->SetBody(physXConfig.isDynamic);
+        p->SetShape(physXConfig.type);
+        p->isTrigger = physXConfig.isTrigger;
+        p->SetTrigger();
+	}
 
    
     if (gameObject.HasMember("children"))

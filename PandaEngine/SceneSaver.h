@@ -41,6 +41,13 @@ struct LightConfig
 	glm::vec3 param2;
 };
 
+struct PhysXConfig
+{
+	ColliderType type = NONE;
+	bool isDynamic;
+	bool isTrigger;
+};
+
 struct AnimationConfig
 {
 
@@ -53,6 +60,7 @@ struct GameObjectConfig
 	MeshConfig mesh;
  	LightConfig light;
 	AnimationConfig animation;
+	PhysXConfig physXObj;
 	std::vector<GameObjectConfig> children;
 };
 
