@@ -6,7 +6,7 @@
 //#include <px>
 #include "PhysXManager.h"
 #include "PhysXBody.h"
-
+#include <glm/gtx/string_cast.hpp>
 extern Camera* camera;
 int keyHit = 0;
 
@@ -59,8 +59,11 @@ int main(void)
 
     //sphere
     GameObject* sphere = scene->GetGameObjectByName("Sphere");
- //   TransformComponent* sphereTransform = sphere->GetComponent<TransformComponent>();
     PhysXBody* sphereBody = sphere->GetComponent<PhysXBody>();
+
+    sphereBody->onContactStart = [](glm::vec3 contactPoint) {
+		std::cout << "Sphere contact at" << glm::to_string(contactPoint)<< std::endl;
+	};
 
     sphereBody->onTriggerEnter = []() {
 		std::cout << "Sphere entered trigger" << std::endl;

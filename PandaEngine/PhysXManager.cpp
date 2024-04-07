@@ -21,6 +21,26 @@ PhysXManager* PhysXManager::getInstance()
     }
     return gPhysXManager;
 }
+
+PxFilterFlags contactReportFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+{
+	PX_UNUSED(attributes0);
+	PX_UNUSED(attributes1);
+	PX_UNUSED(filterData0);
+	PX_UNUSED(filterData1);
+	PX_UNUSED(constantBlockSize);
+	PX_UNUSED(constantBlock);
+
+	// all initial and persisting reports for everything, with per-point data
+	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT
+		| PxPairFlag::eNOTIFY_TOUCH_FOUND
+		| PxPairFlag::eNOTIFY_TOUCH_LOST
+		| PxPairFlag::eNOTIFY_CONTACT_POINTS;
+	return PxFilterFlag::eDEFAULT;
+}
+
 class ContactReportCallback : public PxSimulationEventCallback
 {
 	void onConstraintBreak(PxConstraintInfo* /*constraints*/, PxU32 /*count*/)
@@ -86,29 +106,59 @@ class ContactReportCallback : public PxSimulationEventCallback
 		printf("onAdvance\n");
 	}
 
-	void onContact(const PxContactPairHeader& /*pairHeader*/, const PxContactPair* pairs, PxU32 count)
+	void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 count)
 	{
+		
 		//		printf("onContact: %d pairs\n", count);
-
-		while (count--)
+		std::vector<PxContactPairPoint> contactPoints;
+		for (PxU32 i = 0; i < count; i++)
 		{
-			const PxContactPair& current = *pairs++;
+			PxU32 contactCount = pairs[i].contactCount;
+			if (contactCount)
+			{
+				contactPoints.resize(contactCount);
+				pairs[i].extractContacts(&contactPoints[0], contactCount);
 
-			// The reported pairs can be trigger pairs or not. We only enabled contact reports for
-			// trigger pairs in the filter shader, so we don't need to do further checks here. In a
-			// real-world scenario you would probably need a way to tell whether one of the shapes
-			// is a trigger or not. You could e.g. reuse the PxFilterData like we did in the filter
-			// shader, or maybe use the shape's userData to identify triggers, or maybe put triggers
-			// in a hash-set and test the reported shape pointers against it. Many options here.
+				for (PxU32 j = 0; j < contactCount; j++)
+				{
+					std::map< PxActor*, PhysXBody*>::iterator
+						itActor = ::gActorMap.find(pairHeader.actors[0]);
 
-			if (current.events & (PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_CCD))
-				printf("Shape is entering trigger volume\n");
-			if (current.events & PxPairFlag::eNOTIFY_TOUCH_LOST)
-				printf("Shape is leaving trigger volume\n");
 
-		/*	if (isTriggerShape(current.shapes[0]) && isTriggerShape(current.shapes[1]))
-				printf("Trigger-trigger overlap detected\n");*/
+					if (itActor == ::gActorMap.end())
+					{
+						// Didn't find it
+						return;		// or 0 or nullptr
+					}
+
+					if (itActor->second->onContactStart)
+					{
+						itActor->second->onContactStart(glm::vec3(contactPoints[j].position.x, contactPoints[j].position.y, contactPoints[j].position.z));
+					}
+
+				}
+			}
 		}
+
+		//while (count--)
+		//{
+		//	const PxContactPair& current = *pairs++;
+
+		//	// The reported pairs can be trigger pairs or not. We only enabled contact reports for
+		//	// trigger pairs in the filter shader, so we don't need to do further checks here. In a
+		//	// real-world scenario you would probably need a way to tell whether one of the shapes
+		//	// is a trigger or not. You could e.g. reuse the PxFilterData like we did in the filter
+		//	// shader, or maybe use the shape's userData to identify triggers, or maybe put triggers
+		//	// in a hash-set and test the reported shape pointers against it. Many options here.
+
+		//	if (current.events & (PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_CCD))
+		//		printf("Shape is entering trigger volume\n");
+		//	if (current.events & PxPairFlag::eNOTIFY_TOUCH_LOST)
+		//		printf("Shape is leaving trigger volume\n");
+
+		///*	if (isTriggerShape(current.shapes[0]) && isTriggerShape(current.shapes[1]))
+		//		printf("Trigger-trigger overlap detected\n");*/
+		//}
 	}
 };
 
@@ -135,7 +185,8 @@ void PhysXManager::Init(bool connectToPvd)
     sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
     gDispatcher = PxDefaultCpuDispatcherCreate(2);
     sceneDesc.cpuDispatcher = gDispatcher;
-    sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+   // sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+    sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
     gScene = gPhysics->createScene(sceneDesc);
 

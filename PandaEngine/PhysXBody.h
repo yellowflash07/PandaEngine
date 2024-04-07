@@ -36,6 +36,8 @@ public:
 	unsigned int uniqueID;
 	std::function<void()> onTriggerEnter;
 	std::function<void()> onTriggerExit;
+	std::function<void(glm::vec3)> onContactStart;
+	std::function<void(glm::vec3)> onContactEnd;
 	bool isTrigger = false;
 	void SetTrigger();
 
