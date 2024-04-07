@@ -192,6 +192,7 @@
     <ClCompile Include="PhysXBody.cpp" />
     <ClCompile Include="PhysXManager.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="ScaleUp.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="PhysXBody.h" />
     <ClInclude Include="PhysXManager.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="Raycast.h" />
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="ScaleUp.h" />
     <ClInclude Include="Scene.h" />

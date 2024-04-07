@@ -6,6 +6,7 @@
 //#include <px>
 #include "PhysXManager.h"
 #include "PhysXBody.h"
+#include "Raycast.h"
 #include <glm/gtx/string_cast.hpp>
 extern Camera* camera;
 int keyHit = 0;
@@ -59,6 +60,7 @@ int main(void)
 
     //sphere
     GameObject* sphere = scene->GetGameObjectByName("Sphere");
+    TransformComponent* sphereTransform = sphere->GetComponent<TransformComponent>();
     PhysXBody* sphereBody = sphere->GetComponent<PhysXBody>();
 
     sphereBody->onContactStart = [](glm::vec3 contactPoint) {
@@ -74,6 +76,8 @@ int main(void)
     };
 
 
+    Raycast raycast(sphereTransform->drawPosition, glm::vec3(0, -1, 0), 100);
+
 
 
     while (!glfwWindowShouldClose(engine.window))
@@ -82,6 +86,12 @@ int main(void)
         engine.BeginRender();
 
         engine.Update();   
+
+        HitResult result;
+        if (raycast.RaycastHit(result))
+        {
+            std::cout << "Hit at: " << glm::to_string(result.hitPoint) << std::endl;
+        }
 
         engine.EndRender();   
     }

@@ -258,6 +258,9 @@
     <ClCompile Include="PhysicsManager.cpp">
       <Filter>Physics\Custom</Filter>
     </ClCompile>
+    <ClCompile Include="Raycast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsCommon.h">
@@ -454,6 +457,9 @@
     </ClInclude>
     <ClInclude Include="PhysicsManager.h">
       <Filter>Physics\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="Raycast.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
