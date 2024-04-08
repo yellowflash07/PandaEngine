@@ -12,6 +12,7 @@
 #include <imgui.h>
 #include "PhysXManager.h"
 #include "PhysXBody.h"
+#include "CharacterController.h"
 
 class Scene
 {

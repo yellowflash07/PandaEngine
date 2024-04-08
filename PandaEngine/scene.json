@@ -68,7 +68,7 @@
                     0.0
                 ],
                 "rotation": [
-                    -0.22136424481868744,
+                    -0.22136418521404266,
                     0.4217893183231354,
                     -0.9577126502990723
                 ],
@@ -275,6 +275,64 @@
                 "type": 1,
                 "isDynamic": false,
                 "isTrigger": false
+            },
+            "children": []
+        },
+        {
+            "name": "Player",
+            "transform": {
+                "position": [
+                    0.0,
+                    9.975250244140625,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh": {
+                "fileName": "bathtub_xyz_n_rgba.ply",
+                "friendlyName": "bathtub_xyz_n_rgba.ply",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": ""
             },
             "children": []
         }

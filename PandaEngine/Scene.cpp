@@ -173,6 +173,12 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		}
 	}
 
+	CharacterController* controller = go->GetComponent<CharacterController>();
+	if (controller != nullptr)
+	{
+		controller->Update(deltaTime);
+	}
+
 	for (GameObject* child : go->m_Children)
 	{
 		UpdateGameObject(child, transform->GetTransform(), deltaTime);
@@ -229,6 +235,10 @@ void Scene::DrawContextMenu(GameObject* go)
 			if (ImGui::MenuItem("Physics Body"))
 			{
 				go->AddComponent<PhysXBody>(go->GetComponent<TransformComponent>());
+			}
+			if (ImGui::MenuItem("Character Controller"))
+			{
+				go->AddComponent<CharacterController>(go->GetComponent<TransformComponent>());
 			}
 			if (ImGui::MenuItem("Remove Object"))
 			{

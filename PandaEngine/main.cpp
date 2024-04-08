@@ -75,22 +75,35 @@ int main(void)
         std::cout << "Sphere exit trigger" << std::endl;
     };
 
-
-    Raycast raycast(sphereTransform->drawPosition, glm::vec3(0, -1, 0), 100);
-
-
+    GameObject* player = scene->GetGameObjectByName("Player");
+    TransformComponent* playerTransform = player->GetComponent<TransformComponent>();
+    CharacterController* controller = &player->AddComponent<CharacterController>(playerTransform);
 
     while (!glfwWindowShouldClose(engine.window))
     {
 
         engine.BeginRender();
 
-        engine.Update();   
+        engine.Update();  
 
-        HitResult result;
-        if (raycast.RaycastHit(result))
+        if (keyHit == GLFW_KEY_UP)
         {
-            std::cout << "Hit at: " << glm::to_string(result.hitPoint) << std::endl;
+			controller->Move(glm::vec3(0,0,1) * 20.0f, engine.deltaTime);
+           // keyHit = 0;
+		}
+        if (keyHit == GLFW_KEY_DOWN)
+        {
+            controller->Move(glm::vec3(0, 0, -1) * 20.0f, engine.deltaTime);
+           // keyHit = 0;
+        }
+        if (keyHit == GLFW_KEY_LEFT)
+        {
+			controller->Move(glm::vec3(-1, 0, 0) * 20.0f, engine.deltaTime);
+		   // keyHit = 0;
+		}
+        if (keyHit == GLFW_KEY_RIGHT)
+        {
+            controller->Move(glm::vec3(1, 0, 0) * 20.0f, engine.deltaTime);
         }
 
         engine.EndRender();   
