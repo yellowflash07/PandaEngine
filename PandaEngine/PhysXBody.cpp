@@ -87,7 +87,7 @@ void PhysXBody::Update(float deltaTime)
 void PhysXBody::Render()
 {
 	ImGui::BeginChild("Physics Component#" , ImVec2(0, 200));
-	ImGui::Text("Physics Component");
+	ImGui::SeparatorText("Physics Component");
 	ImGui::SetNextItemWidth(100);
 	int type = this->type;
 	if(ImGui::Combo("Collider", &type, "None\0Box Collider\0Sphere Collier\0Mesh\0\0"))
@@ -113,7 +113,7 @@ void PhysXBody::Render()
 		SetTrigger();
 	}
 
-
+	ImGui::Separator();
 	ImGui::EndChild();
 }
 

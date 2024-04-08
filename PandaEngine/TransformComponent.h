@@ -82,7 +82,7 @@ struct TransformComponent : public IEditorUI
 	void Render()
 	{
 		ImGui::BeginChild("Transform", ImVec2(0, 200));
-		ImGui::Text("Transform");
+		ImGui::SeparatorText("Transform");
 		ImGui::Text("Position"); ImGui::SetNextItemWidth(40);
 		ImGui::InputFloat("xP", &drawPosition.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
 		ImGui::InputFloat("yP", &drawPosition.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);

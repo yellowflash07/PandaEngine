@@ -133,6 +133,8 @@ void cLight::Render()
 {
 	ImGui::BeginChild(("Light" + std::to_string(index)).c_str(), ImVec2(0, 200));
 
+	ImGui::SeparatorText("Light Component");
+
 	//ImGui::Text("On?"); ImGui::SetNextItemWidth(40);
 	//ImGui::InputFloat("On", &param2.x);
 
@@ -185,6 +187,8 @@ void cLight::Render()
 	ImGui::InputFloat("xDi", &direction.x); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("yDi", &direction.y); ImGui::SameLine(); ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("zDi", &direction.z);
+
+	ImGui::Separator();
 
 	ImGui::EndChild();
 }

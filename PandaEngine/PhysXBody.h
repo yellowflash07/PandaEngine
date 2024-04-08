@@ -40,9 +40,9 @@ public:
 	std::function<void(glm::vec3)> onContactEnd;
 	bool isTrigger = false;
 	void SetTrigger();
+	PxRigidActor* body;
 
 private:
-	PxRigidActor* body;
 	PxMaterial* material;
 	PxPhysics* gPhysics = NULL;
 	PxScene* gScene = NULL;

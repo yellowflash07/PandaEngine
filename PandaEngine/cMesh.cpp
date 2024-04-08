@@ -17,6 +17,7 @@ cMesh::cMesh()
 	// Set uniqueID
 	this->m_UniqueID = cMesh::m_nextUniqueID;
 	cMesh::m_nextUniqueID++;
+	this->friendlyName = "[Drag and drop model here]";
 }
 
 unsigned int cMesh::getUniqueID(void)
@@ -66,6 +67,7 @@ void cMesh::AddChild(cMesh* child)
 void cMesh::Render()
 {
 	ImGui::BeginChild("Mesh", ImVec2(0, 125));
+	ImGui::SeparatorText("Mesh Component");
 	std::string name = "Mesh: " + friendlyName;
 	ImGui::Text(name.c_str());
 	if (ImGui::BeginDragDropTarget())

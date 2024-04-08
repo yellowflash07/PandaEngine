@@ -317,7 +317,7 @@ void AnimationSystem::UpdateBoneTransforms(cMesh* mesh, Node& node, float dt)
 void AnimationSystem::Render()
 {
 	ImGui::BeginChild("Animation", ImVec2(0, 150));
-	ImGui::Text("Animation");
+	ImGui::SeparatorText("Animation");
 	ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("Speed", &animationSpeed);
 	ImGui::Combo("Animation", &currentAnimationIndex, 

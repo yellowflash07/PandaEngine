@@ -259,7 +259,10 @@
       <Filter>Physics\Custom</Filter>
     </ClCompile>
     <ClCompile Include="Raycast.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Physics\PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterController.cpp">
+      <Filter>Physics\PhysX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -459,7 +462,10 @@
       <Filter>Physics\Custom</Filter>
     </ClInclude>
     <ClInclude Include="Raycast.h">
-      <Filter>Header Files</Filter>
+      <Filter>Physics\PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterController.h">
+      <Filter>Physics\PhysX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

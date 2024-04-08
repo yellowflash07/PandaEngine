@@ -3,7 +3,7 @@
 #include <PhysX/PxPhysicsAPI.h>
 #include <PhysX/pvd/PxPvd.h>
 #include "TransformComponent.h"
-
+#include <PhysX/characterkinematic/PxControllerManager.h>
 #include <map>
 
 using namespace physx;
