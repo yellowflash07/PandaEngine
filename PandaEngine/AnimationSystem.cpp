@@ -4,6 +4,7 @@
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
+#include <glm/gtc/matrix_transform.hpp>
 
 AnimationSystem::AnimationSystem()
 {
@@ -299,7 +300,15 @@ void AnimationSystem::UpdateSkeleton(cMesh* mesh, float dt)
 			frameCount = 0.0f;
 		}
 
-		UpdateBoneTransforms(drawInfo, *drawInfo->RootNode, frameCount);
+		if (isBlending)
+		{
+			BlendBoneTransforms(drawInfo, *drawInfo->RootNode, frameCount, blendIndexA, blendIndexB, blendWeight);
+		}
+		else
+		{
+			UpdateBoneTransforms(drawInfo, *drawInfo->RootNode, frameCount);
+		}
+		//UpdateBoneTransforms(drawInfo, *drawInfo->RootNode, frameCount);
 	}
 
 }
@@ -326,6 +335,63 @@ void AnimationSystem::UpdateBoneTransforms(sModelDrawInfo* drawInfo, Node& node,
 	for (Node* child : node.Children)
 	{
 		UpdateBoneTransforms(drawInfo, *child, dt);
+	}
+}
+
+void AnimationSystem::BlendBoneTransforms(sModelDrawInfo* drawInfo, Node& node, float dt, int animationIndexA, int animationIndexB, float blendWeight)
+{
+	// Ensure weights are between 0 and 1
+	blendWeight = glm::clamp(blendWeight, 0.0f, 1.0f);
+
+	isBlending = true;
+
+	if (blendWeight <= 0.0f)
+	{
+		currentAnimationIndex = animationIndexB;
+		isBlending = false;
+		return;
+	}
+
+	if (blendWeight >= 1.0f)
+	{
+		currentAnimationIndex = animationIndexA;
+		isBlending = false;
+		//UpdateBoneTransforms(drawInfo, node, dt);
+		return;
+	}
+
+	// Get animation information for both animations
+	AnimationInfo infoA = drawInfo->Animations[animationIndexA];
+	AnimationInfo infoB = drawInfo->Animations[animationIndexB];
+
+	std::string nodeName = node.Name;
+
+	// Find node animations in both info structs
+	std::map<std::string, NodeAnimation*>::iterator animItA = infoA.NodeAnimations.find(nodeName);
+	std::map<std::string, NodeAnimation*>::iterator animItB = infoB.NodeAnimations.find(nodeName);
+
+	// If animations exist for the node in both A and B
+	if (animItA != infoA.NodeAnimations.end() && animItB != infoB.NodeAnimations.end())
+	{
+		NodeAnimation* nodeAnimInfoA = animItA->second;
+		NodeAnimation* nodeAnimInfoB = animItB->second;
+
+		// Interpolate transforms for each animation
+		glm::mat4 boneTransformA = InterpolateNodeTransforms(nodeAnimInfoA, dt);
+		glm::mat4 boneTransformB = InterpolateNodeTransforms(nodeAnimInfoB, dt);
+
+		// Blend the interpolated transforms based on weight
+		glm::mat4 blendedTransform = blendWeight * boneTransformA + (1.0f - blendWeight) * boneTransformB;
+
+
+		// Update bone transformations in drawInfo
+		drawInfo->boneTransformations[nodeName] = blendedTransform;
+	}
+
+	// Recursively update child nodes
+	for (Node* child : node.Children)
+	{
+		BlendBoneTransforms(drawInfo, *child, dt, animationIndexA, animationIndexB, blendWeight);
 	}
 }
 

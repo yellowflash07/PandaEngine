@@ -32,12 +32,17 @@ public:
 
 	void UpdateBoneTransforms(sModelDrawInfo* drawInfo, Node& node, float dt);
 
+	//glm::mat4 GetBlendTransform(Node& node, AnimationInfo* start, AnimationInfo* end, float blendFactor, float dt);
+	void BlendBoneTransforms(sModelDrawInfo* drawInfo, Node& node, float dt, int animationIndexA, int animationIndexB, float blendWeight);
+	
+	void SetBlend(int indexA, int indexB, float weight) { blendIndexA = indexA; blendIndexB = indexB; blendWeight = weight; isBlending = true; }
 	void Render();
 
 	void SetCurrentAnimation(int index) { currentAnimationIndex = index; }
 
 	cMesh* m_mesh;
 	void LoadAnimationFromFile(std::string fileName);
+
 private:
 	// The animations in the system
 	std::vector<Animation*> m_animations;
@@ -61,6 +66,10 @@ private:
 
 	float frameCount = 1.0f;
 
-	
+	bool isBlending = false;
+
+	int blendIndexA = 0;
+	int blendIndexB = 0;
+	float blendWeight = 0.0f;
 };
 

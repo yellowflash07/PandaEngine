@@ -18,8 +18,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (action == GLFW_PRESS)
     {
         keyHit = key;
-        return;
     }
+    if (action == GLFW_RELEASE)
+    {
+		keyHit = 0;
+	}
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -58,13 +61,34 @@ int main(void)
 
     Scene* scene = engine.GetCurrentScene();
 
+    //get the dancer object
+    GameObject* dancer = scene->GetGameObjectByName("Dancer");
+    cMesh* dancerMesh = dancer->GetComponent<cMesh>(); //get the mesh of the dancer
+    //add animation component
+    AnimationSystem* animation = &dancer->AddComponent<AnimationSystem>();
+    animation->m_mesh = dancerMesh;
+    //load animations
+    animation->LoadAnimationFromFile("Silly Dancing.fbx");
+    animation->LoadAnimationFromFile("Hip Hop Dancing.fbx");
+    animation->LoadAnimationFromFile("Rumba Dancing.fbx");
+    animation->LoadAnimationFromFile("Bboy Hip Hop Move.fbx");
+
+    float blendWeight = 0;
 
     while (!glfwWindowShouldClose(engine.window))
     {
 
         engine.BeginRender();
 
-        engine.Update();  
+        engine.Update(); 
+
+        if (keyHit == GLFW_KEY_1)
+        {
+			animation->SetBlend(1, 0, blendWeight);
+            blendWeight += 0.1f;
+            printf("Blend Weight: %f\n", blendWeight);
+		}
+		
 
         engine.EndRender();   
     }
