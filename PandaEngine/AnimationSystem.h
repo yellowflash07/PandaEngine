@@ -34,8 +34,10 @@ public:
 
 	void Render();
 
-	cMesh* m_mesh;
+	void SetCurrentAnimation(int index) { currentAnimationIndex = index; }
 
+	cMesh* m_mesh;
+	void LoadAnimationFromFile(std::string fileName);
 private:
 	// The animations in the system
 	std::vector<Animation*> m_animations;
@@ -59,6 +61,6 @@ private:
 
 	float frameCount = 1.0f;
 
-	void LoadAnimationFromFile(std::string fileName);
+	
 };
 

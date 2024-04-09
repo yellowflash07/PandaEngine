@@ -351,7 +351,13 @@ void AnimationSystem::Render()
 	//
 
 	ImGui::Text("Number of Animations: %d", m_mesh->modelDrawInfo[0].Animations.size());
-	ImGui::InputInt("Current Animation", &currentAnimationIndex);
+	if (ImGui::InputInt("Current Animation", &currentAnimationIndex))
+	{
+		if (currentAnimationIndex >= m_mesh->modelDrawInfo[0].Animations.size())
+		{
+			currentAnimationIndex = 0;
+		}
+	}
 	ImGui::Text("Add Animation");
 	if (ImGui::BeginDragDropTarget())
 	{
