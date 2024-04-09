@@ -296,6 +296,7 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModel)
 
 void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProgramID)
 {
+
     glm::mat4 matModel = matModelParent;
 
     // Translation
@@ -935,9 +936,9 @@ void MeshManager::CalculateMatrices(cMesh* pCurrentMesh, Node* node, const glm::
     if (boneMapIt != modelInfo.BoneNameToIdMap.end())
     {
         BoneInfo& boneInfo = modelInfo.vecBoneInfo[boneMapIt->second];
-        boneInfo.FinalTransformation = modelInfo.GlobalInverseTransformation *
-            globalTransformation * boneInfo.BoneOffset;
-      
+        glm::mat4 boneOffset = boneInfo.BoneOffset;
+        glm::mat4 finalTransformation = modelInfo.GlobalInverseTransformation * globalTransformation * boneOffset;
+        boneInfo.FinalTransformation = finalTransformation;
     }
 
     // Calculate all children

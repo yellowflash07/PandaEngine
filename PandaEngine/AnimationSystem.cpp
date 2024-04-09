@@ -1,6 +1,9 @@
 #include "AnimationSystem.h"
 #include <glm/gtx/easing.hpp>
 #include <iostream>
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
 
 AnimationSystem::AnimationSystem()
 {
@@ -281,7 +284,6 @@ void AnimationSystem::UpdateSkeleton(cMesh* mesh, float dt)
 	}
 
 	for(int i = 0; i < mesh->modelDrawInfo.size(); i++)
-	//for (sModelDrawInfo drawInfo : mesh->modelDrawInfo)
 	{
 		sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[i];
 		if (drawInfo->Animations.empty())
@@ -299,31 +301,13 @@ void AnimationSystem::UpdateSkeleton(cMesh* mesh, float dt)
 
 		UpdateBoneTransforms(drawInfo, *drawInfo->RootNode, frameCount);
 	}
-	//if (mesh->modelDrawInfo.Animations.empty())
-	//{
-	//	return;
-	//}
-	//
-	//AnimationInfo info = mesh->modelDrawInfo.Animations[currentAnimationIndex];
-	//
-	//frameCount += dt * info.TicksPerSecond;
-	//if (frameCount > info.Duration)
-	//{
-	//	frameCount = 0.0f;
-	//}
 
-	//UpdateBoneTransforms(mesh, node, frameCount);
 }
 
 void AnimationSystem::UpdateBoneTransforms(sModelDrawInfo* drawInfo, Node& node, float dt)
 {
 
 	AnimationInfo info = drawInfo->Animations[currentAnimationIndex];
-	
-	if (currentAnimationIndex == 1)
-	{
-		int x = 0;
-	}
 	
 	std::string nodeName = node.Name;
 	
@@ -366,25 +350,18 @@ void AnimationSystem::Render()
 	//}	
 	//
 
-	//ImGui::Text("Add Animation");
-	//if (ImGui::BeginDragDropTarget())
-	//{
-	//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model_DND"))
-	//	{
-	//		const char* payload_n = (const char*)payload->Data;
-	//		cMesh* mesh = new cMesh(payload_n, payload_n);
-
-	//		for (AnimationInfo info : mesh->modelDrawInfo.Animations)
-	//		{
-	//			m_mesh->modelDrawInfo.Animations.push_back(info);
-	//			printf("Added Animation: %s\n", info.AnimationName.c_str());
-	//			//AddAnimation(anim);
-	//		}
-
-	//		//std::cout << "Accepted: " << payload_n << std::endl;
-	//	}
-	//	ImGui::EndDragDropTarget();
-	//}
+	ImGui::Text("Number of Animations: %d", m_mesh->modelDrawInfo[0].Animations.size());
+	ImGui::InputInt("Current Animation", &currentAnimationIndex);
+	ImGui::Text("Add Animation");
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model_DND"))
+		{
+			const char* payload_n = (const char*)payload->Data;
+			LoadAnimationFromFile(payload_n);
+		}
+		ImGui::EndDragDropTarget();
+	}
 
 	ImGui::Separator();
 	ImGui::EndChild();
@@ -520,7 +497,7 @@ glm::quat AnimationSystem::InterpolateRotations(std::vector<RotationKeyFrame> ro
 {
 	if (rotations.size() == 1)
 	{
-		return glm::quat(rotations[0].rotation);
+		return rotations[0].rotation;
 	}
 
 	float time = dt;
@@ -538,7 +515,7 @@ glm::quat AnimationSystem::InterpolateRotations(std::vector<RotationKeyFrame> ro
 	if (KeyFrameEndIndex >= rotations.size())
 	{
 		// we are at or past the last key frame use the last keyframe only
-		return glm::quat(rotations[KeyFrameEndIndex - 1].rotation);
+		return rotations[KeyFrameEndIndex - 1].rotation;
 	}
 	int KeyFrameStartIndex = KeyFrameEndIndex - 1;
 
@@ -573,12 +550,9 @@ glm::quat AnimationSystem::InterpolateRotations(std::vector<RotationKeyFrame> ro
 			break;
 	}
 
-	glm::vec3 delta = endKeyFrame.rotation - startKeyFrame.rotation;
-	glm::quat startQuat = glm::quat(startKeyFrame.rotation);
-	glm::quat endQuat = glm::quat(endKeyFrame.rotation);
-	glm::quat offset = glm::slerp(startQuat, endQuat, result);
+	glm::quat offset = glm::slerp(startKeyFrame.rotation, endKeyFrame.rotation, result);
 
-	return glm::quat(offset);
+	return offset;
 }
 
 Animation* AnimationSystem::GetAnimation(AnimationInfo& info, std::string nodeName)
@@ -607,6 +581,79 @@ glm::mat4 AnimationSystem::InterpolateNodeTransforms(NodeAnimation* nodeAnim, fl
 	matModel = matModel * scaled;
 
 	return matModel;
+}
+
+void AnimationSystem::LoadAnimationFromFile(std::string fileName)
+{
+	Assimp::Importer importer;
+	std::string filePath = "../Assets/Models/" + fileName;
+	const aiScene* scene = importer.ReadFile(filePath, aiProcess_ValidateDataStructure | aiProcess_GenNormals | aiProcess_Triangulate);
+
+	std::string errorString = importer.GetErrorString();
+	if (!errorString.empty())
+	{
+		std::cout << "Error: " << importer.GetErrorString() << std::endl;
+	}
+
+	if (!scene)
+	{
+		// Error loading the model
+		// Handle the error as needed
+		return;
+	}
+
+	if (scene->HasAnimations())
+	{
+		for (unsigned int i = 0; i < scene->mNumAnimations; i++)
+		{
+			aiAnimation* pAnimation = scene->mAnimations[i];
+			AnimationInfo animInfo;
+			animInfo.AnimationName = pAnimation->mName.C_Str();
+			animInfo.Duration = (float)pAnimation->mDuration;
+			animInfo.TicksPerSecond = (float)pAnimation->mTicksPerSecond;
+			for (unsigned int j = 0; j < pAnimation->mNumChannels; j++)
+			{
+				aiNodeAnim* pNodeAnim = pAnimation->mChannels[j];
+				NodeAnimation* nodeAnim = new NodeAnimation(pNodeAnim->mNodeName.C_Str());
+				for (unsigned int k = 0; k < pNodeAnim->mNumPositionKeys; k++)
+				{
+					glm::vec3 pos = glm::vec3(pNodeAnim->mPositionKeys[k].mValue.x,
+						pNodeAnim->mPositionKeys[k].mValue.y,
+						pNodeAnim->mPositionKeys[k].mValue.z);
+					PositionKeyFrame keyFrame(pos, (float)pNodeAnim->mPositionKeys[k].mTime);
+					nodeAnim->PositionKeys.push_back(keyFrame);
+				}
+				for (unsigned int k = 0; k < pNodeAnim->mNumRotationKeys; k++)
+				{
+					glm::quat rotQuat = glm::quat((float)pNodeAnim->mRotationKeys[k].mValue.w,
+						(float)pNodeAnim->mRotationKeys[k].mValue.x,
+						(float)pNodeAnim->mRotationKeys[k].mValue.y,
+						(float)pNodeAnim->mRotationKeys[k].mValue.z);
+
+					RotationKeyFrame keyFrame(rotQuat, (float)pNodeAnim->mRotationKeys[k].mTime);
+					nodeAnim->RotationKeys.push_back(keyFrame);
+				}
+				for (unsigned int k = 0; k < pNodeAnim->mNumScalingKeys; k++)
+				{
+					glm::vec3 scale = glm::vec3(pNodeAnim->mScalingKeys[k].mValue.x,
+						pNodeAnim->mScalingKeys[k].mValue.y,
+						pNodeAnim->mScalingKeys[k].mValue.z);
+					ScaleKeyFrame keyFrame(scale, (float)pNodeAnim->mScalingKeys[k].mTime);
+					nodeAnim->ScalingKeys.push_back(keyFrame);
+				}
+
+				animInfo.NodeAnimations.insert(std::pair<std::string, NodeAnimation*>(nodeAnim->Name, nodeAnim));
+			}
+
+			for (int i = 0; i < m_mesh->modelDrawInfo.size(); i++)
+			{
+				sModelDrawInfo* drawInfo = &m_mesh->modelDrawInfo[i];
+				drawInfo->Animations.push_back(animInfo);
+			}
+			//m_mesh->modelDrawInfo.Animations.push_back(info);
+			printf("Added Animation: %s\n", animInfo.AnimationName.c_str());
+		}
+	}
 }
 
 

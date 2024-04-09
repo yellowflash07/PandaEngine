@@ -3,6 +3,7 @@
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include <vector>
 
@@ -409,11 +410,12 @@ void cVAOManager::LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo&
                 }
                 for (unsigned int k = 0; k < pNodeAnim->mNumRotationKeys; k++)
                 {
-                    glm::vec3 rot = glm::vec3(pNodeAnim->mRotationKeys[k].mValue.x,
-                        pNodeAnim->mRotationKeys[k].mValue.y,
-                        pNodeAnim->mRotationKeys[k].mValue.z);
+                    glm::quat rotQuat = glm::quat(  (float)pNodeAnim->mRotationKeys[k].mValue.w,
+                                                    (float)pNodeAnim->mRotationKeys[k].mValue.x,
+                                                    (float)pNodeAnim->mRotationKeys[k].mValue.y,
+                                                    (float)pNodeAnim->mRotationKeys[k].mValue.z);
 
-                    RotationKeyFrame keyFrame(rot, (float)pNodeAnim->mRotationKeys[k].mTime);
+                    RotationKeyFrame keyFrame(rotQuat, (float)pNodeAnim->mRotationKeys[k].mTime);
                     nodeAnim->RotationKeys.push_back(keyFrame);
                 }
                 for (unsigned int k = 0; k < pNodeAnim->mNumScalingKeys; k++)

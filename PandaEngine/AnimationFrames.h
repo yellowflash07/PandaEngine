@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <vector>
 #include <string>
 #include <functional>
@@ -36,11 +37,11 @@ struct PositionKeyFrame : KeyFrame
 
 struct RotationKeyFrame : KeyFrame
 {
-	RotationKeyFrame(const glm::vec3& rotation, double time, EasingType type = EasingType::Linear)
+	RotationKeyFrame(const glm::quat& rotation, double time, EasingType type = EasingType::Linear)
 		: rotation(rotation)
 		, KeyFrame(time, type)
 	{ }
-	glm::vec3 rotation;
+	glm::quat rotation;
 };
 
 struct ScaleKeyFrame : KeyFrame

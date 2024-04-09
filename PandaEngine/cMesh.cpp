@@ -168,6 +168,10 @@ void cMesh::LoadMesh(std::string fileName, std::string friendlyName)
 	}
 
 	this->meshName = fileName;
+	if (modelDrawInfo.empty())
+	{
+		return;
+	}
 	this->uniqueName = modelDrawInfo[0].uniqueName;
 	this->friendlyName = friendlyName;
 	this->bIsWireframe = false;

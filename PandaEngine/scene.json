@@ -68,7 +68,7 @@
                     0.0
                 ],
                 "rotation": [
-                    -0.22136418521404266,
+                    -0.22136415541172028,
                     0.4217893183231354,
                     -0.9577126502990723
                 ],
@@ -333,6 +333,136 @@
                     1.0
                 ],
                 "maskTexture": ""
+            },
+            "light": {
+                "index": 1,
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "diffuse": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "specular": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "atten": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "direction": [
+                    0.0,
+                    -0.5,
+                    0.0
+                ],
+                "param1": [
+                    2.0,
+                    0.0,
+                    0.0
+                ],
+                "param2": [
+                    1.0
+                ]
+            },
+            "children": []
+        },
+        {
+            "name": "GameObject",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh": {
+                "fileName": "Dancing.fbx",
+                "friendlyName": "Dancing.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": ""
+            },
+            "light": {
+                "index": 1,
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "diffuse": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "specular": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "atten": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "direction": [
+                    0.0,
+                    -0.5,
+                    0.0
+                ],
+                "param1": [
+                    2.0,
+                    0.0,
+                    0.0
+                ],
+                "param2": [
+                    1.0
+                ]
             },
             "children": []
         }

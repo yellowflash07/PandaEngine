@@ -139,6 +139,8 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 	cMesh* mesh = go->GetComponent<cMesh>();
 	if (mesh != nullptr)
 	{
+
+		meshManager->DrawObject(mesh, transform->GetTransform());
 		AnimationSystem* anim = go->GetComponent<AnimationSystem>();
 		if (anim != nullptr)
 		{
@@ -147,7 +149,6 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 			anim->UpdateSkeleton(mesh, deltaTime);
 		}
 
-		meshManager->DrawObject(mesh, transform->GetTransform());
 	}
 
 	cLight* light = go->GetComponent<cLight>();

@@ -13,7 +13,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float n
     this->yaw = -90.0f;
     this->pitch = 0.0f;
     this->speed = 35.0f;
-    this->stopUpdates = false;
+    this->stopUpdates = true;
     matView = glm::mat4(1.0f);
     //upVector = glm::vec3(0.0f, 1.0f, 0.0f);
     forwardVector = glm::vec3(0.0f, 0.0f, -1.0f);

@@ -59,5 +59,6 @@ private:
 
 	float frameCount = 1.0f;
 
+	void LoadAnimationFromFile(std::string fileName);
 };
 
