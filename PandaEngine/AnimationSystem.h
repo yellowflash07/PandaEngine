@@ -28,12 +28,13 @@ public:
 	float debug = 0.0f;
 	void SetAnimation(int index) { currentAnimationIndex = index; }
 
-	void UpdateSkeleton(cMesh* mesh, Node& node, float dt);
+	void UpdateSkeleton(cMesh* mesh, float dt);
 
-	void UpdateBoneTransforms(cMesh* mesh, Node& node, float dt);
+	void UpdateBoneTransforms(sModelDrawInfo* drawInfo, Node& node, float dt);
 
 	void Render();
 
+	cMesh* m_mesh;
 
 private:
 	// The animations in the system
@@ -43,7 +44,6 @@ private:
 	// Update a single animation
 	void UpdateAnimation(Animation* animation, float dt);
 
-	cMesh* m_mesh;
 
 	glm::vec3 InterpolatePositions(std::vector<PositionKeyFrame> positions,
 		float dt);
@@ -58,5 +58,6 @@ private:
 	glm::mat4 InterpolateNodeTransforms(NodeAnimation* nodeAnim, float dt);
 
 	float frameCount = 1.0f;
+
 };
 

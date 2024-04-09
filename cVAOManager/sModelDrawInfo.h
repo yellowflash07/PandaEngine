@@ -115,6 +115,7 @@ struct sModelDrawInfo
 	std::map<std::string, int> BoneNameToIdMap;
 	std::vector<AnimationInfo> Animations;
 	unsigned int getUniqueID(void);
+	std::map<std::string, glm::mat4> boneTransformations;
 private:
 	unsigned int m_UniqueID;
 	static const unsigned int FIRST_UNIQUE_ID = 1;

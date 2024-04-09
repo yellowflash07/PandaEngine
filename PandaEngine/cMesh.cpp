@@ -29,33 +29,49 @@ void cMesh::calcExtents(void)
 {
 	glm::mat4 matModel = transform.GetTransform();
 
-	for (size_t i = 0; i < modelDrawInfo.numberOfVertices; i++)
+	for (sModelDrawInfo modelDraw : modelDrawInfo)
 	{
-		glm::vec3 vert = glm::vec3(modelDrawInfo.pVertices[i].x,
-									modelDrawInfo.pVertices[i].y,
-									modelDrawInfo.pVertices[i].z);
-		vert =  (matModel * glm::vec4(vert, 1.0f));
+		for (size_t i = 0; i < modelDraw.numberOfVertices; i++)
+		{
+			glm::vec3 vert = glm::vec3(modelDraw.pVertices[i].x,
+				modelDraw.pVertices[i].y,
+				modelDraw.pVertices[i].z);
+			vert = (matModel * glm::vec4(vert, 1.0f));
 
-		modelDrawInfo.pVertices[i].x = vert.x;
-		modelDrawInfo.pVertices[i].y = vert.y;
-		modelDrawInfo.pVertices[i].z = vert.z;
+			modelDraw.pVertices[i].x = vert.x;
+			modelDraw.pVertices[i].y = vert.y;
+			modelDraw.pVertices[i].z = vert.z;
+		}
+
+		for (size_t i = 0; i < modelDraw.numberOfTriangles; i++)
+		{
+
+			glm::vec3 v1 = modelDraw.pTriangles[i].v1;
+			glm::vec3 v2 = modelDraw.pTriangles[i].v2;
+			glm::vec3 v3 = modelDraw.pTriangles[i].v3;
+			modelDraw.pTriangles[i].v1 = (matModel * glm::vec4(v1, 1.0f));
+			modelDraw.pTriangles[i].v2 = (matModel * glm::vec4(v2, 1.0f));
+			modelDraw.pTriangles[i].v3 = (matModel * glm::vec4(v3, 1.0f));
+		}
+
+		modelDraw.calcExtents();
+
+		if (modelDraw.minExtents_XYZ.x < this->minExtents_XYZ.x) { this->minExtents_XYZ.x = modelDraw.minExtents_XYZ.x; }
+		if (modelDraw.minExtents_XYZ.y < this->minExtents_XYZ.y) { this->minExtents_XYZ.y = modelDraw.minExtents_XYZ.y; }
+		if (modelDraw.minExtents_XYZ.z < this->minExtents_XYZ.z) { this->minExtents_XYZ.z = modelDraw.minExtents_XYZ.z; }
+						
+		if (modelDraw.maxExtents_XYZ.x > this->maxExtents_XYZ.x) { this->maxExtents_XYZ.x = modelDraw.maxExtents_XYZ.x; }
+		if (modelDraw.maxExtents_XYZ.y > this->maxExtents_XYZ.y) { this->maxExtents_XYZ.y = modelDraw.maxExtents_XYZ.y; }
+		if (modelDraw.maxExtents_XYZ.z > this->maxExtents_XYZ.z) { this->maxExtents_XYZ.z = modelDraw.maxExtents_XYZ.z; }
+
+
+
+		//maxExtents_XYZ = modelDraw.maxExtents_XYZ;
+		//minExtents_XYZ = modelDraw.minExtents_XYZ;
 	}
 
-	for (size_t i = 0; i < modelDrawInfo.numberOfTriangles; i++)
-	{
+	
 
-		glm::vec3 v1 = modelDrawInfo.pTriangles[i].v1;
-		glm::vec3 v2 = modelDrawInfo.pTriangles[i].v2;
-		glm::vec3 v3 = modelDrawInfo.pTriangles[i].v3;
-		modelDrawInfo.pTriangles[i].v1 = (matModel * glm::vec4(v1, 1.0f));
-		modelDrawInfo.pTriangles[i].v2 = (matModel * glm::vec4(v2, 1.0f));
-		modelDrawInfo.pTriangles[i].v3 = (matModel * glm::vec4(v3, 1.0f));
-	}
-
-	modelDrawInfo.calcExtents();
-
-	maxExtents_XYZ = modelDrawInfo.maxExtents_XYZ;
-	minExtents_XYZ = modelDrawInfo.minExtents_XYZ;
 }
 
 void cMesh::AddChild(cMesh* child)
@@ -152,7 +168,7 @@ void cMesh::LoadMesh(std::string fileName, std::string friendlyName)
 	}
 
 	this->meshName = fileName;
-	this->uniqueName = modelDrawInfo.uniqueName;
+	this->uniqueName = modelDrawInfo[0].uniqueName;
 	this->friendlyName = friendlyName;
 	this->bIsWireframe = false;
 	this->bDoNotLight = false;

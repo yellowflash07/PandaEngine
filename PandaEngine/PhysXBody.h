@@ -1,12 +1,10 @@
 #pragma once
-#include <PhysX/PxPhysicsAPI.h>
-#include <PhysX/pvd/PxPvd.h>
+
 #include "TransformComponent.h"
 #include "PhysXManager.h"
 #include "cMesh.h"
 #include "IEditorUI.h"
 #include <functional>
-
 using namespace physx;
 
 enum ColliderType

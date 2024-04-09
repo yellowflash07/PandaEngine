@@ -58,26 +58,6 @@ int main(void)
 
     Scene* scene = engine.GetCurrentScene();
 
-    //sphere
-    GameObject* sphere = scene->GetGameObjectByName("Sphere");
-    TransformComponent* sphereTransform = sphere->GetComponent<TransformComponent>();
-    PhysXBody* sphereBody = sphere->GetComponent<PhysXBody>();
-
-    sphereBody->onContactStart = [](glm::vec3 contactPoint) {
-		std::cout << "Sphere contact at" << glm::to_string(contactPoint)<< std::endl;
-	};
-
-    sphereBody->onTriggerEnter = [](PhysXBody* other) {
-		std::cout << "Sphere entered trigger" << std::endl;
-	};
-
-    sphereBody->onTriggerExit = [](PhysXBody* other) {
-        std::cout << "Sphere exit trigger" << std::endl;
-    };
-
-    GameObject* player = scene->GetGameObjectByName("Player");
-    TransformComponent* playerTransform = player->GetComponent<TransformComponent>();
-    CharacterController* controller = &player->AddComponent<CharacterController>(playerTransform);
 
     while (!glfwWindowShouldClose(engine.window))
     {
@@ -85,26 +65,6 @@ int main(void)
         engine.BeginRender();
 
         engine.Update();  
-
-        if (keyHit == GLFW_KEY_UP)
-        {
-			controller->Move(glm::vec3(0,0,1) * 20.0f, engine.deltaTime);
-           // keyHit = 0;
-		}
-        if (keyHit == GLFW_KEY_DOWN)
-        {
-            controller->Move(glm::vec3(0, 0, -1) * 20.0f, engine.deltaTime);
-           // keyHit = 0;
-        }
-        if (keyHit == GLFW_KEY_LEFT)
-        {
-			controller->Move(glm::vec3(-1, 0, 0) * 20.0f, engine.deltaTime);
-		   // keyHit = 0;
-		}
-        if (keyHit == GLFW_KEY_RIGHT)
-        {
-            controller->Move(glm::vec3(1, 0, 0) * 20.0f, engine.deltaTime);
-        }
 
         engine.EndRender();   
     }

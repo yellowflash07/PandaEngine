@@ -143,7 +143,8 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		if (anim != nullptr)
 		{
 			mesh->useBone = true;
-			anim->UpdateSkeleton(mesh, *mesh->modelDrawInfo.RootNode, deltaTime);
+			////anim->m_mesh = mesh;
+			anim->UpdateSkeleton(mesh, deltaTime);
 		}
 
 		meshManager->DrawObject(mesh, transform->GetTransform());

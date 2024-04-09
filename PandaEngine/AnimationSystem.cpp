@@ -273,44 +273,75 @@ void AnimationSystem::UpdateAnimation(Animation* anim, float dt)
 
 }
 
-void AnimationSystem::UpdateSkeleton(cMesh* mesh, Node& node, float dt)
-{
-	AnimationInfo info = mesh->modelDrawInfo.Animations[currentAnimationIndex];
-
-	frameCount += dt * info.TicksPerSecond;
-	if (frameCount > info.Duration)
-	{
-		frameCount = 0.0f;
-	}
-
-	UpdateBoneTransforms(mesh, node, frameCount);
-}
-
-void AnimationSystem::UpdateBoneTransforms(cMesh* mesh, Node& node, float dt)
+void AnimationSystem::UpdateSkeleton(cMesh* mesh, float dt)
 {
 	if (m_mesh == nullptr)
 	{
-		m_mesh = mesh;
+		m_mesh = mesh; 
 	}
-	AnimationInfo info = mesh->modelDrawInfo.Animations[currentAnimationIndex];
 
+	for(int i = 0; i < mesh->modelDrawInfo.size(); i++)
+	//for (sModelDrawInfo drawInfo : mesh->modelDrawInfo)
+	{
+		sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[i];
+		if (drawInfo->Animations.empty())
+		{
+			return;
+		}
+
+		AnimationInfo info = drawInfo->Animations[currentAnimationIndex];
+
+		frameCount += dt * info.TicksPerSecond;
+		if (frameCount > info.Duration)
+		{
+			frameCount = 0.0f;
+		}
+
+		UpdateBoneTransforms(drawInfo, *drawInfo->RootNode, frameCount);
+	}
+	//if (mesh->modelDrawInfo.Animations.empty())
+	//{
+	//	return;
+	//}
+	//
+	//AnimationInfo info = mesh->modelDrawInfo.Animations[currentAnimationIndex];
+	//
+	//frameCount += dt * info.TicksPerSecond;
+	//if (frameCount > info.Duration)
+	//{
+	//	frameCount = 0.0f;
+	//}
+
+	//UpdateBoneTransforms(mesh, node, frameCount);
+}
+
+void AnimationSystem::UpdateBoneTransforms(sModelDrawInfo* drawInfo, Node& node, float dt)
+{
+
+	AnimationInfo info = drawInfo->Animations[currentAnimationIndex];
+	
+	if (currentAnimationIndex == 1)
+	{
+		int x = 0;
+	}
+	
 	std::string nodeName = node.Name;
-
+	
 	std::map<std::string, NodeAnimation*>::iterator animIt = info.NodeAnimations.find(nodeName);
 	
-
+	
 	if (animIt != info.NodeAnimations.end())
 	{
 		NodeAnimation* nodeAnimInfo = animIt->second;
-
+	
 		glm::mat4 boneTransform = InterpolateNodeTransforms(nodeAnimInfo, dt);
 		
-		mesh->boneTransformations[nodeName] = boneTransform;
+		drawInfo->boneTransformations[nodeName] = boneTransform;
 	}
-
+	
 	for (Node* child : node.Children)
 	{
-		UpdateBoneTransforms(mesh, *child, dt);
+		UpdateBoneTransforms(drawInfo, *child, dt);
 	}
 }
 
@@ -318,10 +349,43 @@ void AnimationSystem::Render()
 {
 	ImGui::BeginChild("Animation", ImVec2(0, 150));
 	ImGui::SeparatorText("Animation");
+	
 	ImGui::SetNextItemWidth(40);
 	ImGui::InputFloat("Speed", &animationSpeed);
-	ImGui::Combo("Animation", &currentAnimationIndex, 
-		m_mesh->modelDrawInfo.Animations[currentAnimationIndex].AnimationName.c_str(), m_animations.size()-1);
+
+	//if (m_mesh != nullptr)
+	//{
+	//	if (!m_mesh->modelDrawInfo.Animations.empty())
+	//	{
+	//		ImGui::Text("Number of Animations: %d", m_mesh->modelDrawInfo.Animations.size());
+	//		if (ImGui::InputInt("Current Animation", &currentAnimationIndex))
+	//		{
+	//			m_mesh->modelDrawInfo.RootNode = m_mesh->modelDrawInfo.Animations[currentAnimationIndex].RootNode;
+	//		}
+	//	}
+	//}	
+	//
+
+	//ImGui::Text("Add Animation");
+	//if (ImGui::BeginDragDropTarget())
+	//{
+	//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model_DND"))
+	//	{
+	//		const char* payload_n = (const char*)payload->Data;
+	//		cMesh* mesh = new cMesh(payload_n, payload_n);
+
+	//		for (AnimationInfo info : mesh->modelDrawInfo.Animations)
+	//		{
+	//			m_mesh->modelDrawInfo.Animations.push_back(info);
+	//			printf("Added Animation: %s\n", info.AnimationName.c_str());
+	//			//AddAnimation(anim);
+	//		}
+
+	//		//std::cout << "Accepted: " << payload_n << std::endl;
+	//	}
+	//	ImGui::EndDragDropTarget();
+	//}
+
 	ImGui::Separator();
 	ImGui::EndChild();
 }
@@ -334,7 +398,7 @@ glm::vec3 AnimationSystem::InterpolatePositions(std::vector<PositionKeyFrame> po
 		return positions[0].position;
 	}
 	// Find our position keyframes (Start and End)
-	int KeyFrameEndIndex = 0;
+	int KeyFrameEndIndex = 1;
 	for (; KeyFrameEndIndex < positions.size(); KeyFrameEndIndex++)
 	{
 		if (positions[KeyFrameEndIndex].time > dt)
@@ -399,7 +463,7 @@ glm::vec3 AnimationSystem::InterpolateScales(std::vector<ScaleKeyFrame> scales, 
 		return scales[0].scale;
 	}
 	// Find our position keyframes (Start and End)
-	int KeyFrameEndIndex = 0;
+	int KeyFrameEndIndex = 1;
 	float time = dt;
 	for (; KeyFrameEndIndex < scales.size(); KeyFrameEndIndex++)
 	{
@@ -462,7 +526,7 @@ glm::quat AnimationSystem::InterpolateRotations(std::vector<RotationKeyFrame> ro
 	float time = dt;
 
 	// Find our position keyframes (Start and End)
-	int KeyFrameEndIndex = 0;
+	int KeyFrameEndIndex = 1;
 	for (; KeyFrameEndIndex < rotations.size(); KeyFrameEndIndex++)
 	{
 		if (rotations[KeyFrameEndIndex].time > time)

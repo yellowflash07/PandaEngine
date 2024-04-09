@@ -124,24 +124,25 @@ void PhysXBody::CreateMeshCollider(cMesh* mesh, bool skipMeshCleanup, bool skipE
 	setMesh = true;
 
 	PxTriangleMeshDesc meshDesc;
-	meshDesc.points.count = mesh->modelDrawInfo.numberOfVertices;
+	sModelDrawInfo modelDrawInfo = mesh->modelDrawInfo[0];
+	meshDesc.points.count = modelDrawInfo.numberOfVertices;
 
-	PxVec3* vertices = new PxVec3[mesh->modelDrawInfo.numberOfVertices];
-	for (int i = 0; i < mesh->modelDrawInfo.numberOfVertices; i++)
+	PxVec3* vertices = new PxVec3[modelDrawInfo.numberOfVertices];
+	for (int i = 0; i < modelDrawInfo.numberOfVertices; i++)
 	{
-		vertices[i] = PxVec3(mesh->modelDrawInfo.pVertices[i].x, mesh->modelDrawInfo.pVertices[i].y, mesh->modelDrawInfo.pVertices[i].z);
+		vertices[i] = PxVec3(modelDrawInfo.pVertices[i].x, modelDrawInfo.pVertices[i].y, modelDrawInfo.pVertices[i].z);
 	}
 
 	meshDesc.points.data = vertices;
 	meshDesc.points.stride = sizeof(PxVec3);
-	meshDesc.triangles.count = mesh->modelDrawInfo.numberOfTriangles;
+	meshDesc.triangles.count = modelDrawInfo.numberOfTriangles;
 
-	PxU32* indices = new PxU32[mesh->modelDrawInfo.numberOfTriangles * 3];
-	for (int i = 0; i < mesh->modelDrawInfo.numberOfTriangles; i++)
+	PxU32* indices = new PxU32[modelDrawInfo.numberOfTriangles * 3];
+	for (int i = 0; i < modelDrawInfo.numberOfTriangles; i++)
 	{
-		indices[i * 3] = mesh->modelDrawInfo.pIndices[i * 3];
-		indices[i * 3 + 1] = mesh->modelDrawInfo.pIndices[i * 3 + 1];
-		indices[i * 3 + 2] = mesh->modelDrawInfo.pIndices[i * 3 + 2];
+		indices[i * 3] = modelDrawInfo.pIndices[i * 3];
+		indices[i * 3 + 1] = modelDrawInfo.pIndices[i * 3 + 1];
+		indices[i * 3 + 2] = modelDrawInfo.pIndices[i * 3 + 2];
 	}
 
 	meshDesc.triangles.data = indices;

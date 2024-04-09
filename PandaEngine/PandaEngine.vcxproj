@@ -137,13 +137,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;assimp-vc143-mt.lib;%(AdditionalDependencies);fmod_vc.lib;PhysX3_x64.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;assimp-vc143-mt.lib;%(AdditionalDependencies);fmod_vc.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXVehicle_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXExtensions_static_64.lib;PhysXFoundation_64.lib;PhysXCharacterKinematic_static_64.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -173,29 +175,49 @@
     <ClCompile Include="cLightHelper.cpp" />
     <ClCompile Include="cLightManager.cpp" />
     <ClCompile Include="cMesh.cpp" />
-    <ClCompile Include="Command.cpp" />
-    <ClCompile Include="CommandFactory.cpp" />
-    <ClCompile Include="CommandGroup.cpp" />
+    <ClCompile Include="Command.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="CommandFactory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="CommandGroup.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="FollowCurve.cpp" />
-    <ClCompile Include="FollowObject.cpp" />
+    <ClCompile Include="FollowCurve.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="FollowObject.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="ImGuizmo.cpp" />
     <ClCompile Include="JsonReader.cpp" />
-    <ClCompile Include="LightControl.cpp" />
-    <ClCompile Include="LocationTrigger.cpp" />
+    <ClCompile Include="LightControl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="LocationTrigger.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshManager.cpp" />
-    <ClCompile Include="MoveTo.cpp" />
-    <ClCompile Include="OrientTo.cpp" />
+    <ClCompile Include="MoveTo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="OrientTo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="PhysXBody.cpp" />
     <ClCompile Include="PhysXManager.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
-    <ClCompile Include="ScaleUp.cpp" />
+    <ClCompile Include="ScaleUp.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneSaver.cpp" />
     <ClCompile Include="SoftBody.cpp" />
@@ -238,24 +260,44 @@
     <ClInclude Include="cLightHelper.h" />
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMesh.h" />
-    <ClInclude Include="Command.h" />
-    <ClInclude Include="CommandFactory.h" />
-    <ClInclude Include="CommandGroup.h" />
+    <ClInclude Include="Command.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="CommandFactory.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="CommandGroup.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="FollowCurve.h" />
-    <ClInclude Include="FollowObject.h" />
+    <ClInclude Include="FollowCurve.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="FollowObject.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GLFWCallbacks.h" />
     <ClInclude Include="GraphicsCommon.h" />
-    <ClInclude Include="iCommand.h" />
+    <ClInclude Include="iCommand.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="IEditorUI.h" />
     <ClInclude Include="ImGuizmo.h" />
     <ClInclude Include="JsonReader.h" />
-    <ClInclude Include="LightControl.h" />
-    <ClInclude Include="LocationTrigger.h" />
+    <ClInclude Include="LightControl.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="LocationTrigger.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="MeshManager.h" />
-    <ClInclude Include="MoveTo.h" />
-    <ClInclude Include="OrientTo.h" />
+    <ClInclude Include="MoveTo.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="OrientTo.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PhysicsShapes.h" />
     <ClInclude Include="PhysXBody.h" />
@@ -263,7 +305,9 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="RenderTexture.h" />
-    <ClInclude Include="ScaleUp.h" />
+    <ClInclude Include="ScaleUp.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneSaver.h" />
     <ClInclude Include="SoftBody.h" />

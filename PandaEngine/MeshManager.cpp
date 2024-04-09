@@ -35,17 +35,17 @@ MeshManager::~MeshManager()
 cMesh* MeshManager::AddMesh(std::string modelNameAtPath, std::string friendlyName, unsigned int shaderProgramID)
 {
     sModelDrawInfo drawInfo;
-    this->shaderProgramID = shaderProgramID;
-    if (!vaoManager->LoadModelIntoVAOAI(modelNameAtPath, drawInfo, shaderProgramID))
-    {
-		//  DoTheErrorLogging("Didn't load model");
-		return nullptr;
-	}
+ //   this->shaderProgramID = shaderProgramID;
+ //   if (!vaoManager->LoadModelIntoVAOAI(modelNameAtPath, drawInfo, shaderProgramID))
+ //   {
+	//	//  DoTheErrorLogging("Didn't load model");
+	//	return nullptr;
+	//}
 
     cMesh* mesh = new cMesh();
-    mesh->meshName = modelNameAtPath;
-    mesh->modelDrawInfo = drawInfo;
-    mesh->uniqueName = drawInfo.uniqueName;
+    //mesh->meshName = modelNameAtPath;
+    //mesh->modelDrawInfo = drawInfo;
+    //mesh->uniqueName = drawInfo.uniqueName;
     mesh->friendlyName = friendlyName;
 
    // std::cout << "Loaded: " << drawInfo.numberOfVertices << " vertices" << std::endl;
@@ -57,16 +57,16 @@ cMesh* MeshManager::LoadMesh(std::string modelNameAtPath, std::string friendlyNa
 {
     sModelDrawInfo drawInfo;
     this->shaderProgramID = shaderProgramID;
-    if (!vaoManager->LoadModelIntoVAOAI(modelNameAtPath, drawInfo, shaderProgramID))
-    {
-        //  DoTheErrorLogging("Didn't load model");
-        return nullptr;
-    }
+    //if (!vaoManager->LoadModelIntoVAOAI(modelNameAtPath, drawInfo, shaderProgramID))
+    //{
+    //    //  DoTheErrorLogging("Didn't load model");
+    //    return nullptr;
+    //}
 
     cMesh* mesh = new cMesh();
     mesh->meshName = modelNameAtPath;
-    mesh->modelDrawInfo = drawInfo;
-    mesh->uniqueName = drawInfo.uniqueName;
+    //mesh->modelDrawInfo = drawInfo;
+    //mesh->uniqueName = drawInfo.uniqueName;
     mesh->friendlyName = friendlyName;
     return mesh;
 }
@@ -77,14 +77,25 @@ void MeshManager::LoadMeshAsync(std::string modelNameAtPath,
     sModelDrawInfo drawInfo;
 
     if (!vaoManager->LoadModelIntoVAOAsync(modelNameAtPath, drawInfo,
-        shaderProgramID, [modelNameAtPath, friendlyName, callback](sModelDrawInfo result)
+        shaderProgramID, [modelNameAtPath, friendlyName, callback](std::vector<sModelDrawInfo> result)
         { 
             cMesh* mesh = new cMesh();
             mesh->meshName = modelNameAtPath;
+            mesh->friendlyName = friendlyName;
+            for (sModelDrawInfo& result : result)
+            {
+			
+                mesh->uniqueName = result.uniqueName;
+				mesh->modelDrawInfo.push_back(result);
+				//  meshList.push_back(mesh);
+			}
+            callback(mesh);
+         /*   cMesh* mesh = new cMesh();
+            mesh->meshName = modelNameAtPath;
             mesh->modelDrawInfo = result;
             mesh->uniqueName = result.uniqueName;
-            mesh->friendlyName = friendlyName;
-            callback(mesh);
+            mesh->friendlyName = friendlyName;*/
+           // callback(mesh);
           //  meshList.push_back(mesh);
         }))
     {
@@ -229,35 +240,40 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModel)
     GLint transparency_UL = glGetUniformLocation(shaderProgramID, "transparency");
     glUniform1f(transparency_UL, pCurrentMesh->transperancy);
 
-    if (!pCurrentMesh->modelDrawInfo.meshName.empty())
+    for (sModelDrawInfo drawInfo : pCurrentMesh->modelDrawInfo)
     {
-        if (pCurrentMesh->useBone)
-        {
-            CalculateMatrices(pCurrentMesh, pCurrentMesh->modelDrawInfo.RootNode,
-                glm::mat4(1.0f),
-                pCurrentMesh->modelDrawInfo);
-            //printf("----------------\n");
-            for (int j = 0; j < pCurrentMesh->modelDrawInfo.vecBoneInfo.size(); ++j)
-            {
-                glm::mat4 boneMatrix = pCurrentMesh->modelDrawInfo.vecBoneInfo[j].FinalTransformation;
-                std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
-                GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
-                glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
-            }
-        }
 
-        // Found it!!!
-        if (!pCurrentMesh->hideParent)
+        if (!drawInfo.meshName.empty())
         {
-            glBindVertexArray(pCurrentMesh->modelDrawInfo.VAO_ID); 		//  enable VAO (and everything else)
-            glDrawElements(GL_TRIANGLES,
-                pCurrentMesh->modelDrawInfo.numberOfIndices,
-                GL_UNSIGNED_INT,
-                0);
-            glBindVertexArray(0);
-            // return;
+            if (pCurrentMesh->useBone)
+            {
+                CalculateMatrices(pCurrentMesh, drawInfo.RootNode,
+                    glm::mat4(1.0f),
+                    drawInfo);
+                //printf("----------------\n");
+                for (int j = 0; j < drawInfo.vecBoneInfo.size(); ++j)
+                {
+                    glm::mat4 boneMatrix = drawInfo.vecBoneInfo[j].FinalTransformation;
+                    std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+                    GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+                    glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+                }
+            }
+
+            // Found it!!!
+            if (!pCurrentMesh->hideParent)
+            {
+                glBindVertexArray(drawInfo.VAO_ID); 		//  enable VAO (and everything else)
+                glDrawElements(GL_TRIANGLES,
+                    drawInfo.numberOfIndices,
+                    GL_UNSIGNED_INT,
+                    0);
+                glBindVertexArray(0);
+                // return;
+            }
+            // disable VAO (and everything else)
+
         }
-        // disable VAO (and everything else)
 
     }
 
@@ -426,35 +442,40 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     GLint transparency_UL = glGetUniformLocation(shaderProgramID, "transparency");
     glUniform1f(transparency_UL, pCurrentMesh->transperancy);
 
-    if (!pCurrentMesh->modelDrawInfo.meshName.empty())
+    for (sModelDrawInfo drawInfo : pCurrentMesh->modelDrawInfo)
     {
-        if (pCurrentMesh->useBone)
-        {
-            CalculateMatrices(pCurrentMesh, pCurrentMesh->modelDrawInfo.RootNode, 
-                                        glm::mat4(1.0f), 
-                                        pCurrentMesh->modelDrawInfo);
-            //printf("----------------\n");
-            for (int j = 0; j < pCurrentMesh->modelDrawInfo.vecBoneInfo.size(); ++j)
-            {
-                glm::mat4 boneMatrix = pCurrentMesh->modelDrawInfo.vecBoneInfo[j].FinalTransformation;
-                std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
-                GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
-                glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));                
-            }           
-        }        
 
-        // Found it!!!
-        if (!pCurrentMesh->hideParent)
+        if (!drawInfo.meshName.empty())
         {
-            glBindVertexArray(pCurrentMesh->modelDrawInfo.VAO_ID); 		//  enable VAO (and everything else)
-            glDrawElements(GL_TRIANGLES,
-                pCurrentMesh->modelDrawInfo.numberOfIndices,
-                GL_UNSIGNED_INT,
-                0);
-            glBindVertexArray(0);
-           // return;
+            if (pCurrentMesh->useBone)
+            {
+                CalculateMatrices(pCurrentMesh, drawInfo.RootNode,
+                    glm::mat4(1.0f),
+                    drawInfo);
+                //printf("----------------\n");
+                for (int j = 0; j < drawInfo.vecBoneInfo.size(); ++j)
+                {
+                    glm::mat4 boneMatrix = drawInfo.vecBoneInfo[j].FinalTransformation;
+                    std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+                    GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+                    glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+                }
+            }
+
+            // Found it!!!
+            if (!pCurrentMesh->hideParent)
+            {
+                glBindVertexArray(drawInfo.VAO_ID); 		//  enable VAO (and everything else)
+                glDrawElements(GL_TRIANGLES,
+                    drawInfo.numberOfIndices,
+                    GL_UNSIGNED_INT,
+                    0);
+                glBindVertexArray(0);
+                // return;
+            }
+            // disable VAO (and everything else)
+
         }
-	            // disable VAO (and everything else)
 
     }
 
@@ -901,9 +922,9 @@ void MeshManager::CalculateMatrices(cMesh* pCurrentMesh, Node* node, const glm::
     glm::mat4 nodeTransform = node->Transformation;  
 
     std::map<std::string, glm::mat4>::iterator boneIt = 
-                        pCurrentMesh->boneTransformations.find(nodeName);
+            modelInfo.boneTransformations.find(nodeName);
 
-    if (boneIt != pCurrentMesh->boneTransformations.end())
+    if (boneIt != modelInfo.boneTransformations.end())
     {
          nodeTransform = boneIt->second;
     }

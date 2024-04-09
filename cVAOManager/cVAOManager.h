@@ -16,7 +16,7 @@
 #include <functional>
 #define WINDOWS_LEAN_AND_MEAN
 
-typedef std::function<void(sModelDrawInfo)> OnModelLoadCallBack;
+typedef std::function<void(std::vector<sModelDrawInfo>)> OnModelLoadCallBack;
 
 struct LoadInfo;
 
@@ -30,7 +30,7 @@ public:
 	static cVAOManager* getInstance();
 
 	bool LoadModelIntoVAOAI(std::string fileName,
-		sModelDrawInfo& drawInfo,
+		std::vector<sModelDrawInfo>& drawInfos,
 		unsigned int shaderProgramID,
 		bool bIsDynamicBuffer = false);
 
@@ -64,9 +64,9 @@ public:
 	void PrintMatrix(glm::mat4 theMatrix);
 	void PrintMatrix(aiMatrix4x4 theMatrix);
 
-	bool m_LoadTheFile(std::string fileName, sModelDrawInfo& drawInfo);
+	bool m_LoadTheFile(std::string fileName, std::vector<sModelDrawInfo>& drawInfo);
 
-	void LoadVertexToGPU(sModelDrawInfo& drawInfo, GLuint shaderProgram);
+	void LoadVertexToGPU(sModelDrawInfo* drawInfo, GLuint shaderProgram);
 
 	std::string GenerateUniqueModelNameFromFile(std::string fileName);
 
@@ -81,11 +81,13 @@ private:
 	std::string m_basePathWithoutSlash;
 
 	void AssimpToGLM(const aiMatrix4x4 &fromAssimp, glm::mat4 &toGLM);
-	Node* GenerateBoneHierarchy(const aiNode* node, sModelDrawInfo &drawInfo);
+	Node* GenerateBoneHierarchy(const aiNode* node);
 
 	//std::map<LoadInfo*, std::function<void()>> threadQueue;
 
 	std::vector<LoadInfo*> loadQueue;
+
+	void LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo& drawInfo);
 
 };
 

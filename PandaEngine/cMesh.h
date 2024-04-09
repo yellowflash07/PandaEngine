@@ -57,14 +57,14 @@ public:
 	}
 
 	
-	sModelDrawInfo modelDrawInfo;
+	std::vector<sModelDrawInfo> modelDrawInfo;
 
 	bool isChild = false;
 	void AddChild(cMesh* child);
 	bool hideParent = false;
 	bool useBone = false;
 	//glm::mat4 AnimatedTransform;
-	std::map<std::string, glm::mat4> boneTransformations;
+
 	void Render();
 private:
 	unsigned int m_UniqueID;
