@@ -91,6 +91,9 @@
     <Filter Include="Physics\Custom\SoftBody">
       <UniqueIdentifier>{8e26b1cb-dd2c-4ca2-8645-71ce86b28634}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ShadowMap">
+      <UniqueIdentifier>{ea4f4656-551c-486a-a40b-af86e64acc91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -264,11 +267,11 @@
     <ClCompile Include="CharacterController.cpp">
       <Filter>Physics\PhysX</Filter>
     </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>ShadowMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GraphicsCommon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Basic Shader Manager\cShaderManager.h">
       <Filter>ShaderManager</Filter>
     </ClInclude>
@@ -466,6 +469,12 @@
     </ClInclude>
     <ClInclude Include="CharacterController.h">
       <Filter>Physics\PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>ShadowMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

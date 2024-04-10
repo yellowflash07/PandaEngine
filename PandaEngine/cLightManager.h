@@ -46,6 +46,8 @@ public:
     void Render();
 
     int index = -1;
+
+    GLint shaderID;
 };
 
 class cLightManager

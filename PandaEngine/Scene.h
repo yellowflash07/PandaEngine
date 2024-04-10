@@ -13,6 +13,7 @@
 #include "PhysXManager.h"
 #include "PhysXBody.h"
 #include "CharacterController.h"
+#include "ShadowMap.h"
 
 class Scene
 {
@@ -43,6 +44,8 @@ public:
 
 	void Stop();
 
+
+	ShadowMap* shadowMap;
 private:
 	entt::registry m_Registry;
 	entt::entity m_currentEntity;
@@ -64,5 +67,6 @@ private:
 	void DrawContextMenu(GameObject* go);
 
 	bool play = false;
+
 };
 

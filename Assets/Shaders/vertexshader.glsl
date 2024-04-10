@@ -27,12 +27,24 @@ out vec2 texCoord;
 out vec4 boneId;
 out vec4 boneWeight;
 
+uniform bool isShadowMap;
+uniform mat4 lightSpaceMatrix;
+
+out vec4 fragPosLightSpace;
+
 void main()
 {
 	
 //	gl_Position = MVP * vec4(finalPos, 1.0);
 //	gl_Position = MVP * vertModelPosition;
 	//vec4 finalPos = vec4(1.0f);
+
+	if(isShadowMap)
+	{
+		gl_Position = lightSpaceMatrix * matModel * vec4(vPos.xyz, 1.0);
+		return;
+	}
+
 	vec4 finalPos = vec4(vPos.xyz, 1.0);
 	if (useBones)
 	{
@@ -48,6 +60,8 @@ void main()
 		finalPos = vPos;
 	}
 
+	fragPosLightSpace = lightSpaceMatrix * matModel *  vec4(finalPos.xyz, 1.0);	
+
 	mat4 matMVP = matProjection * matView * matModel;
 	gl_Position = matMVP * vec4(finalPos.xyz, 1.0);	
 		
@@ -57,7 +71,7 @@ void main()
 	vertexWorldNormal.xyz = normalize(vertexWorldNormal.xyz);
 	vertexWorldNormal.w = 1.0f;
 	
-	vertexWorldPos = matModel * vec4( vPos.xyz, 1.0f);
+	vertexWorldPos = matModel * vec4( finalPos.xyz, 1.0f);
 	
 	colour = vCol;
 	texCoord = vTexCoord;

@@ -60,74 +60,11 @@
             "children": []
         },
         {
-            "name": "Sphere",
-            "transform": {
-                "position": [
-                    0.0,
-                    50.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.22136415541172028,
-                    0.4217893183231354,
-                    -0.9577126502990723
-                ],
-                "scale": [
-                    5.4499993324279785,
-                    5.4499993324279785,
-                    5.4499993324279785
-                ]
-            },
-            "mesh": {
-                "fileName": "Sphere_1_unit_Radius_UV.ply",
-                "friendlyName": "FriendlyName",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "explosion.bmp",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": ""
-            },
-            "physXObj": {
-                "type": 2,
-                "isDynamic": true,
-                "isTrigger": true
-            },
-            "children": []
-        },
-        {
             "name": "Directional Light",
             "transform": {
                 "position": [
-                    130.5989532470703,
-                    153.91659545898438,
+                    -31.920164108276367,
+                    16.29895782470703,
                     0.0
                 ],
                 "rotation": [
@@ -144,8 +81,8 @@
             "light": {
                 "index": 0,
                 "position": [
-                    130.5989532470703,
-                    153.91659545898438,
+                    0.0,
+                    20.0,
                     0.0
                 ],
                 "diffuse": [
@@ -180,7 +117,7 @@
             "children": []
         },
         {
-            "name": "Cube",
+            "name": "bathtub",
             "transform": {
                 "position": [
                     0.0,
@@ -189,106 +126,7 @@
                 ],
                 "rotation": [
                     0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scale": [
-                    166.3255615234375,
-                    7.458257675170898,
-                    100.0
-                ]
-            },
-            "mesh": {
-                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": ""
-            },
-            "light": {
-                "index": 1,
-                "position": [
                     0.0,
-                    0.0,
-                    0.0
-                ],
-                "diffuse": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "specular": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "atten": [
-                    0.5,
-                    0.5,
-                    0.5
-                ],
-                "direction": [
-                    0.0,
-                    -0.5,
-                    0.0
-                ],
-                "param1": [
-                    2.0,
-                    0.0,
-                    0.0
-                ],
-                "param2": [
-                    1.0
-                ]
-            },
-            "physXObj": {
-                "type": 1,
-                "isDynamic": false,
-                "isTrigger": false
-            },
-            "children": []
-        },
-        {
-            "name": "Player",
-            "transform": {
-                "position": [
-                    0.0,
-                    9.975250244140625,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
                     0.0
                 ],
                 "scale": [
@@ -334,66 +172,30 @@
                 ],
                 "maskTexture": ""
             },
-            "light": {
-                "index": 1,
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "diffuse": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "specular": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "atten": [
-                    0.5,
-                    0.5,
-                    0.5
-                ],
-                "direction": [
-                    0.0,
-                    -0.5,
-                    0.0
-                ],
-                "param1": [
-                    2.0,
-                    0.0,
-                    0.0
-                ],
-                "param2": [
-                    1.0
-                ]
-            },
             "children": []
         },
         {
-            "name": "GameObject",
+            "name": "Plane",
             "transform": {
                 "position": [
                     0.0,
-                    0.0,
-                    0.0
+                    -18.084314346313477,
+                    77.96370697021484
                 ],
                 "rotation": [
-                    0.0,
+                    -1.5699999332427979,
                     0.0,
                     0.0
                 ],
                 "scale": [
-                    1.0,
-                    1.0,
-                    1.0
+                    4.25,
+                    4.25,
+                    4.25
                 ]
             },
             "mesh": {
-                "fileName": "Dancing.fbx",
-                "friendlyName": "Dancing.fbx",
+                "fileName": "Grid_10x10_vertical_in_y.ply",
+                "friendlyName": "Grid_10x10_vertical_in_y.ply",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -427,42 +229,6 @@
                     1.0
                 ],
                 "maskTexture": ""
-            },
-            "light": {
-                "index": 1,
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "diffuse": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "specular": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "atten": [
-                    0.5,
-                    0.5,
-                    0.5
-                ],
-                "direction": [
-                    0.0,
-                    -0.5,
-                    0.0
-                ],
-                "param1": [
-                    2.0,
-                    0.0,
-                    0.0
-                ],
-                "param2": [
-                    1.0
-                ]
             },
             "children": []
         }

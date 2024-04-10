@@ -220,6 +220,7 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneSaver.cpp" />
+    <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SoftBody.cpp" />
     <ClCompile Include="SoftBodyManager.cpp" />
     <ClCompile Include="TCPDebug.cpp" />
@@ -310,6 +311,7 @@
     </ClInclude>
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneSaver.h" />
+    <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SoftBody.h" />
     <ClInclude Include="SoftBodyManager.h" />
     <ClInclude Include="TCPDebug.h" />

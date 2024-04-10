@@ -43,6 +43,7 @@ public:
 	void UpdateVAOBuffers(std::string friendlyName, sModelDrawInfo& drawInfo);
 	GLuint shaderProgramID;
 
+	void DrawOnlyGeometry(cMesh* pCurrentMesh, glm::mat4 matModel);
 private:
 	std::vector< cMesh* > meshList;
 	cMesh* selectedMesh;

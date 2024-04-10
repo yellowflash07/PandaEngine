@@ -7,6 +7,7 @@ in vec4 vertexWorldNormal;
 in vec2 texCoord;
 in vec4 boneId;
 in vec4 boneWeight;
+in vec4 fragPosLightSpace;
 out vec4 outputColour;		// To the frame buffer (aka screen)
 
 //uniform vec3 directionalLightColour;
@@ -67,8 +68,50 @@ uniform sLight theLights[NUMBEROFLIGHTS];  	// 70 uniforms
 
 uniform bool useBones;
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
-                            vec3 vertexWorldPos, vec4 vertexSpecular );
+                            vec3 vertexWorldPos, vec4 vertexSpecular, float shadowFactor );
 float rand(vec2 co);
+
+uniform bool isShadowMap;
+uniform sampler2D shadowMap;
+
+float calculateShadowFactor(vec4 fragPosLightSpace)
+{
+	// Shadow value
+	float shadow = 0.0f;
+//	// Sets lightCoords to cull space
+//	vec3 lightCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+//	if(lightCoords.z <= 1.0f)
+//	{
+//		// Get from [-1, 1] range to [0, 1] range just like the shadow map
+//		lightCoords = (lightCoords + 1.0f) / 2.0f;
+//		float currentDepth = lightCoords.z * -1;
+//		// Prevents shadow acne
+//		float bias = max(0.0025f * (1.0f - dot(vec3(vertexWorldNormal), vec3(0,-1,0))), 0.0005f);
+//
+//		// Smoothens out the shadows
+//		int sampleRadius = 2;
+//		vec2 pixelSize = 1.0 / textureSize(shadowMap, 0);
+//		for(int y = -sampleRadius; y <= sampleRadius; y++)
+//		{
+//		    for(int x = -sampleRadius; x <= sampleRadius; x++)
+//		    {
+//		        float closestDepth = texture(shadowMap, lightCoords.xy + vec2(x, y) * pixelSize).r;
+//				if (currentDepth > closestDepth + bias)
+//					shadow += 1.0f;     
+//		    }    
+//		}
+//		// Get average shadow
+//		shadow /= pow((sampleRadius * 2 + 1), 2);
+//
+//	}
+
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	projCoords = projCoords * 0.5 + 0.5;
+	float closestDepth = texture(shadowMap, projCoords.xy).r + 0.0025f;
+	float currentDepth = projCoords.z;
+	shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+	return shadow;
+}
 
 void main()
 {
@@ -86,6 +129,13 @@ void main()
 //		return;
 //	}
 
+	if(isShadowMap)
+	{
+		float depthValue = texture(shadowMap, texCoord).r;
+		outputColour = vec4(vec3(depthValue), 1.0);
+		return;
+	}
+
 	if ( bIsSkyBox )
 	{
 		vec4 skyBoxSampleColour = texture( skyBoxCubeMap, vertexWorldNormal.xyz ).rgba;
@@ -93,7 +143,8 @@ void main()
 		outputColour.a = 1.0f;
 		return;
 	}
-	
+
+
 	if( hasRenderTexture )
 	{
 		vec4 renderTextureColor =  texture( renderTexture, texCoord.st ).rgba;
@@ -163,8 +214,10 @@ void main()
 	// RGB is the specular highglight colour (usually white or the colour of the light)
 	// 4th value is the specular POWER (STARTS at 1, and goes to 1000000s)
 	
+	float shadowFactor = calculateShadowFactor(fragPosLightSpace);
+
 	vec4 vertexColourLit = calculateLightContrib( vertexRGBA.rgb, vertexWorldNormal.xyz, 
-	                                              vertexWorldPos.xyz, vertexSpecular );
+	                                              vertexWorldPos.xyz, vertexSpecular, shadowFactor );
 	// *************************************
 			
 	outputColour.rgb = vertexColourLit.rgb;
@@ -177,7 +230,7 @@ void main()
 
 
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
-                            vec3 vertexWorldPos, vec4 vertexSpecular )
+                            vec3 vertexWorldPos, vec4 vertexSpecular, float shadowFactor )
 {
 	vec3 norm = normalize(vertexNormal);
 	
@@ -205,22 +258,60 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 			// -- Almost always, there's only 1 of these in a scene
 			// Cheapest light to calculate. 
 
-			vec3 lightContrib = theLights[index].diffuse.rgb;
-			
-			// Get the dot product of the light and normalize
-			float dotProduct = dot( -theLights[index].direction.xyz,  
-									   normalize(norm.xyz) );	// -1 to 1
+			float ambient = 0.20f;
 
-			dotProduct = max( 0.0f, dotProduct );		// 0 to 1
-		
-			lightContrib *= dotProduct;		
-			
-			finalObjectColour.rgb += (vertexMaterialColour.rgb * theLights[index].diffuse.rgb * lightContrib); 
-									 //+ (materialSpecular.rgb * lightSpecularContrib.rgb);
+			// diffuse lighting
+			vec3 normal = normalize(vertexNormal);
+			vec3 lightDirection = normalize(vec3(theLights[index].position));
+			float diffuse = max(dot(normal, lightDirection), 0.0f);
+
+			// specular lighting
+			float specular = 0.0f;
+			if (diffuse != 0.0f)
+			{
+				float specularLight = 0.50f;
+				vec3 viewDirection = normalize(vec3(eyeLocation) - vertexWorldPos);
+				vec3 halfwayVec = normalize(viewDirection + lightDirection);
+				float specAmount = pow(max(dot(normal, halfwayVec), 0.0f), 16);
+				specular = specAmount * specularLight;
+			};
+			vec3 lightColor = vec3(1.0f);
+			vec3 finalCol =  (diffuse * (1.0f - shadowFactor) + ambient) + specular  * (1.0f - shadowFactor) * lightColor;
+			finalObjectColour.rgb += vertexMaterialColour.rgb * finalCol;
+			//vec3 lightContrib = theLights[index].diffuse.rgb;
+			//
+			// //Get the dot product of the light and normalize
+			//float dotProduct = dot( -theLights[index].direction.xyz,  
+			//						   normalize(norm.xyz) );	// -1 to 1
+			//
+			//dotProduct = max( 0.0f, dotProduct );		// 0 to 1
+			//
+			// lightContrib *= (1.0 - shadowFactor); 
+			//
+			//
+			//finalObjectColour.rgb += (vertexMaterialColour.rgb * theLights[index].diffuse.rgb * lightContrib); 
+									// + (materialSpecular.rgb * lightSpecularContrib.rgb);
 			// NOTE: There isn't any attenuation, like with sunlight.
 			// (This is part of the reason directional lights are fast to calculate)
-
-
+//			vec3 lightColor = vec3(1.0);
+//			// ambient
+//			vec3 ambient = 0.15 * lightColor;
+//			// diffuse
+//			vec3 lightDir = normalize(vec3(theLights[index].position) - vertexWorldPos);
+//			float diff = max(dot(theLights[index].direction.xyz, vertexNormal), 0.0);
+//			vec3 diffuse = diff * lightColor;
+//			// specular
+//			vec3 viewDir = normalize(vec3(eyeLocation) - vertexWorldPos);
+//			float spec = 0.0;
+//			vec3 halfwayDir = normalize(lightDir + viewDir);  
+//			spec = pow(max(dot(vertexNormal, halfwayDir), 0.0), 64.0);
+//			vec3 specular = spec * lightColor;    
+//			// calculate shadow
+//			float shadow = shadowFactor;       
+//			vec3 lighting = (ambient + (diffuse + specular)) * vertexMaterialColour; 
+//			
+//			//vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * vertexMaterialColour; 
+//			finalObjectColour.rgb += lighting;
 			return finalObjectColour;		
 		}
 		

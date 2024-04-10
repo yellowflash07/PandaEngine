@@ -420,7 +420,7 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
         gameObjectValue.AddMember("mesh", mesh, jsonDocument.GetAllocator());
     }
 
-    if (go.light.index >= 0)
+    if (go.light.index > -1)
     {
         rapidjson::Value light(rapidjson::kObjectType);
         light.AddMember("index", go.light.index, jsonDocument.GetAllocator());

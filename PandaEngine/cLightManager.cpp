@@ -58,6 +58,7 @@ void cLight::TurnOff(void)
 
 void cLight::SetUniformLocations(GLuint shaderID, int lightIndex)
 {
+	this->shaderID = shaderID;
 	this->index = lightIndex;
 	std::string lightPositon = "theLights[" + std::to_string(lightIndex) + "]" + ".position";
 	std::string lightdiffuse = "theLights[" + std::to_string(lightIndex) + "]" + ".diffuse";
@@ -127,6 +128,7 @@ void cLight::UpdateLight(TransformComponent* transform)
 		this->param2.y,
 		this->param2.z,
 		this->param2.w);
+
 }
 
 void cLight::Render()

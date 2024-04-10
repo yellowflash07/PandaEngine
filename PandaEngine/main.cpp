@@ -50,7 +50,7 @@ int main(void)
                                     "CubeMaps/TropicalSunnyDayBack2048.bmp",
                                     true);
 
-    camera->SetPosition(glm::vec3(11.0f,158.0f, 401.0f));
+    camera->SetPosition(glm::vec3(11.0f,37.0f, 401.0f));
 
     engine.LoadSave(); 
 
@@ -62,17 +62,10 @@ int main(void)
     Scene* scene = engine.GetCurrentScene();
 
     //get the dancer object
-    GameObject* dancer = scene->GetGameObjectByName("Dancer");
-    cMesh* dancerMesh = dancer->GetComponent<cMesh>(); //get the mesh of the dancer
-    //add animation component
-    AnimationSystem* animation = &dancer->AddComponent<AnimationSystem>();
-    animation->m_mesh = dancerMesh;
-    //load animations
-    animation->LoadAnimationFromFile("Silly Dancing.fbx");
-    animation->LoadAnimationFromFile("Hip Hop Dancing.fbx");
-    animation->LoadAnimationFromFile("Rumba Dancing.fbx");
-    animation->LoadAnimationFromFile("Bboy Hip Hop Move.fbx");
+    GameObject* plane = scene->GetGameObjectByName("Plane");
+    cMesh* mesh = plane->GetComponent<cMesh>();
 
+    GLint shadowID = scene->shadowMap->m_shadowMap;
     float blendWeight = 0;
 
     while (!glfwWindowShouldClose(engine.window))
@@ -82,13 +75,10 @@ int main(void)
 
         engine.Update(); 
 
-        if (keyHit == GLFW_KEY_1)
-        {
-			animation->SetBlend(1, 0, blendWeight);
-            blendWeight += 0.1f;
-            printf("Blend Weight: %f\n", blendWeight);
-		}
-		
+        ImGui::Begin("Debug");
+        ImGui::ImageButton((void*)(intptr_t)shadowID, ImVec2(500, 500));
+        ImGui::End();
+       // mesh->renderTextureID = shadowID;
 
         engine.EndRender();   
     }

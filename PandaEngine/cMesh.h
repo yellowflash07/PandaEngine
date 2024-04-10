@@ -36,6 +36,7 @@ public:
 	bool isSkyBox;
 	bool hasVertexColors;
 	bool isReflective;
+	bool enableShadow;
 	static const int NUM_OF_TEXTURES = 4;
 	std::string texture[NUM_OF_TEXTURES];
 	float textureRatio[NUM_OF_TEXTURES];

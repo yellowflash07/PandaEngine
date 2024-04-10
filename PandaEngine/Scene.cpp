@@ -31,6 +31,38 @@ void Scene::Update(float deltaTime)
 		CreateGameObject("GameObject");
 	}
 
+	cLight* light = NULL;
+
+	for (GameObject* go : m_GameObjects)
+	{
+		//shadow pass
+		for (GameObject* golight : m_GameObjects)
+		{
+			if (golight->GetComponent<cLight>() != nullptr)
+			{
+				light = golight->GetComponent<cLight>();
+				break;
+			}
+		}
+	}
+	shadowMap->BeginRender(light);
+	for (GameObject* go : m_GameObjects)
+	{
+		//shadow pass
+		cMesh* mesh = go->GetComponent<cMesh>();
+		if (go->GetComponent<cMesh>() != nullptr)
+		{	
+			if (mesh->isSkyBox || !mesh->enableShadow)
+			{
+				continue;
+			}
+			TransformComponent* transform = go->GetComponent<TransformComponent>();
+			meshManager->DrawOnlyGeometry(go->GetComponent<cMesh>(), transform->GetTransform());	
+		}
+
+	}
+	shadowMap->EndRender();
+
 	for (GameObject* go : m_GameObjects)
 	{
 
@@ -38,6 +70,7 @@ void Scene::Update(float deltaTime)
 
 		DrawTreeNode(go);
 
+		//main pass
 		UpdateGameObject(go, glm::mat4(1.0f), deltaTime);
 
 	}
@@ -65,6 +98,10 @@ void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightMan
 	this->meshManager = meshManager;
 	this->lightManager = lightManager;
 	this->shaderManager = shaderManager;
+
+	this->shadowMap = new ShadowMap();
+	this->shadowMap->Initialize(2048, 2048);
+	this->shadowMap->shaderProgramID = shaderManager->getIDFromFriendlyName("shader01");
 }
 
 GameObject* Scene::GetGameObjectByName(std::string name)
@@ -130,22 +167,15 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 {
 	TransformComponent* transform = go->GetComponent<TransformComponent>();
 
-	if (go->m_Name == "Plane")
-	{
-				int x = 0;
-	}
-
 	matModel = transform->GetTransform() * matModel;
 	cMesh* mesh = go->GetComponent<cMesh>();
 	if (mesh != nullptr)
 	{
-
 		meshManager->DrawObject(mesh, transform->GetTransform());
 		AnimationSystem* anim = go->GetComponent<AnimationSystem>();
 		if (anim != nullptr)
 		{
 			mesh->useBone = true;
-			////anim->m_mesh = mesh;
 			anim->UpdateSkeleton(mesh, deltaTime);
 		}
 

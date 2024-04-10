@@ -815,6 +815,63 @@ void MeshManager::UpdateVAOBuffers(std::string friendlyName, sModelDrawInfo& dra
     vaoManager->UpdateVAOBuffers(friendlyName, drawInfo, shaderProgramID);
 }
 
+void MeshManager::DrawOnlyGeometry(cMesh* pCurrentMesh, glm::mat4 matModel)
+{
+   // glm::mat4 matModel = transform->GetTransform();
+
+    GLint matModel_UL = glGetUniformLocation(shaderProgramID, "matModel");
+    glUniformMatrix4fv(matModel_UL, 1, GL_FALSE, glm::value_ptr(matModel));
+
+    //   // Also calculate and pass the "inverse transpose" for the model matrix
+    glm::mat4 matModel_InverseTranspose = glm::inverse(glm::transpose(matModel));
+
+    //   // uniform mat4 matModel_IT;
+    GLint matModel_IT_UL = glGetUniformLocation(shaderProgramID, "matModel_IT");
+    glUniformMatrix4fv(matModel_IT_UL, 1, GL_FALSE, glm::value_ptr(matModel_InverseTranspose));
+
+    for (sModelDrawInfo drawInfo : pCurrentMesh->modelDrawInfo)
+    {
+
+        if (!drawInfo.meshName.empty())
+        {
+            if (pCurrentMesh->useBone)
+            {
+                CalculateMatrices(pCurrentMesh, drawInfo.RootNode,
+                    glm::mat4(1.0f),
+                    drawInfo);
+                //printf("----------------\n");
+                for (int j = 0; j < drawInfo.vecBoneInfo.size(); ++j)
+                {
+                    glm::mat4 boneMatrix = drawInfo.vecBoneInfo[j].FinalTransformation;
+                    std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+                    GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+                    glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+                }
+            }
+
+            // Found it!!!
+            if (!pCurrentMesh->hideParent)
+            {
+                glBindVertexArray(drawInfo.VAO_ID); 		//  enable VAO (and everything else)
+                glDrawElements(GL_TRIANGLES,
+                    drawInfo.numberOfIndices,
+                    GL_UNSIGNED_INT,
+                    0);
+                glBindVertexArray(0);
+                // return;
+            }
+            // disable VAO (and everything else)
+
+        }
+
+    }
+
+
+
+
+
+}
+
 
 void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
 {
@@ -837,7 +894,7 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
         GLint textureBool_UL = glGetUniformLocation(shaderProgramID, "hasRenderTexture");
         glUniform1f(textureBool_UL, (GLfloat)GL_TRUE);
 
-        GLint textureUnitNumber = 0;
+        GLint textureUnitNumber = 70;
         glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
         glBindTexture(GL_TEXTURE_2D, pCurrentMesh->renderTextureID);
         GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "renderTexture");
