@@ -41,7 +41,21 @@ void main()
 
 	if(isShadowMap)
 	{
-		gl_Position = lightSpaceMatrix * matModel * vec4(vPos.xyz, 1.0);
+		vec4 finalShadowPos = vec4(vPos.xyz, 1.0);
+		if (useBones)
+		{
+		
+			mat4 boneTransform = BoneMatrices[int(vBoneId[0])] * vBoneWeight[0] +
+								BoneMatrices[int(vBoneId[1])] * vBoneWeight[1] +
+								BoneMatrices[int(vBoneId[2])] * vBoneWeight[2] +
+								BoneMatrices[int(vBoneId[3])] * vBoneWeight[3];
+			finalShadowPos = boneTransform * vec4(vPos.xyz, 1.0);				
+		}
+		else
+		{
+			finalShadowPos = vPos;
+		}
+		gl_Position = lightSpaceMatrix * matModel * vec4(finalShadowPos.xyz, 1.0);
 		return;
 	}
 

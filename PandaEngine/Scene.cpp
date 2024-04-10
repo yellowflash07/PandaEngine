@@ -57,7 +57,13 @@ void Scene::Update(float deltaTime)
 				continue;
 			}
 			TransformComponent* transform = go->GetComponent<TransformComponent>();
-			meshManager->DrawOnlyGeometry(go->GetComponent<cMesh>(), transform->GetTransform());	
+			meshManager->DrawObject(go->GetComponent<cMesh>(), transform->GetTransform());
+			AnimationSystem* anim = go->GetComponent<AnimationSystem>();
+			if (anim != nullptr)
+			{
+				mesh->useBone = true;
+				anim->UpdateSkeleton(mesh, deltaTime);
+			}
 		}
 
 	}
