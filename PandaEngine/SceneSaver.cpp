@@ -298,9 +298,10 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
 
 
     cLight* light = go->GetComponent<cLight>();
+    LightConfig lightConfig;
     if (light != nullptr)
     {
-        LightConfig lightConfig;
+       
         lightConfig.index = light->index;
         lightConfig.position = light->position;
         lightConfig.diffuse = light->diffuse;
@@ -308,11 +309,13 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
         lightConfig.atten = light->atten;
         lightConfig.direction = light->direction;
         lightConfig.param1 = light->param1;
-        lightConfig.param2 = light->param2;
-
-        gameObjectConfig.light = lightConfig;
+        lightConfig.param2 = light->param2;       
     }
-
+    else
+    {
+        lightConfig.index = -1;
+    }
+    gameObjectConfig.light = lightConfig;
     PhysXBody* physXBody = go->GetComponent<PhysXBody>();
     if (physXBody != nullptr)
     {
