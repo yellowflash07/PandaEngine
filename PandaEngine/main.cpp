@@ -8,6 +8,7 @@
 #include "PhysXBody.h"
 #include "Raycast.h"
 #include <glm/gtx/string_cast.hpp>
+#include "Debug.h"
 extern Camera* camera;
 int keyHit = 0;
 
@@ -53,7 +54,6 @@ int main(void)
     camera->SetPosition(glm::vec3(11.0f,37.0f, 401.0f));
 
     engine.LoadSave(); 
-
     float currTime = 0;
     float myTime = 0;
 
@@ -65,7 +65,6 @@ int main(void)
     GameObject* plane = scene->GetGameObjectByName("Plane");
     cMesh* mesh = plane->GetComponent<cMesh>();
 
-    GLint shadowID = scene->shadowMap->m_shadowMap;
     float blendWeight = 0;
 
     while (!glfwWindowShouldClose(engine.window))
@@ -73,12 +72,7 @@ int main(void)
 
         engine.BeginRender();
 
-        engine.Update(); 
-
-        ImGui::Begin("Debug");
-        ImGui::ImageButton((void*)(intptr_t)shadowID, ImVec2(500, 500));
-        ImGui::End();
-       // mesh->renderTextureID = shadowID;
+        engine.Update();   
 
         engine.EndRender();   
     }

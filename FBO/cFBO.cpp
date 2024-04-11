@@ -1,6 +1,6 @@
 #include "cFBO.h"
 
-
+#include "../PandaEngine/Debug.h"
 // Calls shutdown(), then init()
 bool cFBO::reset(int width, int height, std::string &error)
 {
@@ -28,28 +28,36 @@ bool cFBO::init( int width, int height, std::string &error )
 {
 	this->width = width;
 	this->height = height;
-
-//	glCreateFramebuffers(1, &( this->ID ) );	// GL 4.5		//g_FBO
+	//CHECK_GL_ERROR();
+	//glCreateFramebuffers(1, &( this->ID ) );	// GL 4.5		//g_FBO
+	//CHECK_GL_ERROR();
 	glGenFramebuffers( 1, &( this->ID ) );		// GL 3.0
 	glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+
+	//CHECK_GL_ERROR();
 
 //************************************************************
 	// Create the colour buffer (texture)
 	glGenTextures(1, &(this->colourTexture_0_ID ) );		//g_FBO_colourTexture
 	glBindTexture(GL_TEXTURE_2D, this->colourTexture_0_ID);
 
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8,		// 8 bits per colour
+	//CHECK_GL_ERROR();
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	//glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8,		// 8 bits per colour
 //	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F,		// 8 bits per colour
-				   this->width,				// g_FBO_SizeInPixes
-				   this->height);			// g_FBO_SizeInPixes
+		//		   this->width,				// g_FBO_SizeInPixes
+		//		   this->height);			// g_FBO_SizeInPixes
+
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 //***************************************************************
 
 	// Create the depth buffer (texture)
-	glGenTextures(1, &( this->depthTexture_ID ));			//g_FBO_depthTexture
-	glBindTexture(GL_TEXTURE_2D, this->depthTexture_ID);
+	//glGenTextures(1, &( this->depthTexture_ID ));			//g_FBO_depthTexture
+	//glBindTexture(GL_TEXTURE_2D, this->depthTexture_ID);
 
 	//glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT32F, ]
 
@@ -59,9 +67,9 @@ bool cFBO::init( int width, int height, std::string &error )
 	// These are:
 	// - GL_DEPTH32F_STENCIL8, which is 32 bit float depth + 8 bit stencil
 	// - GL_DEPTH24_STENCIL8,  which is 24 bit float depth + 8 bit stencil (more common?)
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8,	//GL_DEPTH32F_STENCIL8,
-				   this->width,		//g_FBO_SizeInPixes
-				   this->height);
+	//glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8,	//GL_DEPTH32F_STENCIL8,
+	//			   this->width,		//g_FBO_SizeInPixes
+	//			   this->height);
 //	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_STENCIL_TEXTURE_MODE, GL_DEPTH_COMPONENT );
 //	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_STENCIL_TEXTURE_MODE, GL_STENCIL_COMPONENT );
 //	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, this->width, this->height, 0, GL_EXT_packe
@@ -78,9 +86,9 @@ bool cFBO::init( int width, int height, std::string &error )
 //	glFramebufferTexture(GL_FRAMEBUFFER,
 //						 GL_DEPTH_ATTACHMENT,
 //						 this->depthTexture_ID, 0);
-	glFramebufferTexture(GL_FRAMEBUFFER,
-						 GL_DEPTH_STENCIL_ATTACHMENT,
-						 this->depthTexture_ID, 0);
+	//glFramebufferTexture(GL_FRAMEBUFFER,
+	//					 GL_DEPTH_STENCIL_ATTACHMENT,
+	//					 this->depthTexture_ID, 0);
 
 	static const GLenum draw_bufers[] = 
 	{ 
@@ -148,8 +156,7 @@ void cFBO::clearBuffers(bool bClearColour, bool bClearDepth)
 	//  same fashion as for glClearStencil. Only the *iv forms of these commands 
 	//  should be used to clear stencil buffers; be used to clear stencil buffers; 
 	//  other forms do not accept a buffer of GL_STENCIL.
-	
-	// 
+	 
 	glStencilMask(0xFF);
 
 	{	// Clear stencil

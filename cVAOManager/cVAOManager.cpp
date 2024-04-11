@@ -15,7 +15,7 @@
 
 #include <iostream>
 #include <chrono>
-
+#include "../PandaEngine/Debug.h"
 static cVAOManager* instance = nullptr;
 
 CRITICAL_SECTION g_cs;
@@ -211,14 +211,15 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, std::vector<sModelDrawInfo
 }
 
 void cVAOManager::LoadVertexToGPU(sModelDrawInfo* drawInfo, GLuint shaderProgramID)
-{
-  
+{  
     // Create a VAO (Vertex Array Object), which will 
 //	keep track of all the 'state' needed to draw 
 //	from this buffer...
 
 // Ask OpenGL for a new buffer ID...
     glGenVertexArrays(1, &(drawInfo->VAO_ID));
+   
+
     // "Bind" this buffer:
     // - aka "make this the 'current' VAO buffer
     glBindVertexArray(drawInfo->VAO_ID);
@@ -312,9 +313,6 @@ void cVAOManager::LoadVertexToGPU(sModelDrawInfo* drawInfo, GLuint shaderProgram
     glDisableVertexAttribArray(vTexureCoord_location);
     glDisableVertexAttribArray(5);
     glDisableVertexAttribArray(6);
-
-    // Store the draw information into the map
-
    
 }
 
@@ -406,7 +404,9 @@ void cVAOManager::LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo&
                         pNodeAnim->mPositionKeys[k].mValue.y,
                         pNodeAnim->mPositionKeys[k].mValue.z);
                     PositionKeyFrame keyFrame(pos, (float)pNodeAnim->mPositionKeys[k].mTime);
+                    EnterCriticalSection(&g_cs);
                     nodeAnim->PositionKeys.push_back(keyFrame);
+                    LeaveCriticalSection(&g_cs);
                 }
                 for (unsigned int k = 0; k < pNodeAnim->mNumRotationKeys; k++)
                 {
@@ -416,7 +416,10 @@ void cVAOManager::LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo&
                                                     (float)pNodeAnim->mRotationKeys[k].mValue.z);
 
                     RotationKeyFrame keyFrame(rotQuat, (float)pNodeAnim->mRotationKeys[k].mTime);
+                    
+                    EnterCriticalSection(&g_cs);
                     nodeAnim->RotationKeys.push_back(keyFrame);
+                    LeaveCriticalSection(&g_cs);
                 }
                 for (unsigned int k = 0; k < pNodeAnim->mNumScalingKeys; k++)
                 {
@@ -424,10 +427,13 @@ void cVAOManager::LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo&
                         pNodeAnim->mScalingKeys[k].mValue.y,
                         pNodeAnim->mScalingKeys[k].mValue.z);
                     ScaleKeyFrame keyFrame(scale, (float)pNodeAnim->mScalingKeys[k].mTime);
+                    EnterCriticalSection(&g_cs);
                     nodeAnim->ScalingKeys.push_back(keyFrame);
+                    LeaveCriticalSection(&g_cs);
                 }
-
+                EnterCriticalSection(&g_cs);
                 animInfo.NodeAnimations.insert(std::pair<std::string, NodeAnimation*>(nodeAnim->Name, nodeAnim));
+            	LeaveCriticalSection(&g_cs);
             }
             EnterCriticalSection(&g_cs);
             drawInfo.Animations.push_back(animInfo);

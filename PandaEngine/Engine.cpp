@@ -6,7 +6,7 @@
 #include <imgui_impl_opengl3.h>
 #include "GLFWCallbacks.h"
 #include "ImGuizmo.h"
-
+#include "Debug.h"
 
 #define IMGUI_DISABLE
 
@@ -45,9 +45,9 @@ bool Engine::Initialize()
     if (!glfwInit())
         return false;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-
+  //  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     window = glfwCreateWindow(1920, 1080, "Template Scene", NULL, NULL);
     if (!window)
     {
@@ -60,6 +60,11 @@ bool Engine::Initialize()
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
+
+    const GLubyte* version = glGetString(GL_VERSION);
+    std::cout << "OPENGL VERSION: " << version << std::endl;
+
+  
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
