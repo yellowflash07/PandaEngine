@@ -1,5 +1,5 @@
 // Fragment shader
-#version 420
+#version 420 core
 
 in vec4 colour;
 in vec4 vertexWorldPos;			// vertex in "world space"
@@ -78,38 +78,23 @@ float calculateShadowFactor(vec4 fragPosLightSpace)
 {
 	// Shadow value
 	float shadow = 0.0f;
-//	// Sets lightCoords to cull space
-//	vec3 lightCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-//	if(lightCoords.z <= 1.0f)
-//	{
-//		// Get from [-1, 1] range to [0, 1] range just like the shadow map
-//		lightCoords = (lightCoords + 1.0f) / 2.0f;
-//		float currentDepth = lightCoords.z * -1;
-//		// Prevents shadow acne
-//		float bias = max(0.0025f * (1.0f - dot(vec3(vertexWorldNormal), vec3(0,-1,0))), 0.0005f);
-//
-//		// Smoothens out the shadows
-//		int sampleRadius = 2;
-//		vec2 pixelSize = 1.0 / textureSize(shadowMap, 0);
-//		for(int y = -sampleRadius; y <= sampleRadius; y++)
-//		{
-//		    for(int x = -sampleRadius; x <= sampleRadius; x++)
-//		    {
-//		        float closestDepth = texture(shadowMap, lightCoords.xy + vec2(x, y) * pixelSize).r;
-//				if (currentDepth > closestDepth + bias)
-//					shadow += 1.0f;     
-//		    }    
-//		}
-//		// Get average shadow
-//		shadow /= pow((sampleRadius * 2 + 1), 2);
-//
-//	}
-
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5;
-	float closestDepth = texture(shadowMap, projCoords.xy).r + 0.0025f;
+	float bias = 0.005;
+	float closestDepth = texture(shadowMap, projCoords.xy).r;
 	float currentDepth = projCoords.z;
-	shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+	//shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+	//float shadow = 0.0;
+
+	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+	for(int x = -2; x <= 2; ++x) {
+		for(int y = -2; y <= 2; ++y) {
+			float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+			float distance = currentDepth - bias - pcfDepth;
+			shadow += distance > 0.0f ? 1.0 - abs(distance) : 0.0f;
+		}
+	}
+	shadow /= pow((-2 * 2 + 1), 2);
 	return shadow;
 }
 
