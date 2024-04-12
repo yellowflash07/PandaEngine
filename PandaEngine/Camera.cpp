@@ -82,6 +82,9 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
     glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
 
+    GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
+    glUniform4f(eyeLocation_UL, cameraEye.x, cameraEye.y, cameraEye.z, 1.0f);
+
     ProcessKeyboardInput(window, deltaTime);
 }
 

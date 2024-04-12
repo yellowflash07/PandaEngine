@@ -1,5 +1,5 @@
 // Vertex shader
-#version 420
+#version 410
 
 //uniform mat4 MVP;
 uniform mat4 matView;
@@ -23,6 +23,8 @@ out vec4 colour;
 out vec4 vertexWorldPos;	
 out vec4 vertexWorldNormal;
 out vec2 texCoord;
+out vec4 fragPosLightSpace;
+out vec3 worldPos;
 
 out vec4 boneId;
 out vec4 boneWeight;
@@ -30,7 +32,6 @@ out vec4 boneWeight;
 uniform bool isShadowMap;
 uniform mat4 lightSpaceMatrix;
 
-out vec4 fragPosLightSpace;
 
 void main()
 {
@@ -55,6 +56,8 @@ void main()
 		{
 			finalShadowPos = vPos;
 		}
+
+		worldPos = (matModel * vec4(finalShadowPos.xyz, 1.0)).xyz;
 		gl_Position = lightSpaceMatrix * matModel * vec4(finalShadowPos.xyz, 1.0);
 		return;
 	}
@@ -78,7 +81,7 @@ void main()
 
 	mat4 matMVP = matProjection * matView * matModel;
 	gl_Position = matMVP * vec4(finalPos.xyz, 1.0);	
-		
+	worldPos = (matModel * vec4(finalPos.xyz, 1.0)).xyz;
 	// Rotate the normal by the inverse transpose of the model matrix
 	// (so that it only is impacted by the rotation, not translation or scale)
 	vertexWorldNormal = matModel_IT * vec4(vNormal.xyz, 1.0f);

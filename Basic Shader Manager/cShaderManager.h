@@ -53,7 +53,7 @@ public:
 	bool useShaderProgram( std::string friendlyName );
 	bool createProgramFromFile( std::string friendlyName, 
 		                        cShader &vertexShad, 
-					            cShader &fragShader );
+					            cShader &fragShader, cShader& tessControl, cShader& tessEval);
 	void setBasePath( std::string basepath );
 	unsigned int getIDFromFriendlyName( std::string friendlyName );
 

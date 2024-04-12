@@ -166,7 +166,8 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, std::vector<sModelDrawInfo
    // std::cout << "Loading: " << fileName << std::endl;
     Assimp::Importer importer;
     std::string filePath = this->m_basePathWithoutSlash + "/" + fileName;
-    const aiScene* scene = importer.ReadFile(filePath, aiProcess_ValidateDataStructure | aiProcess_GenNormals | aiProcess_Triangulate);
+    const aiScene* scene = importer.ReadFile(filePath, aiProcess_ValidateDataStructure | aiProcess_GenNormals | aiProcess_Triangulate
+                                                       | aiProcess_PopulateArmatureData);
 
     std::string errorString = importer.GetErrorString();
     if (!errorString.empty())
@@ -370,6 +371,15 @@ void cVAOManager::AssimpToGLM(const aiMatrix4x4& a, glm::mat4& g)
 Node* cVAOManager::GenerateBoneHierarchy(const aiNode* node)
 {
     Node* newNode = new Node(node->mName.C_Str());
+    aiNode* parentNode = node->mParent;
+
+    if (parentNode)
+    {
+		Node* parent = new Node(parentNode->mName.C_Str());
+        AssimpToGLM(parentNode->mTransformation, parent->Transformation);
+		newNode->Parent = parent;
+	}
+
     AssimpToGLM(node->mTransformation, newNode->Transformation);   
     for (int i = 0; i < node->mNumChildren; i++)
     {
@@ -482,6 +492,7 @@ void cVAOManager::LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo&
         aiNode* root = scene->mRootNode;
         drawInfo.RootNode = GenerateBoneHierarchy(root);
         drawInfo.GlobalInverseTransformation = glm::inverse(drawInfo.RootNode->Transformation);
+
         unsigned int numBones = mesh->mNumBones;
         for (unsigned int boneIdx = 0; boneIdx < numBones; ++boneIdx)
         {

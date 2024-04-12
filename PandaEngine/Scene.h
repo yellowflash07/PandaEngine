@@ -43,7 +43,7 @@ public:
 	void Play();
 
 	void Stop();
-
+	GameObject* CreateChildObject(GameObject* go, std::string childName);
 
 	ShadowMap* shadowMap;
 private:
@@ -62,7 +62,7 @@ private:
 
 	void DrawTreeNode(GameObject* go);
 
-	void CreateChildObject(GameObject* go, std::string childName);
+
 
 	void DrawContextMenu(GameObject* go);
 

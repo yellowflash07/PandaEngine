@@ -47,6 +47,7 @@ struct Node
 	std::string Name;
 	glm::mat4 Transformation;
 	std::vector<Node*> Children;
+	Node* Parent;
 };
 
 struct BoneInfo

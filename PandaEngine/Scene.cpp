@@ -177,14 +177,13 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 	cMesh* mesh = go->GetComponent<cMesh>();
 	if (mesh != nullptr)
 	{
-		meshManager->DrawObject(mesh, transform->GetTransform());
+		meshManager->DrawObject(mesh, matModel);
 		AnimationSystem* anim = go->GetComponent<AnimationSystem>();
 		if (anim != nullptr)
 		{
 			mesh->useBone = true;
 			anim->UpdateSkeleton(mesh, deltaTime);
 		}
-
 	}
 
 	cLight* light = go->GetComponent<cLight>();
@@ -217,9 +216,17 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		controller->Update(deltaTime);
 	}
 
+	glm::mat4 matRemoveScaling = glm::scale(glm::mat4(1.0f),
+		glm::vec3(
+			1.0f / transform->drawScale.x,
+			1.0f / transform->drawScale.y,
+			1.0f / transform->drawScale.z));
+
+	matModel = matModel * matRemoveScaling;
+
 	for (GameObject* child : go->m_Children)
 	{
-		UpdateGameObject(child, transform->GetTransform(), deltaTime);
+		UpdateGameObject(child, matModel, deltaTime);
 	}
 }
 
@@ -238,13 +245,14 @@ void Scene::DrawTreeNode(GameObject* go)
 }
 
 
-void Scene::CreateChildObject(GameObject* go, std::string childName)
+GameObject* Scene::CreateChildObject(GameObject* go, std::string childName)
 {
 	GameObject* pGameObject = new GameObject(childName);
 	pGameObject->entity = m_Registry.create();
 	pGameObject->m_Registry = &m_Registry;
 	pGameObject->AddComponent<TransformComponent>();
 	go->m_Children.push_back(pGameObject);
+	return pGameObject;
 }
 
 void Scene::DrawContextMenu(GameObject* go)
@@ -261,10 +269,7 @@ void Scene::DrawContextMenu(GameObject* go)
 			{
 				go->AddComponent<cLight>();
 			}
-			if (ImGui::MenuItem("Animation System"))
-			{
-				go->AddComponent<AnimationSystem>();
-			}
+
 			if (ImGui::MenuItem("Child Object"))
 			{
 				std::string name = "Child" + go->m_Name + std::to_string(go->m_Children.size());
@@ -278,6 +283,17 @@ void Scene::DrawContextMenu(GameObject* go)
 			{
 				go->AddComponent<CharacterController>(go->GetComponent<TransformComponent>());
 			}
+
+			cMesh* mesh = go->GetComponent<cMesh>();
+			if (mesh != nullptr)
+			{
+				if (ImGui::MenuItem("Animation System"))
+				{
+					mesh->useBone = true;
+					go->AddComponent<AnimationSystem>();
+				}
+			}
+
 			if (ImGui::MenuItem("Remove Object"))
 			{
 				//go->Destroy();

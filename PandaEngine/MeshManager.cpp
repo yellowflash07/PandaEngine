@@ -264,10 +264,14 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModel)
             if (!pCurrentMesh->hideParent)
             {
                 glBindVertexArray(drawInfo.VAO_ID); 		//  enable VAO (and everything else)
-                glDrawElements(GL_TRIANGLES,
-                    drawInfo.numberOfIndices,
-                    GL_UNSIGNED_INT,
-                    0);
+                glDrawElements(GL_PATCHES,
+                         drawInfo.numberOfIndices,
+                         GL_UNSIGNED_INT,
+                         0);
+             // glDrawElements(GL_TRIANGLES,
+             //     drawInfo.numberOfIndices,
+             //     GL_UNSIGNED_INT,
+             //     0);
                 glBindVertexArray(0);
                 // return;
             }
@@ -467,7 +471,7 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
             if (!pCurrentMesh->hideParent)
             {
                 glBindVertexArray(drawInfo.VAO_ID); 		//  enable VAO (and everything else)
-                glDrawElements(GL_TRIANGLES,
+                glDrawElements(GL_PATCHES,
                     drawInfo.numberOfIndices,
                     GL_UNSIGNED_INT,
                     0);

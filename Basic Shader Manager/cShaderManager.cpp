@@ -276,7 +276,8 @@ bool cShaderManager::m_compileShaderFromSource( cShaderManager::cShader &shader,
 bool cShaderManager::createProgramFromFile( 
 	        std::string friendlyName,
 			cShader &vertexShad, 
-			cShader &fragShader )
+			cShader &fragShader,
+	cShader& tessControl, cShader& tessEval)
 {
 	std::string errorText = "";
 
@@ -300,14 +301,40 @@ bool cShaderManager::createProgramFromFile(
 
 
 
-    fragShader.ID = glCreateShader(GL_FRAGMENT_SHADER);
-	fragShader.shaderType = cShader::FRAGMENT_SHADER;
-	if ( ! this->m_loadSourceFromFile( fragShader ) )
+	tessControl.ID = glCreateShader(GL_TESS_CONTROL_SHADER);
+	if (!this->m_loadSourceFromFile(tessControl))
 	{
 		return false;
 	}//if ( ! this->m_loadSourceFromFile(...
 
-	if ( ! this->m_compileShaderFromSource( fragShader, errorText ) )
+	if (!this->m_compileShaderFromSource(tessControl, errorText))
+	{
+		this->m_lastError = errorText;
+		return false;
+	}//if ( this->m_compileShaderFromSource(...
+
+	tessEval.ID = glCreateShader(GL_TESS_EVALUATION_SHADER);
+	if (!this->m_loadSourceFromFile(tessEval))
+	{
+		return false;
+	}//if ( ! this->m_loadSourceFromFile(...
+
+	if (!this->m_compileShaderFromSource(tessEval, errorText))
+	{
+		this->m_lastError = errorText;
+		return false;
+	}//if ( this->m_compileShaderFromSource(...
+
+
+
+	fragShader.ID = glCreateShader(GL_FRAGMENT_SHADER);
+	fragShader.shaderType = cShader::FRAGMENT_SHADER;
+	if (!this->m_loadSourceFromFile(fragShader))
+	{
+		return false;
+	}//if ( ! this->m_loadSourceFromFile(...
+
+	if (!this->m_compileShaderFromSource(fragShader, errorText))
 	{
 		this->m_lastError = errorText;
 		return false;
@@ -317,8 +344,11 @@ bool cShaderManager::createProgramFromFile(
 	cShaderProgram curProgram;
     curProgram.ID = glCreateProgram();
 
+	glAttachShader(curProgram.ID, tessControl.ID);
+	glAttachShader(curProgram.ID, tessEval.ID);
     glAttachShader(curProgram.ID, vertexShad.ID);
     glAttachShader(curProgram.ID, fragShader.ID);
+
     glLinkProgram(curProgram.ID);
 
 	// Was there a link error? 

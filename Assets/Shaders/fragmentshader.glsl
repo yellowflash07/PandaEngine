@@ -1,5 +1,5 @@
 // Fragment shader
-#version 420 core
+#version 410
 
 in vec4 colour;
 in vec4 vertexWorldPos;			// vertex in "world space"
@@ -98,6 +98,8 @@ float calculateShadowFactor(vec4 fragPosLightSpace)
 	return shadow;
 }
 
+
+
 void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
@@ -114,6 +116,11 @@ void main()
 //		return;
 //	}
 
+  // float distanceToWorld = distance(eyeLocation.xyz, vertexWorldPos.xyz);
+	// distanceToWorld = distanceToWorld / 1000.0f;
+  // outputColour.rgb = vec3(distanceToWorld,0,0);
+	// outputColour.a = 1.0f;
+	//return;
 	if(isShadowMap)
 	{
 		float depthValue = texture(shadowMap, texCoord).r;

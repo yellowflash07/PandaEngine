@@ -46,7 +46,7 @@ bool Engine::Initialize()
         return false;
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
   //  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     window = glfwCreateWindow(1920, 1080, "Template Scene", NULL, NULL);
     if (!window)
@@ -61,8 +61,7 @@ bool Engine::Initialize()
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
 
-    const GLubyte* version = glGetString(GL_VERSION);
-    std::cout << "OPENGL VERSION: " << version << std::endl;
+  
 
   
 
@@ -78,9 +77,6 @@ bool Engine::Initialize()
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
     ImGui_ImplOpenGL3_Init();
-
-    
-
     audioManager->Initialize();
 
     SetShaderPath("../Assets/Shaders");
@@ -101,6 +97,9 @@ bool Engine::Initialize()
     assetLib.shaderProgramID = shaderProgramID;
     assetLib.Init();
 
+    glPatchParameteri(GL_PATCH_VERTICES, 3);
+    const GLubyte* version = glGetString(GL_VERSION);
+    std::cout << "OPENGL VERSION: " << version << std::endl;
     return true;
 }
 
@@ -283,14 +282,24 @@ PhysicsBody* Engine::AddPhysicsBody(std::string friendlyMeshName)
 bool Engine::LoadDefaultShaders()
 {
     cShaderManager::cShader vertexShader;
-    vertexShader.fileName = "vertexShader.glsl";
+   // vertexShader.fileName = "vsPhong.glsl";
+    vertexShader.fileName = "vertexshader.glsl";
+
+    cShaderManager::cShader tessControlShader;
+   // tessControlShader.fileName = "tcsTriangle.glsl";
+    tessControlShader.fileName = "tesscontrolshader.glsl";
+
+    cShaderManager::cShader tessEvalShader;
+   // tessEvalShader.fileName = "tesTriangle.glsl";
+    tessEvalShader.fileName = "tessevalshader.glsl";
 
     cShaderManager::cShader fragmentShader;
-    fragmentShader.fileName = "fragmentShader.glsl";
+    // fragmentShader.fileName = "fsPhong.glsl";
+    fragmentShader.fileName = "fragmentshader.glsl";
 
-    if (!cShaderManager::getInstance()->createProgramFromFile("shader01", vertexShader, fragmentShader))
+    if (!cShaderManager::getInstance()->createProgramFromFile("shader01", vertexShader, fragmentShader, tessControlShader, tessEvalShader))
     {
-        std::cout << "Error: Couldn't compile or link:" << std::endl;
+      //  std::cout << "Error: Couldn't compile or link:" << std::endl;
         std::cout << cShaderManager::getInstance()->getLastError();
         return false;
     }

@@ -81,8 +81,8 @@
             "light": {
                 "index": 0,
                 "position": [
-                    0.0,
-                    20.0,
+                    -31.920164108276367,
+                    16.29895782470703,
                     0.0
                 ],
                 "diffuse": [
@@ -126,19 +126,19 @@
                 ],
                 "rotation": [
                     0.0,
-                    0.0,
+                    -0.0,
                     0.0
                 ],
                 "scale": [
-                    1.0,
-                    1.0,
-                    1.0
+                    20.927997589111328,
+                    20.927997589111328,
+                    20.927997589111328
                 ]
             },
             "mesh": {
                 "fileName": "bathtub_xyz_n_rgba.ply",
                 "friendlyName": "bathtub_xyz_n_rgba.ply",
-                "bIsWireframe": false,
+                "bIsWireframe": true,
                 "bDoNotLight": false,
                 "bIsVisible": true,
                 "bUseDebugColours": false,
@@ -171,31 +171,36 @@
                     1.0
                 ],
                 "maskTexture": ""
+            },
+            "physXObj": {
+                "type": 1,
+                "isDynamic": true,
+                "isTrigger": false
             },
             "children": []
         },
         {
-            "name": "Plane",
+            "name": "BOX",
             "transform": {
                 "position": [
                     0.0,
-                    -18.084314346313477,
-                    77.96370697021484
+                    -13.412296295166016,
+                    0.0
                 ],
                 "rotation": [
-                    -1.5699999332427979,
                     0.0,
+                    -0.0,
                     0.0
                 ],
                 "scale": [
-                    4.25,
-                    4.25,
-                    4.25
+                    309.465576171875,
+                    9.05496597290039,
+                    309.4686584472656
                 ]
             },
             "mesh": {
-                "fileName": "Grid_10x10_vertical_in_y.ply",
-                "friendlyName": "Grid_10x10_vertical_in_y.ply",
+                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -229,6 +234,11 @@
                     1.0
                 ],
                 "maskTexture": ""
+            },
+            "physXObj": {
+                "type": 1,
+                "isDynamic": false,
+                "isTrigger": false
             },
             "children": []
         }
