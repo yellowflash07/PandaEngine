@@ -19,8 +19,9 @@ public:
 	float height;
 	float radius;
 	glm::vec3 position;
-private:
 	PxCapsuleController* controller;
+
+private:
 	PxControllerManager* manager;
 	PxMaterial* material;
 	PxPhysics* gPhysics = NULL;

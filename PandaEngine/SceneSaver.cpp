@@ -338,6 +338,24 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
 		gameObjectConfig.physXObj = physXConfig;
 	}
 
+    CharacterController* characterController = go->GetComponent<CharacterController>();
+    if (characterController != nullptr)
+    {
+        CharacterControllerConfig characterControllerConfig;
+        characterControllerConfig.height = characterController->height;
+        characterControllerConfig.radius = characterController->radius;
+        characterControllerConfig.position = characterController->position;
+        gameObjectConfig.characterController = characterControllerConfig;
+    }
+    else
+    {
+		CharacterControllerConfig characterControllerConfig;
+		characterControllerConfig.height = 0;
+		characterControllerConfig.radius = 0;
+		characterControllerConfig.position = glm::vec3(0);
+		gameObjectConfig.characterController = characterControllerConfig;
+    }
+
     gameObjectConfig.children.clear();
     for (GameObject* child : go->m_Children)
     {
@@ -512,6 +530,21 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
         gameObjectValue.AddMember("physXObj", physXObj, jsonDocument.GetAllocator());
 	}
 
+    if (go.characterController.height > 0)
+    {
+        rapidjson::Value characterController(rapidjson::kObjectType);
+        characterController.AddMember("height", go.characterController.height, jsonDocument.GetAllocator());
+		characterController.AddMember("radius", go.characterController.radius, jsonDocument.GetAllocator());
+
+		rapidjson::Value position(rapidjson::kArrayType);
+		position.PushBack(go.characterController.position.x, jsonDocument.GetAllocator());
+		position.PushBack(go.characterController.position.y, jsonDocument.GetAllocator());
+		position.PushBack(go.characterController.position.z, jsonDocument.GetAllocator());
+		characterController.AddMember("position", position, jsonDocument.GetAllocator());
+
+		gameObjectValue.AddMember("characterController", characterController, jsonDocument.GetAllocator());
+    }
+
     rapidjson::Value children(rapidjson::kArrayType);
     for (size_t i = 0; i < go.children.size(); i++)
     {
@@ -651,9 +684,10 @@ GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scen
         physXConfig.isTrigger = physXObj["isTrigger"].GetBool();
 
 		PhysXBody* p = &go->AddComponent<PhysXBody>(t);
+        p->mesh = go->GetComponent<cMesh>();
 		p->SetBody(physXConfig.isDynamic);
         p->SetShape(physXConfig.type);
-
+        
         if (physXObj.HasMember("halfExtents"))
         {
 			const rapidjson::Value& halfExtents = physXObj["halfExtents"];
@@ -670,6 +704,24 @@ GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scen
         p->isTrigger = physXConfig.isTrigger;
         p->SetTrigger();
 	}
+
+    if (gameObject.HasMember("characterController"))
+    {
+		const rapidjson::Value& characterController = gameObject["characterController"];
+		CharacterControllerConfig characterControllerConfig;
+		characterControllerConfig.height = characterController["height"].GetFloat();
+		characterControllerConfig.radius = characterController["radius"].GetFloat();
+
+		const rapidjson::Value& position = characterController["position"];
+		characterControllerConfig.position = glm::vec3(position[0].GetFloat(), position[1].GetFloat(), position[2].GetFloat());
+
+		CharacterController* c = &go->AddComponent<CharacterController>(t);
+		c->height = characterControllerConfig.height;
+		c->radius = characterControllerConfig.radius;
+		c->position = characterControllerConfig.position;
+        c->controller->setHeight(c->height);
+        c->controller->setRadius(c->radius);
+    }
 
    
     if (gameObject.HasMember("children"))

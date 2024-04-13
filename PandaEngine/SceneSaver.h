@@ -55,6 +55,13 @@ struct AnimationConfig
 
 };
 
+struct CharacterControllerConfig
+{
+	float height;
+	float radius;
+	glm::vec3 position;
+};
+
 struct GameObjectConfig
 {
 	std::string name;
@@ -63,6 +70,7 @@ struct GameObjectConfig
  	LightConfig light;
 	AnimationConfig animation;
 	PhysXConfig physXObj;
+	CharacterControllerConfig characterController;
 	std::vector<GameObjectConfig> children;
 };
 
