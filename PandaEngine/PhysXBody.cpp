@@ -48,7 +48,7 @@ void PhysXBody::SetShape(ColliderType type)
 	}
 	else if (type == MESH)
 	{
-		return;
+		CreateMeshCollider(mesh, false, false, false, 1);
 	}
 	shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
 	body->attachShape(*shape);
@@ -103,7 +103,6 @@ void PhysXBody::Render()
 {
 	ImGui::BeginChild("Physics Component#" , ImVec2(0, 200));
 	ImGui::SeparatorText("Physics Component");
-	ImGui::SetNextItemWidth(100);
 	int type = this->type;
 	if(ImGui::Combo("Collider", &type, "None\0Box Collider\0Sphere Collier\0Mesh\0\0"))
 	{
@@ -114,7 +113,7 @@ void PhysXBody::Render()
 
 	if (type == BOX)
 	{
-		ImGui::SetNextItemWidth(100);
+		
 		if (ImGui::DragFloat3("Half Extents", &halfExtents[0], 0.1f))
 		{
 			UpdateBoxDimensions(halfExtents);
@@ -123,7 +122,6 @@ void PhysXBody::Render()
 	}
 	else if (type == SPHERE)
 	{
-		ImGui::SetNextItemWidth(100);
 		if (ImGui::DragFloat("Radius", &radius, 0.1f))
 		{
 			UpdateSphereDimensions(radius);
@@ -131,7 +129,6 @@ void PhysXBody::Render()
 		}
 	}
 
-	ImGui::SetNextItemWidth(100);
 	int dynamic = isDynamic;
 	if (ImGui::Combo("Body Type", &dynamic, "Static\0Dynamic\0\0"))
 	{

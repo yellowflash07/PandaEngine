@@ -238,7 +238,7 @@ void PhysXManager::Init(bool connectToPvd)
 
 void PhysXManager::Update(float deltaTime)
 {
-    gScene->simulate(1.0f / 60.0f);
+    gScene->simulate(deltaTime);
     gScene->fetchResults(true);
 }
 
@@ -246,7 +246,7 @@ void PhysXManager::DebugUpdate(float deltaTime)
 {
 	if (updateDebug)
 	{
-		gScene->simulate(1.0f / 60.0f);
+		gScene->simulate(1.0f / 3000.0f);
 		gScene->fetchResults(true);
 		updateDebug = false;
 	}

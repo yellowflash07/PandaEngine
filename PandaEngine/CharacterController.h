@@ -16,14 +16,19 @@ public:
 
 	void Render() override;
 
+	float height;
+	float radius;
+	glm::vec3 position;
 private:
-	PxController* controller;
+	PxCapsuleController* controller;
 	PxControllerManager* manager;
 	PxMaterial* material;
 	PxPhysics* gPhysics = NULL;
 	PxScene* gScene = NULL;
 	PxMaterial* gMaterial = NULL;
 	TransformComponent* transform;
-	PxCapsuleControllerDesc desc;
+	PxCapsuleControllerDesc* desc;
+	glm::vec3 direction;
+
 };
 

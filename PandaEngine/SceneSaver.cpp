@@ -322,6 +322,17 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
     {
 		PhysXConfig physXConfig;
 		physXConfig.type = physXBody->type;
+
+        switch (physXConfig.type)
+        {
+            case BOX:
+                physXConfig.halfExtents = physXBody->halfExtents;
+			    break;
+			case SPHERE:
+				physXConfig.radius = physXBody->radius;
+                break;
+        }
+
 		physXConfig.isDynamic = physXBody->isDynamic;
         physXConfig.isTrigger = physXBody->isTrigger;
 		gameObjectConfig.physXObj = physXConfig;
@@ -477,8 +488,27 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
     {
 		rapidjson::Value physXObj(rapidjson::kObjectType);
 		physXObj.AddMember("type", go.physXObj.type, jsonDocument.GetAllocator());
+
+        rapidjson::Value halfExtents(rapidjson::kArrayType);
+
+        switch (go.physXObj.type)
+        {
+            case BOX:
+                halfExtents.PushBack(go.physXObj.halfExtents.x, jsonDocument.GetAllocator());
+				halfExtents.PushBack(go.physXObj.halfExtents.y, jsonDocument.GetAllocator());
+                halfExtents.PushBack(go.physXObj.halfExtents.z, jsonDocument.GetAllocator());
+                physXObj.AddMember("halfExtents", halfExtents, jsonDocument.GetAllocator());
+                break;
+            case SPHERE:                
+                physXObj.AddMember("radius", go.physXObj.radius, jsonDocument.GetAllocator());
+                break;
+        }
+
 		physXObj.AddMember("isDynamic", go.physXObj.isDynamic, jsonDocument.GetAllocator());
 		physXObj.AddMember("isTrigger", go.physXObj.isTrigger, jsonDocument.GetAllocator());
+
+
+
         gameObjectValue.AddMember("physXObj", physXObj, jsonDocument.GetAllocator());
 	}
 
@@ -615,12 +645,28 @@ GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scen
 		const rapidjson::Value& physXObj = gameObject["physXObj"];
 		PhysXConfig physXConfig;
 		physXConfig.type = (ColliderType)physXObj["type"].GetInt();
+
+
 		physXConfig.isDynamic = physXObj["isDynamic"].GetBool();
         physXConfig.isTrigger = physXObj["isTrigger"].GetBool();
 
 		PhysXBody* p = &go->AddComponent<PhysXBody>(t);
 		p->SetBody(physXConfig.isDynamic);
         p->SetShape(physXConfig.type);
+
+        if (physXObj.HasMember("halfExtents"))
+        {
+			const rapidjson::Value& halfExtents = physXObj["halfExtents"];
+			glm::vec3 halfExtentsVec = glm::vec3(halfExtents[0].GetFloat(), halfExtents[1].GetFloat(), halfExtents[2].GetFloat());
+			p->UpdateBoxDimensions(halfExtentsVec);
+            p->halfExtents = halfExtentsVec;
+        }
+		else if (physXObj.HasMember("radius"))
+		{
+			p->UpdateSphereDimensions(physXObj["radius"].GetFloat());
+			p->radius = physXObj["radius"].GetFloat();
+		}
+
         p->isTrigger = physXConfig.isTrigger;
         p->SetTrigger();
 	}

@@ -46,6 +46,8 @@ struct PhysXConfig
 	ColliderType type = NONE;
 	bool isDynamic;
 	bool isTrigger;
+	glm::vec3 halfExtents;
+	float radius;
 };
 
 struct AnimationConfig

@@ -41,6 +41,9 @@ public:
 	PxRigidActor* body;
 	void UpdateBoxDimensions(glm::vec3 halfExtents);
 	void UpdateSphereDimensions(float radius);
+	glm::vec3 halfExtents;
+	float radius;
+	cMesh* mesh;
 private:
 	PxMaterial* material;
 	PxPhysics* gPhysics = NULL;
@@ -50,11 +53,6 @@ private:
 	bool setMesh = false;
 	void SetupCommonCookingParams(PxCookingParams& params, bool skipMeshCleanup, bool skipEdgeData);
 	bool showDebugShape = false;
-	GLuint VBO;
-	cMesh* debugCube;
-	cMesh* debugSphere;
 
-	glm::vec3 halfExtents;
-	float radius;
 };
 

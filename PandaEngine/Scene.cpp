@@ -206,21 +206,21 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		light->UpdateLight(transform);
 	}
 
-	PhysXBody* physXBody = go->GetComponent<PhysXBody>();
-	if (physXBody != nullptr)
+	if (play)
 	{
-		physXBody->Update(deltaTime);
-		if (physXBody->type == MESH)
+		PhysXBody* physXBody = go->GetComponent<PhysXBody>();
+		if (physXBody != nullptr)
 		{
-			physXBody->CreateMeshCollider(mesh, false, false, false, 1);
+			physXBody->Update(deltaTime);
+		}
+
+		CharacterController* controller = go->GetComponent<CharacterController>();
+		if (controller != nullptr)
+		{
+			controller->Update(deltaTime);
 		}
 	}
-
-	CharacterController* controller = go->GetComponent<CharacterController>();
-	if (controller != nullptr)
-	{
-		controller->Update(deltaTime);
-	}
+	
 
 	glm::mat4 matRemoveScaling = glm::scale(glm::mat4(1.0f),
 		glm::vec3(
@@ -281,14 +281,7 @@ void Scene::DrawContextMenu(GameObject* go)
 				std::string name = "Child" + go->m_Name + std::to_string(go->m_Children.size());
 				CreateChildObject(go, name);
 			}
-			if (ImGui::MenuItem("Physics Body"))
-			{
-				go->AddComponent<PhysXBody>(go->GetComponent<TransformComponent>());
-			}
-			if (ImGui::MenuItem("Character Controller"))
-			{
-				go->AddComponent<CharacterController>(go->GetComponent<TransformComponent>());
-			}
+
 
 			cMesh* mesh = go->GetComponent<cMesh>();
 			if (mesh != nullptr)
@@ -297,6 +290,15 @@ void Scene::DrawContextMenu(GameObject* go)
 				{
 					mesh->useBone = true;
 					go->AddComponent<AnimationSystem>();
+				}
+				if (ImGui::MenuItem("Physics Body"))
+				{
+					PhysXBody* pxBody = &go->AddComponent<PhysXBody>(go->GetComponent<TransformComponent>());
+					pxBody->mesh = mesh;
+				}
+				if (ImGui::MenuItem("Character Controller"))
+				{
+					go->AddComponent<CharacterController>(go->GetComponent<TransformComponent>());
 				}
 			}
 

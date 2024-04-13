@@ -21,6 +21,7 @@ RenderTexture::~RenderTexture()
 
 void RenderTexture::Render()
 {
+	glUseProgram(shaderProgramID);
 	isRendering = true;
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo->ID);
 
