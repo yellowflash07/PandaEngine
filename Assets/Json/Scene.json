@@ -1,20 +1,241 @@
 {
-    "Scene": {
-      "SceneName" : "Scene1", 
-      "Meshes": [
+    "sceneName": "Test.pda",
+    "gameObjects": [
         {
-          "MeshName" : "Mesh"
-        }
-      ],
-      "Lights": [
+            "name": "SkyBox",
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    5000.0,
+                    5000.0,
+                    5000.0
+                ]
+            },
+            "mesh": {
+                "fileName": "Sphere_1_unit_Radius_UV.ply",
+                "friendlyName": "SkyBox",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": true,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": ""
+            },
+            "children": []
+        },
         {
-          "LightIndex" : 0
-        }
-      ],
-      "PhysicsBodies" : [
+            "name": "Directional Light",
+            "transform": {
+                "position": [
+                    97.64006042480469,
+                    321.01153564453125,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "light": {
+                "index": 0,
+                "position": [
+                    97.64006042480469,
+                    321.01153564453125,
+                    0.0
+                ],
+                "diffuse": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "specular": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "atten": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "direction": [
+                    0.0,
+                    -0.5,
+                    0.0
+                ],
+                "param1": [
+                    2.0,
+                    0.0,
+                    0.0
+                ],
+                "param2": [
+                    1.0
+                ]
+            },
+            "children": []
+        },
         {
-            "MeshName"  : "Mesh"
+            "name": "BOX",
+            "transform": {
+                "position": [
+                    0.0,
+                    -13.412296295166016,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    309.465576171875,
+                    9.05496597290039,
+                    309.4686584472656
+                ]
+            },
+            "mesh": {
+                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": ""
+            },
+            "physXObj": {
+                "type": 1,
+                "isDynamic": false,
+                "isTrigger": false
+            },
+            "children": []
+        },
+        {
+            "name": "GameObject",
+            "transform": {
+                "position": [
+                    9.416698455810547,
+                    33.076690673828125,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    17.27179718017578,
+                    17.27179718017578,
+                    17.27179718017578
+                ]
+            },
+            "mesh": {
+                "fileName": "Isoshphere.ply",
+                "friendlyName": "Isoshphere.ply",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": ""
+            },
+            "children": []
         }
-      ]
-    }
-  }
+    ]
+}

@@ -228,14 +228,15 @@ void SceneSaver::SaveScene(Scene* scene)
 
     document.AddMember("gameObjects", gameObjects, document.GetAllocator());
 
-    jsonReader->WriteJsonFile("scene.json", document);
+    jsonReader->WriteJsonFile("../Assets/Json/scene.json", document);
 
 }
 
 Scene* SceneSaver::LoadScene(std::string sceneFile)
 {
     rapidjson::Document document;
-    if (!jsonReader->LoadJsonFile(sceneFile.c_str(), document))
+    std::string filePath = "../Assets/Json/" + sceneFile;
+    if (!jsonReader->LoadJsonFile(filePath.c_str(), document))
     {
         std::cerr << "Failed to load scene file\n";
 		return nullptr;
