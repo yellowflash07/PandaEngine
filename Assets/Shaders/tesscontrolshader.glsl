@@ -19,6 +19,8 @@ out vec4 TfragPosLightSpace[];
 uniform float tessLevelOuter;
 uniform float tessLevelInner;
 
+uniform bool isLOD;
+
 float GetTessLevel(float Distance0, float Distance1) {
   float AvgDistance = (Distance0 + Distance1) / 2.0;
 
@@ -38,15 +40,35 @@ void main()
 {
     if (gl_InvocationID == 0) 
     {
-        float EyeToVertexDistance0 = distance(vec3(eyeLocation), esInWorldPos[0]);
-        float EyeToVertexDistance1 = distance(vec3(eyeLocation), esInWorldPos[1]);
-        float EyeToVertexDistance2 = distance(vec3(eyeLocation), esInWorldPos[2]);
+            float EyeToVertexDistance0 = distance(vec3(eyeLocation), esInWorldPos[0]);
+            float EyeToVertexDistance1 = distance(vec3(eyeLocation), esInWorldPos[1]);
+            float EyeToVertexDistance2 = distance(vec3(eyeLocation), esInWorldPos[2]);
 
-        // Calculate the tessellation levels
-        gl_TessLevelOuter[0] =   GetTessLevel(EyeToVertexDistance1, EyeToVertexDistance2);
-        gl_TessLevelOuter[1] =  GetTessLevel(EyeToVertexDistance2, EyeToVertexDistance0);
-        gl_TessLevelOuter[2] = GetTessLevel(EyeToVertexDistance0, EyeToVertexDistance1);
-        gl_TessLevelInner[0] = gl_TessLevelOuter[2];
+            // Calculate the tessellation levels
+            gl_TessLevelOuter[0] =   GetTessLevel(EyeToVertexDistance1, EyeToVertexDistance2);
+            gl_TessLevelOuter[1] =  GetTessLevel(EyeToVertexDistance2, EyeToVertexDistance0);
+            gl_TessLevelOuter[2] = GetTessLevel(EyeToVertexDistance0, EyeToVertexDistance1);
+            gl_TessLevelInner[0] = gl_TessLevelOuter[2];
+//        if(isLOD)
+//        {
+//            float EyeToVertexDistance0 = distance(vec3(eyeLocation), esInWorldPos[0]);
+//            float EyeToVertexDistance1 = distance(vec3(eyeLocation), esInWorldPos[1]);
+//            float EyeToVertexDistance2 = distance(vec3(eyeLocation), esInWorldPos[2]);
+//
+//            // Calculate the tessellation levels
+//            gl_TessLevelOuter[0] =   GetTessLevel(EyeToVertexDistance1, EyeToVertexDistance2);
+//            gl_TessLevelOuter[1] =  GetTessLevel(EyeToVertexDistance2, EyeToVertexDistance0);
+//            gl_TessLevelOuter[2] = GetTessLevel(EyeToVertexDistance0, EyeToVertexDistance1);
+//            gl_TessLevelInner[0] = gl_TessLevelOuter[2];
+//        }
+//        else
+//		{
+//			gl_TessLevelOuter[0] = 1.0f;
+//			gl_TessLevelOuter[1] = 1.0f;
+//			gl_TessLevelOuter[2] = 1.0f;
+//			gl_TessLevelInner[0] = 1.0f;
+//		}
+        
     }
 
     Tcolour[gl_InvocationID] = colour[gl_InvocationID];

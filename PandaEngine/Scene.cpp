@@ -57,7 +57,7 @@ void Scene::Update(float deltaTime)
 				continue;
 			}
 			TransformComponent* transform = go->GetComponent<TransformComponent>();
-			meshManager->DrawObject(go->GetComponent<cMesh>(), transform->GetTransform());
+			meshManager->DrawOnlyGeometry(go->GetComponent<cMesh>(), transform->GetTransform());
 			AnimationSystem* anim = go->GetComponent<AnimationSystem>();
 			if (anim != nullptr)
 			{
@@ -84,6 +84,11 @@ void Scene::Update(float deltaTime)
 	if (play)
 	{
 		PhysXManager::getInstance()->Update(deltaTime);
+		PhysXManager::getInstance()->DrawDebug();
+	}
+	else
+	{
+	
 	}
 	
 
@@ -106,7 +111,7 @@ void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightMan
 	this->shaderManager = shaderManager;
 
 	this->shadowMap = new ShadowMap();
-	this->shadowMap->Initialize(2048 * 5, 2048 * 5);
+	this->shadowMap->Initialize(2048 , 2048 );
 	this->shadowMap->shaderProgramID = shaderManager->getIDFromFriendlyName("shader01");
 }
 

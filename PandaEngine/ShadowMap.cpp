@@ -47,7 +47,10 @@ void ShadowMap::BeginRender(cLight* light)
 
 	glViewport(0, 0, m_shadowWidth, m_shadowHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT); 
+	glEnable(GL_CULL_FACE);
+	// (Usually) the default - does NOT draw "back facing" triangles
+	glCullFace(GL_FRONT);
 
 	float near_plane = 1.0f, far_plane = 1000.0f;
 	float orthoSize = 1000.0f;
@@ -80,6 +83,7 @@ void ShadowMap::EndRender()
 	GLint lightSpaceMatrix_UL = glGetUniformLocation(shaderProgramID, "lightSpaceMatrix");
 	glUniformMatrix4fv(lightSpaceMatrix_UL, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
+	glCullFace(GL_BACK);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, 1920, 1080);
 }

@@ -46,8 +46,8 @@ void main() {
      worldPos = interpolate3D(esInWorldPos[0], esInWorldPos[1], esInWorldPos[2]);
 	if(isShadowMap)
 	{
-		worldPos = (matModel * vec4(worldPos.xyz, 1.0)).xyz;
-		gl_Position = lightSpaceMatrix * matModel * vec4(worldPos.xyz, 1.0);
+	//	worldPos = (matModel * vec4(worldPos.xyz, 1.0)).xyz;
+		gl_Position = lightSpaceMatrix * vec4(worldPos.xyz, 1.0);
 		return;
 	}   
 

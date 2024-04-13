@@ -79,6 +79,10 @@ float calculateShadowFactor(vec4 fragPosLightSpace)
 	// Shadow value
 	float shadow = 0.0f;
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	if(projCoords.z > 1.0)
+	{
+	   return 0.0;
+	}
 	projCoords = projCoords * 0.5 + 0.5;
 	float bias = 0.005;
 	float closestDepth = texture(shadowMap, projCoords.xy).r;
