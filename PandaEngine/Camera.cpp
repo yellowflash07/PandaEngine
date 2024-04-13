@@ -38,6 +38,10 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     int width, height;
 
     glfwGetFramebufferSize(window, &width, &height);
+
+    if(width <= 0 || height <= 0)
+		return;
+
     ratio = width / (float)height;
 
     if (isFollowing)

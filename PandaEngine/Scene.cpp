@@ -84,11 +84,12 @@ void Scene::Update(float deltaTime)
 	if (play)
 	{
 		PhysXManager::getInstance()->Update(deltaTime);
-		PhysXManager::getInstance()->DrawDebug();
+		
 	}
 	else
 	{
-	
+		PhysXManager::getInstance()->DebugUpdate(deltaTime);
+		PhysXManager::getInstance()->DrawDebug();
 	}
 	
 

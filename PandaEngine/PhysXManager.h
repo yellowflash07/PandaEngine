@@ -5,6 +5,8 @@
 #include "TransformComponent.h"
 #include <PhysX/characterkinematic/PxControllerManager.h>
 #include <map>
+#include "../cVAOManager/sModelDrawInfo.h"
+#include "DebugRenderer.h"
 
 using namespace physx;
 #define PVD_HOST "127.0.0.1"
@@ -19,12 +21,15 @@ public:
 
 	void Init(bool connectToPvd);
 	void Update(float deltaTime);
+	void DebugUpdate(float deltaTime);
+	void DrawDebug();
 	void Shutdown();
 	PxPhysics* gPhysics = NULL;
 	PxScene* gScene = NULL;
 	PxMaterial* gMaterial = NULL;
 	PxCooking* gCooking = NULL;
 
+	bool updateDebug;
 private:
 	PxDefaultAllocator		gAllocator;
 	PxDefaultErrorCallback	gErrorCallback;
@@ -36,6 +41,8 @@ private:
 	bool initialized = false;
 
 	PxPvd* gPvd = NULL;
+
+	int lastActorCount = 0;
 };
 
 

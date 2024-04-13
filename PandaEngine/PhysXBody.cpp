@@ -14,6 +14,7 @@ PhysXBody::PhysXBody(TransformComponent* transform)
 	this->type = NONE;
 
 	this->uniqueID = rand() % 10000 + 1;
+	PhysXManager::getInstance()->updateDebug = true;
 }
 
 PhysXBody::~PhysXBody()
@@ -37,17 +38,19 @@ void PhysXBody::SetShape(ColliderType type)
 		float halfY = halfExtentsVec.y;
 		float halfZ = halfExtentsVec.z;
 		PxVec3 halfExtents = PxVec3(halfX, halfY, halfZ);
-
+		this->halfExtents = halfExtentsVec;
 		shape = gPhysics->createShape(PxBoxGeometry(halfExtents), *gMaterial, true);
 	}
 	else if (type == SPHERE)
 	{
+		this->radius = transform->drawScale.x;
 		shape = gPhysics->createShape(PxSphereGeometry(transform->drawScale.x), *gMaterial, true);
 	}
 	else if (type == MESH)
 	{
 		return;
 	}
+	shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
 	body->attachShape(*shape);
 	shape->release();
 }
@@ -73,12 +76,24 @@ void PhysXBody::SetBody(bool isDynamic)
 	std::cout << "Body created: " << dynamic << std::endl;
 	gScene->addActor(*body);
 	gActorMap[this->body] = this;
+	body->setActorFlag(PxActorFlag::eVISUALIZATION, true);
 }
 
 void PhysXBody::Update(float deltaTime)
 {
 	if(body == NULL)
 		return;
+
+	if (!isDynamic)
+	{
+		return;
+	}
+	
+	if (body->is<PxRigidDynamic>()->isSleeping())
+	{
+		return;
+	}
+
 	transform->drawPosition = glm::vec3(body->getGlobalPose().p.x, body->getGlobalPose().p.y, body->getGlobalPose().p.z);
 	glm::quat sphereRotation = glm::quat(body->getGlobalPose().q.w, body->getGlobalPose().q.x, body->getGlobalPose().q.y, body->getGlobalPose().q.z);
 	transform->eulerRotation = glm::eulerAngles(sphereRotation);
@@ -94,6 +109,26 @@ void PhysXBody::Render()
 	{
 		SetShape((ColliderType)type);
 		setMesh = false;
+		PhysXManager::getInstance()->updateDebug = true;
+	}
+
+	if (type == BOX)
+	{
+		ImGui::SetNextItemWidth(100);
+		if (ImGui::DragFloat3("Half Extents", &halfExtents[0], 0.1f))
+		{
+			UpdateBoxDimensions(halfExtents);
+			PhysXManager::getInstance()->updateDebug = true;
+		}
+	}
+	else if (type == SPHERE)
+	{
+		ImGui::SetNextItemWidth(100);
+		if (ImGui::DragFloat("Radius", &radius, 0.1f))
+		{
+			UpdateSphereDimensions(radius);
+			PhysXManager::getInstance()->updateDebug = true;
+		}
 	}
 
 	ImGui::SetNextItemWidth(100);
@@ -106,12 +141,14 @@ void PhysXBody::Render()
 		bool isDynamic = dynamic == 1;
 		SetBody(isDynamic);
 		SetShape(this->type);
+		PhysXManager::getInstance()->updateDebug = true;
 	}
 
 	if (ImGui::Checkbox("Trigger", &isTrigger))
 	{
 		SetTrigger();
 	}
+	
 
 	ImGui::Separator();
 	ImGui::EndChild();
@@ -224,3 +261,14 @@ void PhysXBody::SetTrigger()
 		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 	}
 }
+
+void PhysXBody::UpdateBoxDimensions(glm::vec3 halfExtents)
+{
+	this->shape->getGeometry().box().halfExtents = PxVec3(halfExtents.x, halfExtents.y, halfExtents.z);
+}
+
+void PhysXBody::UpdateSphereDimensions(float radius)
+{
+	this->shape->getGeometry().sphere().radius = radius;
+}
+

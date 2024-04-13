@@ -39,7 +39,8 @@ public:
 	bool isTrigger = false;
 	void SetTrigger();
 	PxRigidActor* body;
-
+	void UpdateBoxDimensions(glm::vec3 halfExtents);
+	void UpdateSphereDimensions(float radius);
 private:
 	PxMaterial* material;
 	PxPhysics* gPhysics = NULL;
@@ -48,5 +49,12 @@ private:
 	TransformComponent* transform;
 	bool setMesh = false;
 	void SetupCommonCookingParams(PxCookingParams& params, bool skipMeshCleanup, bool skipEdgeData);
+	bool showDebugShape = false;
+	GLuint VBO;
+	cMesh* debugCube;
+	cMesh* debugSphere;
+
+	glm::vec3 halfExtents;
+	float radius;
 };
 

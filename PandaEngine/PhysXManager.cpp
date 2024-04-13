@@ -1,6 +1,6 @@
 #include "PhysXManager.h"
 #include "PhysXBody.h"
-
+#include "../Basic Shader Manager/cShaderManager.h"
 static PhysXManager* gPhysXManager = NULL;
 extern std::map<PxActor*, PhysXBody*> gActorMap;
 
@@ -212,7 +212,17 @@ void PhysXManager::Init(bool connectToPvd)
    // sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
+
     gScene = gPhysics->createScene(sceneDesc);
+
+
+	gScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+	gScene->setVisualizationParameter(PxVisualizationParameter::eCONTACT_POINT, 1.0f);
+	gScene->setVisualizationParameter(PxVisualizationParameter::eCONTACT_NORMAL, 1.0f);
+	gScene->setVisualizationParameter(PxVisualizationParameter::eCONTACT_ERROR, 1.0f);
+	gScene->setVisualizationParameter(PxVisualizationParameter::eCONTACT_FORCE, 1.0f);
+	gScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 1.0f);
+	gScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
 
     PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
     if (pvdClient)
@@ -232,7 +242,46 @@ void PhysXManager::Update(float deltaTime)
     gScene->fetchResults(true);
 }
 
+void PhysXManager::DebugUpdate(float deltaTime)
+{
+	if (updateDebug)
+	{
+		gScene->simulate(1.0f / 60.0f);
+		gScene->fetchResults(true);
+		updateDebug = false;
+	}
+	
+}
+
+void PhysXManager::DrawDebug()
+{
+	const PxRenderBuffer& rb = gScene->getRenderBuffer();
+
+	for (PxU32 i = 0; i < rb.getNbLines(); i++)
+	{
+		const PxDebugLine& line = rb.getLines()[i];
+
+		glm::vec3 pos0 = glm::vec3(line.pos0.x, line.pos0.y, line.pos0.z);
+		glm::vec3 pos1 = glm::vec3(line.pos1.x, line.pos1.y, line.pos1.z);
+		glm::vec3 color0 = glm::vec3(line.color0);
+		glm::vec3 color1 = glm::vec3(line.color1);
+
+		DebugRenderer::getInstance()->DrawLine(pos0, pos1, glm::vec3(1,0,0), glm::vec3(1, 0, 0));
+	}
+
+	for (PxU32 i = 0; i < rb.getNbPoints(); i++)
+	{
+		const PxDebugPoint& point = rb.getPoints()[i];
+		//DrawDebugPoint(glm::vec3(point.pos.x, point.pos.y, point.pos.z), glm::vec3(point.color));
+	}
+
+	for (PxU32 i = 0; i < rb.getNbTriangles(); i++)
+	{
+		const PxDebugTriangle& triangle = rb.getTriangles()[i];
+		//DrawDebugTriangle(glm::vec3(triangle.pos0.x, triangle.pos0.y, triangle.pos0.z), glm::vec3(triangle.pos1.x, triangle.pos1.y, triangle.pos1.z), glm::vec3(triangle.pos2.x, triangle.pos2.y, triangle.pos2.z), glm::vec3(triangle.color0), glm::vec3(triangle.color1), glm::vec3(triangle.color2));
+	}
+}
+
 void PhysXManager::Shutdown()
 {
 }
-

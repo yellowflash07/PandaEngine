@@ -54,6 +54,7 @@ int main(void)
     camera->SetPosition(glm::vec3(11.0f,37.0f, 401.0f));
 
     engine.LoadSave(); 
+    printf("DONE\n");
     float currTime = 0;
     float myTime = 0;
 
@@ -61,10 +62,8 @@ int main(void)
 
     Scene* scene = engine.GetCurrentScene();
 
-    float blendWeight = 0;
-    float tessLevelOuter = 1.0f;
-    float tessLevelInner = 1.0f;
-    GLint shaderProgramID = cShaderManager::getInstance()->getIDFromFriendlyName("shader01");
+
+
     while (!glfwWindowShouldClose(engine.window))
     {
 
@@ -73,21 +72,9 @@ int main(void)
         engine.Update();   
 
         ImGui::Begin("Debug");
-
-      //  uniform float tessLevelOuter;
-      //  uniform float tessLevelInner;
-        if (ImGui::DragFloat("Tess Outer", &tessLevelOuter, 0.1f, -10.0f, 64.0f))
-        {
-            GLint tessLevelOuter_UL = glGetUniformLocation(shaderProgramID, "tessLevelOuter");
-            glUniform1f(tessLevelOuter_UL, tessLevelOuter);
-		}
-        if (ImGui::DragFloat("Tess Inner", &tessLevelInner, 0.1f, -10.0f, 64.0f))
-        {
-            GLint tessLevelInner_UL = glGetUniformLocation(shaderProgramID, "tessLevelInner");
-            glUniform1f(tessLevelInner_UL, tessLevelInner);
-        }
-
+        ImGui::Text("FPS: %f", 1/engine.deltaTime);
         ImGui::End();
+
         engine.EndRender();   
     }
 
