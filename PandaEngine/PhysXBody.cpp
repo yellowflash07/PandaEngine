@@ -264,11 +264,18 @@ void PhysXBody::SetTrigger()
 
 void PhysXBody::UpdateBoxDimensions(glm::vec3 halfExtents)
 {
-	this->shape->getGeometry().box().halfExtents = PxVec3(halfExtents.x, halfExtents.y, halfExtents.z);
+//	this->shape->getGeometry().box().halfExtents = PxVec3(halfExtents.x, halfExtents.y, halfExtents.z);
+	PxBoxGeometry boxGeometry;
+	this->shape->getBoxGeometry(boxGeometry);
+	boxGeometry.halfExtents = PxVec3(halfExtents.x, halfExtents.y, halfExtents.z);
+	this->shape->setGeometry(boxGeometry);
 }
 
 void PhysXBody::UpdateSphereDimensions(float radius)
 {
-	this->shape->getGeometry().sphere().radius = radius;
+	PxSphereGeometry sphereGeometry;
+	this->shape->getSphereGeometry(sphereGeometry);
+	sphereGeometry.radius = radius;
+	this->shape->setGeometry(sphereGeometry);
 }
 
