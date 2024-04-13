@@ -94,6 +94,9 @@
     <Filter Include="ShadowMap">
       <UniqueIdentifier>{ea4f4656-551c-486a-a40b-af86e64acc91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{8d2212a7-48ed-45ff-9f27-ed1e4e34fe05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -269,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="ShadowMap.cpp">
       <Filter>ShadowMap</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugRenderer.cpp">
+      <Filter>Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -479,11 +485,8 @@
     <ClInclude Include="Debug.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="tesscontrolshader.glsl">
-      <Filter>ShaderManager\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="tessevalshader.glsl">
-      <Filter>ShaderManager\Shaders</Filter>
+    <ClInclude Include="DebugRenderer.h">
+      <Filter>Debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -491,6 +494,18 @@
       <Filter>ShaderManager\Shaders</Filter>
     </None>
     <None Include="..\Assets\Shaders\vertexshader.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\tesscontrolshader.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\tessevalshader.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\DebugFrag.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\DebugVert.glsl">
       <Filter>ShaderManager\Shaders</Filter>
     </None>
   </ItemGroup>

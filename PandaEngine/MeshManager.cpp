@@ -392,7 +392,8 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
 		glUniform1f(bhasVertexColors_UL, (GLfloat)GL_FALSE);
 	}
 
-
+    GLint dynamicLOD_UL = glGetUniformLocation(shaderProgramID, "isLOD");
+    glUniform1f(dynamicLOD_UL, pCurrentMesh->dynamicLOD ? GL_TRUE : GL_FALSE);
  // 
 
     GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");
@@ -857,7 +858,7 @@ void MeshManager::DrawOnlyGeometry(cMesh* pCurrentMesh, glm::mat4 matModel)
             if (!pCurrentMesh->hideParent)
             {
                 glBindVertexArray(drawInfo.VAO_ID); 		//  enable VAO (and everything else)
-                glDrawElements(GL_TRIANGLES,
+                glDrawElements(GL_PATCHES,
                     drawInfo.numberOfIndices,
                     GL_UNSIGNED_INT,
                     0);

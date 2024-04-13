@@ -64,6 +64,7 @@ public:
 	void AddChild(cMesh* child);
 	bool hideParent = false;
 	bool useBone = false;
+	bool dynamicLOD = false;
 	//glm::mat4 AnimatedTransform;
 
 	void Render();

@@ -184,6 +184,7 @@
     <ClCompile Include="CommandGroup.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="DebugRenderer.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="FollowCurve.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -271,6 +272,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Debug.h" />
+    <ClInclude Include="DebugRenderer.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="FollowCurve.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -322,6 +324,8 @@
     <ClInclude Include="UdpServer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Assets\Shaders\DebugFrag.glsl" />
+    <None Include="..\Assets\Shaders\DebugVert.glsl" />
     <None Include="..\Assets\Shaders\fragmentshader.glsl" />
     <None Include="..\Assets\Shaders\tesscontrolshader.glsl" />
     <None Include="..\Assets\Shaders\tessevalshader.glsl" />

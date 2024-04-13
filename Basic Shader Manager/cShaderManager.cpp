@@ -300,30 +300,33 @@ bool cShaderManager::createProgramFromFile(
 	}//if ( this->m_compileShaderFromSource(...
 
 
-
-	tessControl.ID = glCreateShader(GL_TESS_CONTROL_SHADER);
-	if (!this->m_loadSourceFromFile(tessControl))
+	if (!tessControl.fileName.empty())
 	{
-		return false;
-	}//if ( ! this->m_loadSourceFromFile(...
+		tessControl.ID = glCreateShader(GL_TESS_CONTROL_SHADER);
+		if (!this->m_loadSourceFromFile(tessControl))
+		{
+			return false;
+		}
 
-	if (!this->m_compileShaderFromSource(tessControl, errorText))
-	{
-		this->m_lastError = errorText;
-		return false;
-	}//if ( this->m_compileShaderFromSource(...
+		if (!this->m_compileShaderFromSource(tessControl, errorText))
+		{
+			this->m_lastError = errorText;
+			return false;
+		}
 
-	tessEval.ID = glCreateShader(GL_TESS_EVALUATION_SHADER);
-	if (!this->m_loadSourceFromFile(tessEval))
-	{
-		return false;
-	}//if ( ! this->m_loadSourceFromFile(...
+		tessEval.ID = glCreateShader(GL_TESS_EVALUATION_SHADER);
+		if (!this->m_loadSourceFromFile(tessEval))
+		{
+			return false;
+		}
 
-	if (!this->m_compileShaderFromSource(tessEval, errorText))
-	{
-		this->m_lastError = errorText;
-		return false;
-	}//if ( this->m_compileShaderFromSource(...
+		if (!this->m_compileShaderFromSource(tessEval, errorText))
+		{
+			this->m_lastError = errorText;
+			return false;
+		}
+	}
+	
 
 
 
@@ -344,10 +347,13 @@ bool cShaderManager::createProgramFromFile(
 	cShaderProgram curProgram;
     curProgram.ID = glCreateProgram();
 
-	glAttachShader(curProgram.ID, tessControl.ID);
-	glAttachShader(curProgram.ID, tessEval.ID);
-    glAttachShader(curProgram.ID, vertexShad.ID);
-    glAttachShader(curProgram.ID, fragShader.ID);
+	if (!tessControl.fileName.empty())
+	{
+		glAttachShader(curProgram.ID, tessControl.ID);
+		glAttachShader(curProgram.ID, tessEval.ID);
+	}
+	glAttachShader(curProgram.ID, vertexShad.ID);
+	glAttachShader(curProgram.ID, fragShader.ID);
 
     glLinkProgram(curProgram.ID);
 

@@ -150,8 +150,7 @@ void Engine::Update()
 
     // While drawing a pixel, see if the pixel that's already there is closer or not?
     glEnable(GL_DEPTH_TEST);
-    // (Usually) the default - does NOT draw "back facing" triangles
-    glCullFace(GL_BACK);
+   
 
     // Time per frame
     double currentTime = glfwGetTime();
@@ -282,19 +281,17 @@ PhysicsBody* Engine::AddPhysicsBody(std::string friendlyMeshName)
 bool Engine::LoadDefaultShaders()
 {
     cShaderManager::cShader vertexShader;
-   // vertexShader.fileName = "vsPhong.glsl";
     vertexShader.fileName = "vertexshader.glsl";
 
     cShaderManager::cShader tessControlShader;
-   // tessControlShader.fileName = "tcsTriangle.glsl";
     tessControlShader.fileName = "tesscontrolshader.glsl";
+   // tessControlShader.fileName = "";
 
     cShaderManager::cShader tessEvalShader;
-   // tessEvalShader.fileName = "tesTriangle.glsl";
+   // tessEvalShader.fileName = "";
     tessEvalShader.fileName = "tessevalshader.glsl";
 
     cShaderManager::cShader fragmentShader;
-    // fragmentShader.fileName = "fsPhong.glsl";
     fragmentShader.fileName = "fragmentshader.glsl";
 
     if (!cShaderManager::getInstance()->createProgramFromFile("shader01", vertexShader, fragmentShader, tessControlShader, tessEvalShader))
