@@ -342,7 +342,8 @@ void Engine::ShutDown()
 
 void Engine::AddScene(Scene* scene)
 {
-    scene->Init(this->meshManager, this->physicsManager, this->lightManager, cShaderManager::getInstance());
+    scene->Init(this->meshManager, this->physicsManager, this->lightManager, cShaderManager::getInstance(), window);
+    scene->window = window;
     scenes.push_back(scene);
 }
 

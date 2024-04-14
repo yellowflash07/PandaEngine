@@ -31,8 +31,11 @@ public:
 
 	std::string name;
 
-	void Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightManager* lightManager
-	 , cShaderManager* shaderManager);
+	void Init(MeshManager* meshManager, 
+			PhysicsManager* phyManager, 
+			cLightManager* lightManager, 
+			cShaderManager* shaderManager, 
+			GLFWwindow* window);
 
 	GameObject* GetGameObjectByName(std::string name);
 
@@ -46,6 +49,7 @@ public:
 	GameObject* CreateChildObject(GameObject* go, std::string childName);
 
 	ShadowMap* shadowMap;
+	GLFWwindow* window;
 private:
 	entt::registry m_Registry;
 	entt::entity m_currentEntity;

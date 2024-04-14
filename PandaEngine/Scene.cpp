@@ -104,7 +104,7 @@ void Scene::Update(float deltaTime)
 }
 
 void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightManager* lightManager,
-	cShaderManager* shaderManager)
+	cShaderManager* shaderManager, GLFWwindow* window)
 {
 	this->phyManager = phyManager;
 	this->meshManager = meshManager;
@@ -114,6 +114,7 @@ void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightMan
 	this->shadowMap = new ShadowMap();
 	this->shadowMap->Initialize(2048 , 2048 );
 	this->shadowMap->shaderProgramID = shaderManager->getIDFromFriendlyName("shader01");
+	this->shadowMap->window = window;
 }
 
 GameObject* Scene::GetGameObjectByName(std::string name)

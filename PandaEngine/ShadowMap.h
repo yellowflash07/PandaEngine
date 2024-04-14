@@ -15,7 +15,7 @@ public:
 	GLint shaderProgramID;
 
 	GLuint m_shadowMap;
-
+	GLFWwindow* window;
 private:
 	GLuint m_fbo;
 	int m_shadowWidth;
