@@ -43,7 +43,7 @@ VehicleDesc initVehicleDesc()
     ((chassisDims.y * chassisDims.y + chassisDims.z * chassisDims.z) * chassisMass / 12.0f,
         (chassisDims.x * chassisDims.x + chassisDims.z * chassisDims.z) * 0.8f * chassisMass / 12.0f,
         (chassisDims.x * chassisDims.x + chassisDims.y * chassisDims.y) * chassisMass / 12.0f);
-    const PxVec3 chassisCMOffset(0.0f, -chassisDims.y * 0.3f, 0.25f);
+    const PxVec3 chassisCMOffset(0.0f, -chassisDims.y, 0.25f);
 
     //Set up the wheel mass, radius, width, moment of inertia, and number of wheels.
     //Moment of inertia is just the moment of inertia of a cylinder.
@@ -102,6 +102,7 @@ int main(void)
 
     Scene* scene = engine.GetCurrentScene();
 
+
     VehicleCreator vehicleCreator;
     VehicleDesc vehicleDesc = initVehicleDesc();
     PxVehicleDrive4W* gVehicle4W = vehicleCreator.CreateVehicle4W(vehicleDesc, PhysXManager::getInstance()->gPhysics, PhysXManager::getInstance()->gCooking);
@@ -118,6 +119,12 @@ int main(void)
     PxVec3 gravity = PhysXManager::getInstance()->gScene->getGravity();
     PxVehicleDrive4WRawInputData* gVehicleInputData = new PxVehicleDrive4WRawInputData();
 
+    gVehicleInputData->setDigitalAccel(false);
+    gVehicleInputData->setDigitalSteerLeft(false);
+    gVehicleInputData->setDigitalSteerRight(false);
+    gVehicleInputData->setDigitalBrake(false);
+    gVehicleInputData->setDigitalHandbrake(false);
+
     while (!glfwWindowShouldClose(engine.window))
     {
 
@@ -129,31 +136,46 @@ int main(void)
         ImGui::Text("FPS: %f", 1/engine.deltaTime);
         ImGui::End();
 
+        if(keyHit == GLFW_KEY_SPACE)
+        {
+            gVehicleInputData->setDigitalAccel(false);
+            gVehicleInputData->setDigitalSteerLeft(false);
+            gVehicleInputData->setDigitalSteerRight(false);
+            gVehicleInputData->setDigitalBrake(false);
+            gVehicleInputData->setDigitalHandbrake(false);
+        }
+
         if (keyHit == GLFW_KEY_UP)
         {
             //accelerate
+
             gVehicleInputData->setDigitalAccel(true);
         }
         else if (keyHit == GLFW_KEY_DOWN)
 		{
 			//reverse
-			gVehicleInputData->setDigitalBrake(true);
+            gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
+			gVehicleInputData->setDigitalAccel(true);
 		}
 		else
 		{
 			gVehicleInputData->setDigitalAccel(false);
+            gVehicleInputData->setDigitalBrake(false);
 		}
 
         if (keyHit == GLFW_KEY_LEFT)
         {
+            gVehicleInputData->setDigitalAccel(true);
             gVehicleInputData->setDigitalSteerLeft(true);
         }
         else if (keyHit == GLFW_KEY_RIGHT)
 		{
+            gVehicleInputData->setDigitalAccel(true);
 			gVehicleInputData->setDigitalSteerRight(true);
 		}
 		else
 		{
+            gVehicleInputData->setDigitalAccel(false);
             gVehicleInputData->setDigitalSteerLeft(false);
             gVehicleInputData->setDigitalSteerRight(false);
 		}

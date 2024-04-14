@@ -1,5 +1,6 @@
 #include "PhysXBody.h"
 #include <iostream>
+#include "VehicleCreator.h"
 
 std::map<PxActor*, PhysXBody*> gActorMap;
 
@@ -50,6 +51,11 @@ void PhysXBody::SetShape(ColliderType type)
 	{
 		CreateMeshCollider(mesh, false, false, false, 1);
 	}
+	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
+	shape->setSimulationFilterData(groundPlaneSimFilterData);
+	PxFilterData qryFilterData;
+	qryFilterData.word3 = DRIVABLE_SURFACE;
+	shape->setQueryFilterData(qryFilterData);
 	shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
 	body->attachShape(*shape);
 	shape->release();
