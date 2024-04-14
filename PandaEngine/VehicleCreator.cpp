@@ -212,10 +212,23 @@ PxRigidDynamic* VehicleCreator::CreateVehicleActor(const PxVehicleChassisData& c
 	for (PxU32 i = 0; i < numWheels; i++)
 	{
 		PxConvexMeshGeometry geom(wheelConvexMeshes[i]);
+		CarData* wheelData = new CarData();
+
 		PxShape* wheelShape = PxRigidActorExt::createExclusiveShape(*vehActor, geom, *wheelMaterials[i]);
+		wheelData->carPart = WHEEL;
+		wheelData->index = i;
+
 		wheelShape->setQueryFilterData(wheelQryFilterData);
 		wheelShape->setSimulationFilterData(wheelSimFilterData);
 		wheelShape->setLocalPose(PxTransform(PxIdentity));
+
+
+
+
+
+		PxTransform shapePose = PxShapeExt::getGlobalPose(*wheelShape, *vehActor);
+		wheelData->offset = glm::vec3(shapePose.p.x, shapePose.p.y, shapePose.p.z);
+		wheelShape->userData = wheelData;
 	}
 
 	//Add the chassis shapes to the actor.
@@ -225,6 +238,11 @@ PxRigidDynamic* VehicleCreator::CreateVehicleActor(const PxVehicleChassisData& c
 		chassisShape->setQueryFilterData(chassisQryFilterData);
 		chassisShape->setSimulationFilterData(chassisSimFilterData);
 		chassisShape->setLocalPose(PxTransform(PxIdentity));
+		CarData* chassisData = new CarData();
+		chassisData->carPart = CHASSIS;
+		chassisData->index = i;
+		chassisData->offset = glm::vec3(chassisShape->getLocalPose().p.x, chassisShape->getLocalPose().p.y, chassisShape->getLocalPose().p.z);
+		chassisShape->userData = chassisData;
 	}
 
 	vehActor->setMass(chassisData.mMass);

@@ -2,6 +2,19 @@
 #include "PhysXManager.h"
 #include "VehicleSceneQueryData.h"
 
+enum CarPart
+{
+	WHEEL,
+	CHASSIS
+};
+
+struct CarData
+{
+	CarPart carPart;
+	int index;
+	glm::vec3 offset;
+};
+
 struct VehicleDesc
 {
 

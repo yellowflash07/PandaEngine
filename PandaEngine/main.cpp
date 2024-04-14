@@ -14,16 +14,24 @@ extern Camera* camera;
 int keyHit = 0;
 
 #include "Scene.h"
+std::map<int,bool> keys;
+
+bool IsKeyPressed(int key)
+{
+	return keys[key];
+}
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (action == GLFW_PRESS)
     {
         keyHit = key;
+        keys[key] = true;
     }
     if (action == GLFW_RELEASE)
     {
 		keyHit = 0;
+		keys[key] = false;
 	}
 }
 
@@ -38,7 +46,7 @@ VehicleDesc initVehicleDesc()
     //The moment of inertia is just the moment of inertia of a cuboid but modified for easier steering.
     //Center of mass offset is 0.65m above the base of the chassis and 0.25m towards the front.
     const PxF32 chassisMass = 1500.0f;
-    const PxVec3 chassisDims(2.5f, 2.0f, 5.0f);
+    const PxVec3 chassisDims(3.5f, 1.0f, 9.0f);
     const PxVec3 chassisMOI
     ((chassisDims.y * chassisDims.y + chassisDims.z * chassisDims.z) * chassisMass / 12.0f,
         (chassisDims.x * chassisDims.x + chassisDims.z * chassisDims.z) * 0.8f * chassisMass / 12.0f,
@@ -91,7 +99,7 @@ int main(void)
                                     "CubeMaps/TropicalSunnyDayBack2048.bmp",
                                     true);
 
-    camera->SetPosition(glm::vec3(11.0f,37.0f, 401.0f));
+    camera->SetPosition(glm::vec3(11.0f,37.0f,19.0f));
 
     engine.LoadSave(); 
     printf("DONE\n");
@@ -125,6 +133,25 @@ int main(void)
     gVehicleInputData->setDigitalBrake(false);
     gVehicleInputData->setDigitalHandbrake(false);
 
+    GameObject* vehicle = scene->GetGameObjectByName("Vehicle");
+    TransformComponent* vehicleTransform = vehicle->GetComponent<TransformComponent>();
+    std::vector<TransformComponent*> wheels;
+    for (int i = 0; i < 4; i++)
+    {
+        GameObject* wheel = scene->CreateGameObject(std::to_string(i));
+        wheel->AddComponent<cMesh>("carWheel.ply", "carWheel");
+        TransformComponent* wheelTransform = wheel->GetComponent<TransformComponent>();
+        wheelTransform->drawScale = glm::vec3(0.02);
+        wheels.push_back(wheelTransform);
+
+    }
+
+    //glm::vec3 position = glm::vec3(gVehicle4W->getRigidDynamicActor()->getGlobalPose().p.x, gVehicle4W->getRigidDynamicActor()->getGlobalPose().p.y, gVehicle4W->getRigidDynamicActor()->getGlobalPose().p.z);
+    //glm::quat rotation = glm::quat(gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.w, gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.x, gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.y, gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.z);
+    //TransformComponent* transform = vehicle->GetComponent<TransformComponent>();
+    //transform->drawPosition = position;
+    //cMesh* vehicleMesh = &vehicle->AddComponent<cMesh>("carBody.fbx", "carBody");
+    bool hasReversed = false;
     while (!glfwWindowShouldClose(engine.window))
     {
 
@@ -135,8 +162,11 @@ int main(void)
         ImGui::Begin("Debug");
         ImGui::Text("FPS: %f", 1/engine.deltaTime);
         ImGui::End();
-
-        if(keyHit == GLFW_KEY_SPACE)
+        //position = glm::vec3(gVehicle4W->getRigidDynamicActor()->getGlobalPose().p.x, gVehicle4W->getRigidDynamicActor()->getGlobalPose().p.y, gVehicle4W->getRigidDynamicActor()->getGlobalPose().p.z);
+        //rotation = glm::quat(gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.w, gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.x, gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.y, gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.z);
+        //transform->drawPosition = position;
+        //transform->eulerRotation = glm::eulerAngles(rotation);
+        if(IsKeyPressed(GLFW_KEY_SPACE))
         {
             gVehicleInputData->setDigitalAccel(false);
             gVehicleInputData->setDigitalSteerLeft(false);
@@ -145,42 +175,64 @@ int main(void)
             gVehicleInputData->setDigitalHandbrake(false);
         }
 
-        if (keyHit == GLFW_KEY_UP)
+        if (IsKeyPressed(GLFW_KEY_UP))
         {
             //accelerate
-
+            if (hasReversed)
+            {
+				gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+				hasReversed = false;
+            }
             gVehicleInputData->setDigitalAccel(true);
         }
-        else if (keyHit == GLFW_KEY_DOWN)
+        if (IsKeyPressed(GLFW_KEY_DOWN))
 		{
 			//reverse
             gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
 			gVehicleInputData->setDigitalAccel(true);
-		}
-		else
-		{
-			gVehicleInputData->setDigitalAccel(false);
-            gVehicleInputData->setDigitalBrake(false);
+            hasReversed = true;
 		}
 
-        if (keyHit == GLFW_KEY_LEFT)
+        if (IsKeyPressed(GLFW_KEY_LEFT))
         {
-            gVehicleInputData->setDigitalAccel(true);
             gVehicleInputData->setDigitalSteerLeft(true);
+            gVehicleInputData->setDigitalSteerRight(false);
         }
-        else if (keyHit == GLFW_KEY_RIGHT)
+        if (IsKeyPressed(GLFW_KEY_RIGHT))
 		{
-            gVehicleInputData->setDigitalAccel(true);
+            gVehicleInputData->setDigitalSteerLeft(false);
 			gVehicleInputData->setDigitalSteerRight(true);
 		}
-		else
-		{
-            gVehicleInputData->setDigitalAccel(false);
-            gVehicleInputData->setDigitalSteerLeft(false);
-            gVehicleInputData->setDigitalSteerRight(false);
-		}
+		
 
         vehicleCreator.UpdateVehicle4W(engine.deltaTime, gravity, gVehicle4W, NULL, gVehicleInputData);
+
+        int numShapes = gVehicle4W->getRigidDynamicActor()->getNbShapes();
+        for (PxU32 i = 0; i < numShapes; i++)
+        {
+            PxShape* shape;
+            gVehicle4W->getRigidDynamicActor()->getShapes(&shape, 1, i);
+
+            CarData* carData = (CarData*)shape->userData;
+
+            //wheelShape->userData = wheelData;
+            if (carData != nullptr)
+            {
+                PxTransform shapePose = PxShapeExt::getGlobalPose(*shape, *gVehicle4W->getRigidDynamicActor());
+                glm::vec3 pos = glm::vec3(shapePose.p.x, shapePose.p.y, shapePose.p.z);
+
+                if (carData->carPart == WHEEL)
+                {
+					wheels[carData->index]->drawPosition = pos;
+					wheels[carData->index]->eulerRotation = glm::eulerAngles(glm::quat(shapePose.q.w, shapePose.q.x, shapePose.q.y, shapePose.q.z));
+                }
+                if(carData->carPart == CHASSIS)
+				{
+					vehicleTransform->drawPosition = pos;
+					vehicleTransform->eulerRotation = glm::eulerAngles(glm::quat(shapePose.q.w, shapePose.q.x, shapePose.q.y, shapePose.q.z));
+				}
+            }
+        }
 
         engine.EndRender();   
     }

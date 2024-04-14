@@ -175,7 +175,7 @@
             "physXObj": {
                 "type": 1,
                 "halfExtents": [
-                    154.7327880859375,
+                    156.23300170898438,
                     9.527000427246094,
                     154.7343292236328
                 ],
@@ -185,33 +185,12 @@
             "children": []
         },
         {
-            "name": "asdasd",
+            "name": "Vehicle",
             "transform": {
                 "position": [
                     0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "children": []
-        },
-        {
-            "name": "GameObject",
-            "transform": {
-                "position": [
-                    69.70790100097656,
-                    24.338577270507813,
-                    0.0
+                    1.160961627960205,
+                    5.613003730773926
                 ],
                 "rotation": [
                     0.0,
@@ -219,14 +198,14 @@
                     0.0
                 ],
                 "scale": [
-                    1.0,
-                    1.0,
-                    1.0
+                    0.021546009927988052,
+                    0.021546009927988052,
+                    0.021546009927988052
                 ]
             },
             "mesh": {
-                "fileName": "bathtub_xyz_n_rgba.ply",
-                "friendlyName": "bathtub_xyz_n_rgba.ply",
+                "fileName": "carBody.ply",
+                "friendlyName": "carBody.ply",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -248,7 +227,7 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "",
+                    "203536.png",
                     "",
                     "",
                     ""
@@ -260,15 +239,6 @@
                     1.0
                 ],
                 "maskTexture": ""
-            },
-            "characterController": {
-                "height": 12.600000381469727,
-                "radius": 7.599999904632568,
-                "position": [
-                    69.70790100097656,
-                    30.638999938964844,
-                    0.0
-                ]
             },
             "children": []
         }
