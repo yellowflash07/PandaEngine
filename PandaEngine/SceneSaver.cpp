@@ -246,6 +246,7 @@ Scene* SceneSaver::LoadScene(std::string sceneFile)
 	std::string sceneName = document["sceneName"].GetString();
     Scene* scene = new Scene(sceneName);
 
+    //TODO: thread?
 	rapidjson::Value& gameObjects = document["gameObjects"];
     for (rapidjson::SizeType i = 0; i < gameObjects.Size(); i++)
     {		

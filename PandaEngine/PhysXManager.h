@@ -28,10 +28,10 @@ public:
 	PxScene* gScene = NULL;
 	PxMaterial* gMaterial = NULL;
 	PxCooking* gCooking = NULL;
-
+	PxDefaultAllocator		gAllocator;
 	bool updateDebug;
 private:
-	PxDefaultAllocator		gAllocator;
+
 	PxDefaultErrorCallback	gErrorCallback;
 
 	PxFoundation* gFoundation = NULL;

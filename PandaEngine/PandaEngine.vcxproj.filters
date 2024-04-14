@@ -97,6 +97,9 @@
     <Filter Include="Debug">
       <UniqueIdentifier>{8d2212a7-48ed-45ff-9f27-ed1e4e34fe05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics\PhysX\Vehicle Physics">
+      <UniqueIdentifier>{b013b502-db19-43bb-8200-9e38e76c14cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -275,6 +278,12 @@
     </ClCompile>
     <ClCompile Include="DebugRenderer.cpp">
       <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicleCreator.cpp">
+      <Filter>Physics\PhysX\Vehicle Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicleSceneQueryData.cpp">
+      <Filter>Physics\PhysX\Vehicle Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -487,6 +496,12 @@
     </ClInclude>
     <ClInclude Include="DebugRenderer.h">
       <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleCreator.h">
+      <Filter>Physics\PhysX\Vehicle Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleSceneQueryData.h">
+      <Filter>Physics\PhysX\Vehicle Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
