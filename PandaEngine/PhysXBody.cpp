@@ -4,6 +4,7 @@
 
 std::map<PxActor*, PhysXBody*> gActorMap;
 
+
 PhysXBody::PhysXBody(TransformComponent* transform)
 {
 	gPhysics = PhysXManager::getInstance()->gPhysics;
@@ -20,6 +21,13 @@ PhysXBody::PhysXBody(TransformComponent* transform)
 
 PhysXBody::~PhysXBody()
 {
+	::gActorMap.erase(body);
+	gScene->removeActor(*body);
+	body->release();
+	if (shape)
+	{
+		shape->release();
+	}
 }
 
 void PhysXBody::SetShape(ColliderType type)
@@ -31,6 +39,8 @@ void PhysXBody::SetShape(ColliderType type)
 		//body->detachShape(*shape);
 		//shape->release();
 	}
+	//PxMaterial* surfaceMaterial = PhysXManager::getInstance()->gPhysics->createMaterial(0.01, 0.01, 0.01);
+	PxMaterial* surfaceMaterial = PhysXManager::getInstance()->gMaterial;
 
 	if (type == BOX)
 	{
@@ -40,16 +50,16 @@ void PhysXBody::SetShape(ColliderType type)
 		float halfZ = halfExtentsVec.z;
 		PxVec3 halfExtents = PxVec3(halfX, halfY, halfZ);
 		this->halfExtents = halfExtentsVec;
-		shape = gPhysics->createShape(PxBoxGeometry(halfExtents), *gMaterial, true);
+		shape = gPhysics->createShape(PxBoxGeometry(halfExtents), *surfaceMaterial, true);
 	}
 	else if (type == SPHERE)
 	{
 		this->radius = transform->drawScale.x;
-		shape = gPhysics->createShape(PxSphereGeometry(transform->drawScale.x), *gMaterial, true);
+		shape = gPhysics->createShape(PxSphereGeometry(transform->drawScale.x), *surfaceMaterial, true);
 	}
 	else if (type == MESH)
 	{
-		CreateMeshCollider(mesh, false, false, false, 1);
+		shape = CreateMeshCollider(mesh, false, false, false, 1);
 	}
 	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
 	shape->setSimulationFilterData(groundPlaneSimFilterData);
@@ -114,7 +124,7 @@ void PhysXBody::Render()
 	{
 		SetShape((ColliderType)type);
 		setMesh = false;
-		PhysXManager::getInstance()->updateDebug = true;
+		//PhysXManager::getInstance()->updateDebug = true;
 	}
 
 	if (type == BOX)
@@ -157,14 +167,12 @@ void PhysXBody::Render()
 	ImGui::EndChild();
 }
 
-void PhysXBody::CreateMeshCollider(cMesh* mesh, bool skipMeshCleanup, bool skipEdgeData, bool inserted, const PxU32 numTrisPerLeaf)
+PxShape* PhysXBody::CreateMeshCollider(cMesh* mesh, bool skipMeshCleanup, bool skipEdgeData, bool inserted, const PxU32 numTrisPerLeaf)
 {
-	if(setMesh)
-		return;
-	setMesh = true;
 
 	PxTriangleMeshDesc meshDesc;
-	sModelDrawInfo modelDrawInfo = mesh->modelDrawInfo[0];
+	sModelDrawInfo modelDrawInfo;
+	mesh->GetTransformedMeshDrawInfo(modelDrawInfo);
 	meshDesc.points.count = modelDrawInfo.numberOfVertices;
 
 	PxVec3* vertices = new PxVec3[modelDrawInfo.numberOfVertices];
@@ -188,6 +196,7 @@ void PhysXBody::CreateMeshCollider(cMesh* mesh, bool skipMeshCleanup, bool skipE
 	meshDesc.triangles.data = indices;
 	meshDesc.triangles.stride = 3 * sizeof(PxU32);
 
+
 	PxCooking *gCooking = PhysXManager::getInstance()->gCooking;
 	PxCookingParams params = gCooking->getParams();
 
@@ -197,7 +206,7 @@ void PhysXBody::CreateMeshCollider(cMesh* mesh, bool skipMeshCleanup, bool skipE
 	if (!params.midphaseDesc.isValid()) {
 		std::cerr << "Invalid midphase descriptor!" << std::endl;
 		// Perform cleanup or return with an error, depending on your application flow
-		return;
+		return nullptr;
 	}
 
 	// setup common cooking params
@@ -211,16 +220,17 @@ void PhysXBody::CreateMeshCollider(cMesh* mesh, bool skipMeshCleanup, bool skipE
 
 	PX_ASSERT(gCooking->validateTriangleMesh(meshDesc));
 
-	PxTriangleMesh* triMesh = NULL;
-	PxU32 meshSize = 0;
 
-	triMesh = gCooking->createTriangleMesh(meshDesc, gPhysics->getPhysicsInsertionCallback());
-
-	this->shape = gPhysics->createShape(PxTriangleMeshGeometry(triMesh), *gMaterial, true);
-
-	body->attachShape(*shape);
+	PxTriangleMesh* triMesh = gCooking->createTriangleMesh(meshDesc, gPhysics->getPhysicsInsertionCallback());
+	
+	PxShape* shape = gPhysics->createShape(PxTriangleMeshGeometry(triMesh), *gMaterial, true);
 
 	triMesh->release();
+
+	delete [] vertices;
+	delete [] indices;
+
+	return shape;
 }
 
 void PhysXBody::SetupCommonCookingParams(PxCookingParams& params, bool skipMeshCleanup, bool skipEdgeData)

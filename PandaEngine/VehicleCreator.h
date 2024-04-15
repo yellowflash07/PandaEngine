@@ -44,6 +44,7 @@ struct VehicleDesc
 	PxF32 wheelWidth;
 	PxF32 wheelRadius;
 	PxF32 wheelMOI;
+	PxF32 axleWidth;
 	PxMaterial* wheelMaterial;
 	PxU32 numWheels;
 	PxFilterData wheelSimFilterData;	//word0 = collide type, word1 = collide against types, word2 = PxPairFlags
@@ -63,7 +64,11 @@ public:
 	void UpdateVehicle4W(const PxF32 timestep, const PxVec3& gravity, PxVehicleDrive4W* vehDrive4W, PxVehicleWheelQueryResult* vehWheelQueryResults, PxVehicleDrive4WRawInputData* vehDrive4WInputData);
 
 	PxVehicleDrive4W* vehDrive4W;
+
+	void customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rigidDynamic, PxVehicleWheelsSimData* wheelsSimData, PxVehicleDriveSimData4W* driveSimData);
+
 private:
+	void customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rigidDynamic, PxVehicleWheelsSimData* wheelsSimData, PxVehicleDriveSimData* driveSimData);
 
 	VehicleSceneQueryData* gVehicleSceneQueryData = NULL;
 	PxBatchQuery* gBatchQuery = NULL;

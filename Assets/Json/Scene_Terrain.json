@@ -175,74 +175,6 @@
             "children": []
         },
         {
-            "name": "Ground",
-            "transform": {
-                "position": [
-                    0.0,
-                    -878.0842895507813,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scale": [
-                    7300.4921875,
-                    1.0,
-                    13860.24609375
-                ]
-            },
-            "mesh": {
-                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "203536.png",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "Water_Texture_01.bmp"
-            },
-            "physXObj": {
-                "type": 1,
-                "halfExtents": [
-                    3650.5458984375,
-                    0.5,
-                    6930.123046875
-                ],
-                "isDynamic": false,
-                "isTrigger": false
-            },
-            "children": []
-        },
-        {
             "name": "GameObject",
             "transform": {
                 "position": [
@@ -285,7 +217,7 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "",
+                    "Water_Texture_01.bmp",
                     "",
                     "",
                     ""

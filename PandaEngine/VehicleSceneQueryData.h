@@ -1,12 +1,12 @@
 #pragma once
 
 #include "PhysXManager.h"
-enum
+enum SURFACE_FLAG
 {
 	DRIVABLE_SURFACE = 0xffff0000,
 	UNDRIVABLE_SURFACE = 0x0000ffff
 };
-enum
+enum COLLISION_FLAG
 {
 	COLLISION_FLAG_GROUND = 1 << 0,
 	COLLISION_FLAG_WHEEL = 1 << 1,

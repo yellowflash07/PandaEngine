@@ -11,6 +11,7 @@ PxQueryHitType::Enum WheelSceneQueryPreFilterBlocking
 	PX_UNUSED(constantBlock);
 	PX_UNUSED(constantBlockSize);
 	PX_UNUSED(queryFlags);
+
 	return ((0 == (filterData1.word3 & DRIVABLE_SURFACE)) ? PxQueryHitType::eNONE : PxQueryHitType::eBLOCK);
 }
 
@@ -87,9 +88,11 @@ PxVehicleDrive4W* VehicleCreator::CreateVehicle4W(const VehicleDesc& vehicle4WDe
 	{
 		//Compute the wheel center offsets from the origin.
 		PxVec3 wheelCenterActorOffsets[PX_MAX_NB_WHEELS];
-		const PxF32 frontZ = chassisDims.z * 0.3f;
-		const PxF32 rearZ = -chassisDims.z * 0.3f;
-		ComputeWheelCenterActorOffsets4W(frontZ, rearZ, chassisDims, wheelWidth, wheelRadius, numWheels, wheelCenterActorOffsets);
+		const PxF32 frontZ = chassisDims.z * 0.5f;	//HACK: was 0.3f
+		const PxF32 rearZ = -chassisDims.z * 0.5f;
+		ComputeWheelCenterActorOffsets4W(frontZ, rearZ, chassisDims,
+			wheelWidth, wheelRadius, numWheels, 
+			wheelCenterActorOffsets);
 
 		//Set up the simulation data for all wheels.
 		setupWheelsSimulationData
@@ -115,20 +118,21 @@ PxVehicleDrive4W* VehicleCreator::CreateVehicle4W(const VehicleDesc& vehicle4WDe
 
 		//Gears
 		PxVehicleGearsData gears;
-		gears.mSwitchTime = 0.5f;
+		gears.mSwitchTime = 0.2f;//HACK: was 0.5f
 		driveSimData.setGearsData(gears);
 
 		//Clutch
 		PxVehicleClutchData clutch;
 		clutch.mStrength = 10.0f;
+		clutch.mAccuracyMode = PxVehicleClutchAccuracyMode::eBEST_POSSIBLE;
 		driveSimData.setClutchData(clutch);
 
 		//Ackermann steer accuracy
 		PxVehicleAckermannGeometryData ackermann;
 		ackermann.mAccuracy = 1.0f;
 		ackermann.mAxleSeparation =
-			wheelsSimData->getWheelCentreOffset(PxVehicleDrive4WWheelOrder::eFRONT_LEFT).z -
-			wheelsSimData->getWheelCentreOffset(PxVehicleDrive4WWheelOrder::eREAR_LEFT).z;
+			(wheelsSimData->getWheelCentreOffset(PxVehicleDrive4WWheelOrder::eFRONT_LEFT).z + vehicle4WDesc.axleWidth)-
+			(wheelsSimData->getWheelCentreOffset(PxVehicleDrive4WWheelOrder::eREAR_LEFT).z + vehicle4WDesc.axleWidth);
 		ackermann.mFrontWidth =
 			wheelsSimData->getWheelCentreOffset(PxVehicleDrive4WWheelOrder::eFRONT_RIGHT).x -
 			wheelsSimData->getWheelCentreOffset(PxVehicleDrive4WWheelOrder::eFRONT_LEFT).x;
@@ -198,6 +202,169 @@ void VehicleCreator::UpdateVehicle4W(const PxF32 timestep, const PxVec3& gravity
 
 }
 
+void VehicleCreator::customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rigidDynamic, PxVehicleWheelsSimData* wheelsSimData, PxVehicleDriveSimData4W* driveSimData)
+{
+	customizeVehicleToLengthScale(lengthScale, rigidDynamic, wheelsSimData, static_cast<PxVehicleDriveSimData*>(driveSimData));
+
+	//Ackermann geometry.
+	if (driveSimData)
+	{
+		PxVehicleAckermannGeometryData ackermannData = driveSimData->getAckermannGeometryData();
+		ackermannData.mAxleSeparation *= lengthScale;
+		ackermannData.mFrontWidth *= lengthScale;
+		ackermannData.mRearWidth *= lengthScale;
+		driveSimData->setAckermannGeometryData(ackermannData);
+	}
+
+	for (PxU32 i = 0; i < gSteerVsForwardSpeedTable.mNbDataPairs; i++)
+	{
+		gSteerVsForwardSpeedTable.mDataPairs[2 * i + 0] *= lengthScale;
+	}
+}
+
+void VehicleCreator::customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rigidDynamic, PxVehicleWheelsSimData* wheelsSimData, PxVehicleDriveSimData* driveSimData)
+{
+	{
+		//Rigid body center of mass and moment of inertia.
+		{
+			PxTransform t = rigidDynamic->getCMassLocalPose();
+			t.p *= lengthScale;
+			rigidDynamic->setCMassLocalPose(t);
+
+			PxVec3 moi = rigidDynamic->getMassSpaceInertiaTensor();
+			moi *= (lengthScale * lengthScale);
+			rigidDynamic->setMassSpaceInertiaTensor(moi);
+		}
+
+		//Wheels, suspensions, wheel centers, tire/susp force application points.
+		{
+			for (PxU32 i = 0; i < wheelsSimData->getNbWheels(); i++)
+			{
+				PxVehicleWheelData wheelData = wheelsSimData->getWheelData(i);
+				wheelData.mRadius *= lengthScale;
+				wheelData.mWidth *= lengthScale;
+				wheelData.mDampingRate *= lengthScale * lengthScale;
+				wheelData.mMaxBrakeTorque *= lengthScale * lengthScale;
+				wheelData.mMaxHandBrakeTorque *= lengthScale * lengthScale;
+				wheelData.mMOI *= lengthScale * lengthScale;
+				wheelsSimData->setWheelData(i, wheelData);
+
+				PxVehicleSuspensionData suspData = wheelsSimData->getSuspensionData(i);
+				suspData.mMaxCompression *= lengthScale;
+				suspData.mMaxDroop *= lengthScale;
+				wheelsSimData->setSuspensionData(i, suspData);
+
+				PxVec3 v = wheelsSimData->getWheelCentreOffset(i);
+				v *= lengthScale;
+				wheelsSimData->setWheelCentreOffset(i, v);
+
+				v = wheelsSimData->getSuspForceAppPointOffset(i);
+				v *= lengthScale;
+				wheelsSimData->setSuspForceAppPointOffset(i, v);
+
+				v = wheelsSimData->getTireForceAppPointOffset(i);
+				v *= lengthScale;
+				wheelsSimData->setTireForceAppPointOffset(i, v);
+			}
+		}
+
+		//Slow forward speed correction.
+		{
+			wheelsSimData->setSubStepCount(5.0f * lengthScale, 3, 1);
+			wheelsSimData->setMinLongSlipDenominator(4.0f * lengthScale);
+		}
+
+		//Engine
+		if (driveSimData)
+		{
+			PxVehicleEngineData engineData = driveSimData->getEngineData();
+			engineData.mMOI *= lengthScale * lengthScale;
+			engineData.mPeakTorque *= lengthScale * lengthScale;
+			engineData.mDampingRateFullThrottle *= lengthScale * lengthScale;
+			engineData.mDampingRateZeroThrottleClutchEngaged *= lengthScale * lengthScale;
+			engineData.mDampingRateZeroThrottleClutchDisengaged *= lengthScale * lengthScale;
+			driveSimData->setEngineData(engineData);
+		}
+
+		//Clutch.
+		if (driveSimData)
+		{
+			PxVehicleClutchData clutchData = driveSimData->getClutchData();
+			clutchData.mStrength *= lengthScale * lengthScale;
+			driveSimData->setClutchData(clutchData);
+		}
+
+		//Scale the collision meshes too.
+		{
+			PxShape* shapes[16];
+			const PxU32 nbShapes = rigidDynamic->getShapes(shapes, 16);
+			for (PxU32 i = 0; i < nbShapes; i++)
+			{
+				switch (shapes[i]->getGeometryType())
+				{
+				case PxGeometryType::eSPHERE:
+				{
+					PxSphereGeometry sphere;
+					shapes[i]->getSphereGeometry(sphere);
+					sphere.radius *= lengthScale;
+					shapes[i]->setGeometry(sphere);
+				}
+				break;
+				case PxGeometryType::ePLANE:
+					PX_ASSERT(false);
+					break;
+				case PxGeometryType::eCAPSULE:
+				{
+					PxCapsuleGeometry capsule;
+					shapes[i]->getCapsuleGeometry(capsule);
+					capsule.radius *= lengthScale;
+					capsule.halfHeight *= lengthScale;
+					shapes[i]->setGeometry(capsule);
+				}
+				break;
+				case PxGeometryType::eBOX:
+				{
+					PxBoxGeometry box;
+					shapes[i]->getBoxGeometry(box);
+					box.halfExtents *= lengthScale;
+					shapes[i]->setGeometry(box);
+				}
+				break;
+				case PxGeometryType::eCONVEXMESH:
+				{
+					PxConvexMeshGeometry convexMesh;
+					shapes[i]->getConvexMeshGeometry(convexMesh);
+					convexMesh.scale.scale *= lengthScale;
+					shapes[i]->setGeometry(convexMesh);
+				}
+				break;
+				case PxGeometryType::eTRIANGLEMESH:
+				{
+					PxTriangleMeshGeometry triMesh;
+					shapes[i]->getTriangleMeshGeometry(triMesh);
+					triMesh.scale.scale *= lengthScale;
+					shapes[i]->setGeometry(triMesh);
+				}
+				break;
+				case PxGeometryType::eHEIGHTFIELD:
+				{
+					PxHeightFieldGeometry hf;
+					shapes[i]->getHeightFieldGeometry(hf);
+					hf.columnScale *= lengthScale;
+					hf.heightScale *= lengthScale;
+					hf.rowScale *= lengthScale;
+					shapes[i]->setGeometry(hf);
+				}
+				break;
+				case PxGeometryType::eINVALID:
+				case PxGeometryType::eGEOMETRY_COUNT:
+					break;
+				}
+			}
+		}
+	}
+}
+
 PxRigidDynamic* VehicleCreator::CreateVehicleActor(const PxVehicleChassisData& chassisData, PxMaterial** wheelMaterials, PxConvexMesh** wheelConvexMeshes, const PxU32 numWheels, const PxFilterData& wheelSimFilterData, PxMaterial** chassisMaterials, PxConvexMesh** chassisConvexMeshes, const PxU32 numChassisMeshes, const PxFilterData& chassisSimFilterData, PxPhysics& physics)
 {
 	//Wheel and chassis query filter data.
@@ -221,10 +388,6 @@ PxRigidDynamic* VehicleCreator::CreateVehicleActor(const PxVehicleChassisData& c
 		wheelShape->setQueryFilterData(wheelQryFilterData);
 		wheelShape->setSimulationFilterData(wheelSimFilterData);
 		wheelShape->setLocalPose(PxTransform(PxIdentity));
-
-
-
-
 
 		PxTransform shapePose = PxShapeExt::getGlobalPose(*wheelShape, *vehActor);
 		wheelData->offset = glm::vec3(shapePose.p.x, shapePose.p.y, shapePose.p.z);
@@ -314,7 +477,10 @@ PxConvexMesh* VehicleCreator::createConvexMesh(const PxVec3* verts, const PxU32 
 	}
 }
 
-void VehicleCreator::ComputeWheelCenterActorOffsets4W(const PxF32 wheelFrontZ, const PxF32 wheelRearZ, const PxVec3& chassisDims, const PxF32 wheelWidth, const PxF32 wheelRadius, const PxU32 numWheels, PxVec3* wheelCentreOffsets)
+void VehicleCreator::ComputeWheelCenterActorOffsets4W(const PxF32 wheelFrontZ, 
+	const PxF32 wheelRearZ, const PxVec3& chassisDims,
+	const PxF32 wheelWidth, const PxF32 wheelRadius, 
+	const PxU32 numWheels, PxVec3* wheelCentreOffsets)
 {
 
 	//chassisDims.z is the distance from the rear of the chassis to the front of the chassis.
@@ -322,20 +488,20 @@ void VehicleCreator::ComputeWheelCenterActorOffsets4W(const PxF32 wheelFrontZ, c
 	//Compute a position for the front wheel and the rear wheel along the z-axis.
 	//Compute the separation between each wheel along the z-axis.
 	const PxF32 numLeftWheels = numWheels / 2.0f;
-	const PxF32 deltaZ = (wheelFrontZ - wheelRearZ) / (numLeftWheels - 1.0f);
+	PxF32 deltaZ = (wheelFrontZ - wheelRearZ) / (numLeftWheels - 1.0f); 
 	//Set the outside of the left and right wheels to be flush with the chassis.
 	//Set the top of the wheel to be just touching the underside of the chassis.
 	//Begin by setting the rear-left/rear-right/front-left,front-right wheels.
-	wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eREAR_LEFT] = PxVec3((-chassisDims.x + wheelWidth) * 0.5f, -(chassisDims.y / 2 + wheelRadius), wheelRearZ + 0 * deltaZ * 0.5f);
-	wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eREAR_RIGHT] = PxVec3((+chassisDims.x - wheelWidth) * 0.5f, -(chassisDims.y / 2 + wheelRadius), wheelRearZ + 0 * deltaZ * 0.5f);
-	wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eFRONT_LEFT] = PxVec3((-chassisDims.x + wheelWidth) * 0.5f, -(chassisDims.y / 2 + wheelRadius), wheelRearZ + (numLeftWheels - 1) * deltaZ);
-	wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eFRONT_RIGHT] = PxVec3((+chassisDims.x - wheelWidth) * 0.5f, -(chassisDims.y / 2 + wheelRadius), wheelRearZ + (numLeftWheels - 1) * deltaZ);
-	//Set the remaining wheels.
-	for (PxU32 i = 2, wheelCount = 4; i < numWheels - 2; i += 2, wheelCount += 2)
-	{
-		wheelCentreOffsets[wheelCount + 0] = PxVec3((-chassisDims.x + wheelWidth) * 0.5f, -(chassisDims.y / 2 + wheelRadius), wheelRearZ + i * deltaZ * 0.5f);
-		wheelCentreOffsets[wheelCount + 1] = PxVec3((+chassisDims.x - wheelWidth) * 0.5f, -(chassisDims.y / 2 + wheelRadius), wheelRearZ + i * deltaZ * 0.5f);
-	}
+	//HACK:
+	float Xoffset =0.75f;
+	wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eREAR_LEFT] = PxVec3(((-chassisDims.x + wheelWidth) * 0.5f) - Xoffset,
+																		-(chassisDims.y / 2 + wheelRadius), 
+																		wheelRearZ + 0 * deltaZ * 0.5f);
+
+
+	wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eREAR_RIGHT] = PxVec3(((+chassisDims.x - wheelWidth) * 0.5f) + Xoffset, -(chassisDims.y / 2 + wheelRadius), wheelRearZ + 0 * deltaZ * 0.5f);
+	wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eFRONT_LEFT] = PxVec3(((-chassisDims.x + wheelWidth) * 0.5f) - Xoffset, -(chassisDims.y / 2 + wheelRadius), wheelRearZ + (numLeftWheels - 1) * deltaZ);
+	wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eFRONT_RIGHT] = PxVec3(((+chassisDims.x - wheelWidth) * 0.5f) + Xoffset, -(chassisDims.y / 2 + wheelRadius), wheelRearZ + (numLeftWheels - 1) * deltaZ);
 
 }
 
@@ -369,6 +535,7 @@ void VehicleCreator::setupWheelsSimulationData(const PxF32 wheelMass, const PxF3
 			for (PxU32 i = 0; i < numWheels; i++)
 			{
 				tires[i].mType = 0;
+				//tires[i].
 			}
 		}
 
@@ -425,12 +592,12 @@ void VehicleCreator::setupWheelsSimulationData(const PxF32 wheelMass, const PxF3
 				//Suspension force application point 0.3 metres below 
 				//rigid body center of mass.
 				suspForceAppCMOffsets[i] =
-					PxVec3(wheelCentreCMOffsets[i].x, -0.3f, wheelCentreCMOffsets[i].z);
+					PxVec3(wheelCentreCMOffsets[i].x, -0.1f, wheelCentreCMOffsets[i].z);
 
 				//Tire force application point 0.3 metres below 
 				//rigid body center of mass.
 				tireForceAppCMOffsets[i] =
-					PxVec3(wheelCentreCMOffsets[i].x, -0.3f, wheelCentreCMOffsets[i].z);
+					PxVec3(wheelCentreCMOffsets[i].x, -0.1f, wheelCentreCMOffsets[i].z);
 			}
 		}
 
@@ -454,16 +621,18 @@ void VehicleCreator::setupWheelsSimulationData(const PxF32 wheelMass, const PxF3
 			wheelsSimData->setWheelShapeMapping(i, PxI32(i));
 		}
 
+		wheelsSimData->setSubStepCount(5.0f, 3, 1);
+
 		//Add a front and rear anti-roll bar
 		PxVehicleAntiRollBarData barFront;
 		barFront.mWheel0 = PxVehicleDrive4WWheelOrder::eFRONT_LEFT;
 		barFront.mWheel1 = PxVehicleDrive4WWheelOrder::eFRONT_RIGHT;
-		barFront.mStiffness = 10000.0f;
+		barFront.mStiffness = 4000.0f;
 		wheelsSimData->addAntiRollBarData(barFront);
 		PxVehicleAntiRollBarData barRear;
 		barRear.mWheel0 = PxVehicleDrive4WWheelOrder::eREAR_LEFT;
 		barRear.mWheel1 = PxVehicleDrive4WWheelOrder::eREAR_RIGHT;
-		barRear.mStiffness = 10000.0f;
+		barRear.mStiffness = 4000.0f;
 		wheelsSimData->addAntiRollBarData(barRear);
 	}
 }
@@ -478,24 +647,46 @@ void VehicleCreator::setupDrivableSurface(PxFilterData wheelQryFilterData)
 	wheelQryFilterData.word3 = DRIVABLE_SURFACE;
 }
 
+//Drivable surface types.
+enum
+{
+	SURFACE_TYPE_TARMAC,
+	MAX_NUM_SURFACE_TYPES
+};
+//Tire types.
+enum
+{
+	TIRE_TYPE_NORMAL = 0,
+	TIRE_TYPE_WORN,
+	MAX_NUM_TIRE_TYPES
+};
+
+
+//Tire model friction for each combination of drivable surface type and tire type.
+static PxF32 gTireFrictionMultipliers[MAX_NUM_SURFACE_TYPES][MAX_NUM_TIRE_TYPES] =
+{
+	//NORMAL,	WORN
+	{1.00f,		0.1f}//TARMAC
+};
+
 PxVehicleDrivableSurfaceToTireFrictionPairs* VehicleCreator::createFrictionPairs(const PxMaterial* defaultMaterial)
 {
 	PxVehicleDrivableSurfaceType surfaceTypes[1];
-	surfaceTypes[0].mType = 0;
+	surfaceTypes[0].mType = SURFACE_TYPE_TARMAC;
 
 	const PxMaterial* surfaceMaterials[1];
 	surfaceMaterials[0] = defaultMaterial;
 
 	PxVehicleDrivableSurfaceToTireFrictionPairs* surfaceTirePairs =
-		PxVehicleDrivableSurfaceToTireFrictionPairs::allocate(2, 1);
+		PxVehicleDrivableSurfaceToTireFrictionPairs::allocate(MAX_NUM_TIRE_TYPES, MAX_NUM_SURFACE_TYPES);
 
-	surfaceTirePairs->setup(2, 1, surfaceMaterials, surfaceTypes);
+	surfaceTirePairs->setup(MAX_NUM_TIRE_TYPES, MAX_NUM_SURFACE_TYPES, surfaceMaterials, surfaceTypes);
 
-	for (PxU32 i = 0; i < 1; i++)
+	for (PxU32 i = 0; i < MAX_NUM_SURFACE_TYPES; i++)
 	{
-		for (PxU32 j = 0; j < 2; j++)
+		for (PxU32 j = 0; j < MAX_NUM_TIRE_TYPES; j++)
 		{
-			surfaceTirePairs->setTypePairFriction(i, j,1);
+			surfaceTirePairs->setTypePairFriction(i, j, gTireFrictionMultipliers[i][j]);
 		}
 	}
 	return surfaceTirePairs;

@@ -66,7 +66,7 @@ private:
 
 	void DrawTreeNode(GameObject* go);
 
-
+	bool debugPhysics = false;
 
 	void DrawContextMenu(GameObject* go);
 

@@ -86,7 +86,8 @@ void Scene::Update(float deltaTime)
 		PhysXManager::getInstance()->Update(deltaTime);
 		
 	}
-	else
+	ImGui::Checkbox("Debug Physics", &debugPhysics);
+	if (debugPhysics)
 	{
 		PhysXManager::getInstance()->DebugUpdate(deltaTime);
 		PhysXManager::getInstance()->DrawDebug();

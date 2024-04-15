@@ -18,6 +18,8 @@ cMesh::cMesh()
 	this->m_UniqueID = cMesh::m_nextUniqueID;
 	cMesh::m_nextUniqueID++;
 	this->friendlyName = "[Drag and drop model here]";
+	this->minExtents_XYZ = glm::vec3(0.0f);
+	this->maxExtents_XYZ = glm::vec3(0.0f);
 }
 
 unsigned int cMesh::getUniqueID(void)
@@ -27,32 +29,12 @@ unsigned int cMesh::getUniqueID(void)
 
 void cMesh::calcExtents(void)
 {
-	glm::mat4 matModel = transform.GetTransform();
 
-	for (sModelDrawInfo modelDraw : modelDrawInfo)
+	for (sModelDrawInfo modelDrawV : modelDrawInfo)
 	{
-		for (size_t i = 0; i < modelDraw.numberOfVertices; i++)
-		{
-			glm::vec3 vert = glm::vec3(modelDraw.pVertices[i].x,
-				modelDraw.pVertices[i].y,
-				modelDraw.pVertices[i].z);
-			vert = (matModel * glm::vec4(vert, 1.0f));
+		sModelDrawInfo modelDraw;
 
-			modelDraw.pVertices[i].x = vert.x;
-			modelDraw.pVertices[i].y = vert.y;
-			modelDraw.pVertices[i].z = vert.z;
-		}
-
-		for (size_t i = 0; i < modelDraw.numberOfTriangles; i++)
-		{
-
-			glm::vec3 v1 = modelDraw.pTriangles[i].v1;
-			glm::vec3 v2 = modelDraw.pTriangles[i].v2;
-			glm::vec3 v3 = modelDraw.pTriangles[i].v3;
-			modelDraw.pTriangles[i].v1 = (matModel * glm::vec4(v1, 1.0f));
-			modelDraw.pTriangles[i].v2 = (matModel * glm::vec4(v2, 1.0f));
-			modelDraw.pTriangles[i].v3 = (matModel * glm::vec4(v3, 1.0f));
-		}
+		GetTransformedMeshDrawInfo(modelDraw);
 
 		modelDraw.calcExtents();
 
@@ -78,6 +60,38 @@ void cMesh::AddChild(cMesh* child)
 {
 	child->isChild = true;
 	this->vec_pChildMeshes.push_back(child);
+}
+
+bool cMesh::GetTransformedMeshDrawInfo(sModelDrawInfo& transformedInfo)
+{
+
+	glm::mat4 matModel = transform.GetTransform();
+
+	sModelDrawInfo drawInfo = this->modelDrawInfo[0];
+	transformedInfo = drawInfo;
+	for (size_t i = 0; i < drawInfo.numberOfVertices; i++)
+	{
+		glm::vec3 vert = glm::vec3(drawInfo.pVertices[i].x,
+									drawInfo.pVertices[i].y,
+									drawInfo.pVertices[i].z);
+		vert = (matModel * glm::vec4(vert, 1.0f));
+
+		transformedInfo.pVertices[i].x = vert.x;
+		transformedInfo.pVertices[i].y = vert.y;
+		transformedInfo.pVertices[i].z = vert.z;
+	}
+
+	for (int i = 0; i < drawInfo.numberOfTriangles; i++)
+	{
+		glm::vec3 v1 = drawInfo.pTriangles[i].v1;
+		glm::vec3 v2 = drawInfo.pTriangles[i].v2;
+		glm::vec3 v3 = drawInfo.pTriangles[i].v3;
+		transformedInfo.pTriangles[i].v1 = (matModel * glm::vec4(v1, 1.0f));
+		transformedInfo.pTriangles[i].v2 = (matModel * glm::vec4(v2, 1.0f));
+		transformedInfo.pTriangles[i].v3 = (matModel * glm::vec4(v3, 1.0f));
+	}
+
+	return true;
 }
 
 void cMesh::Render()
@@ -206,7 +220,8 @@ cMesh::cMesh(std::string meshName, std::string friendlyName)
 	
 	this->LoadMesh(meshName, friendlyName);
 
-
+	this->minExtents_XYZ = glm::vec3(0.0f);
+	this->maxExtents_XYZ = glm::vec3(0.0f);
 	this->m_UniqueID = cMesh::m_nextUniqueID;
 	cMesh::m_nextUniqueID++;
 }

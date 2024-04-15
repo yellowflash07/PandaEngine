@@ -66,7 +66,7 @@ public:
 	bool useBone = false;
 	bool dynamicLOD = false;
 	//glm::mat4 AnimatedTransform;
-
+	bool GetTransformedMeshDrawInfo(sModelDrawInfo& transformedInfo);
 	void Render();
 private:
 	unsigned int m_UniqueID;

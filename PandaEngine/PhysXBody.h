@@ -29,7 +29,7 @@ public:
 	ColliderType type;
 	PxShape* shape;
 	bool isDynamic;
-	void CreateMeshCollider(cMesh* mesh,
+	PxShape* CreateMeshCollider(cMesh* mesh,
 		bool skipMeshCleanup, bool skipEdgeData, bool inserted, const PxU32 numTrisPerLeaf);
 	unsigned int uniqueID;
 	std::function<void(PhysXBody* other)> onTriggerEnter;

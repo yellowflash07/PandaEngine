@@ -202,11 +202,13 @@ void PhysXManager::Init(bool connectToPvd)
         PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
         gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
     }
-    
-    gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+	PxTolerancesScale scale;
+	scale.length = 18;
+	scale.speed = 10.0f * 18;
+    gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, scale, true, gPvd);
 
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-    sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+    sceneDesc.gravity = PxVec3(0.0f, -9.81f * 18, 0.0f);
     gDispatcher = PxDefaultCpuDispatcherCreate(2);
     sceneDesc.cpuDispatcher = gDispatcher;
    // sceneDesc.filterShader = PxDefaultSimulationFilterShader;

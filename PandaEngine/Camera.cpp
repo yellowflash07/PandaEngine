@@ -47,11 +47,11 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     if (isFollowing)
     {
 	    cameraTarget = followTarget;
-        glm::mat4 transform = glm::mat4(glm::quat(followOrientation));
-
-        offset = transform * glm::vec4(offset, 1.0f);
-        offset = glm::normalize(offset) /** 100.0f*/;
-        cameraEye = offset + followPos;
+        //glm::mat4 transform = glm::mat4(glm::quat(followOrientation));
+        //
+        //offset = transform * glm::vec4(offset, 1.0f);
+        //offset = glm::normalize(offset) /** 100.0f*/;
+       // cameraEye = cameraEye + followPos;
 
         camControl = false;
         forwardVector = glm::normalize(followTarget - cameraEye);
@@ -71,7 +71,7 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     }
     else
     {
-		matView = glm::lookAt(cameraEye,
+		matView = glm::lookAt(cameraEye + offset,
                         cameraTarget,
             			upVector);
 	}
