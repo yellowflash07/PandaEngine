@@ -76,10 +76,11 @@ VehicleDesc initVehicleDesc(cMesh* chassisMesh)
    // const PxVec3 chassisDims(4.5f, 2.0f, 9.0f);
     const PxVec3 chassisMOI
     ((chassisDims.y * chassisDims.y + chassisDims.z * chassisDims.z) * chassisMass / 12,
-        (chassisDims.x * chassisDims.x + chassisDims.z * chassisDims.z) * 0.8f * chassisMass / 12,
+        (chassisDims.x * chassisDims.x + chassisDims.z * chassisDims.z) /** 0.8f*/ * chassisMass / 12,
         (chassisDims.x * chassisDims.x + chassisDims.y * chassisDims.y)  * chassisMass / 12);
   //  const PxVec3 chassisMOI(1000, 800, 1000);
-    const PxVec3 chassisCMOffset(0.0f, -chassisDims.y * 0.5f + 0.65f, 0.25f);
+    //fo
+    const PxVec3 chassisCMOffset(0.0f, -chassisDims.y * 0.5f - 1.65f, -0.75f);
   //  const PxVec3 chassisCMOffset(0.0f, 0.0, 0.25f);
 
 
@@ -113,7 +114,10 @@ VehicleDesc initVehicleDesc(cMesh* chassisMesh)
     vehicleDesc.numWheels = nbWheels;
     vehicleDesc.wheelMaterial = PhysXManager::getInstance()->gMaterial;
     vehicleDesc.axleWidth = 0.0f;
-    vehicleDesc.chassisSimFilterData = PxFilterData(COLLISION_FLAG_WHEEL, COLLISION_FLAG_WHEEL_AGAINST, 0, 0);
+    vehicleDesc.chassisSimFilterData = PxFilterData(COLLISION_FLAG_WHEEL, COLLISION_FLAG_WHEEL_AGAINST, PxPairFlag::eDETECT_CCD_CONTACT | PxPairFlag::eMODIFY_CONTACTS, 0);
+
+    vehicleDesc.actorUserData = new ActorUserData();
+    vehicleDesc.shapeUserDatas = new ShapeUserData[nbWheels];
 
     return vehicleDesc;
 }
@@ -147,6 +151,15 @@ int main(void)
 
     Scene* scene = engine.GetCurrentScene();
 
+    GameObject* ground = scene->GetGameObjectByName("Ground");
+    PhysXBody* groundBody = ground->GetComponent<PhysXBody>();
+
+    GameObject* Terrain = scene->GetGameObjectByName("Terrain");
+    PhysXBody* TerrainBody = ground->GetComponent<PhysXBody>();
+
+    GameObject* Obstacle = scene->GetGameObjectByName("Obstacle");
+    PhysXBody* ObstacleBody = ground->GetComponent<PhysXBody>();
+
     GameObject* vehicle = scene->GetGameObjectByName("Vehicle");
     TransformComponent* vehicleTransform = vehicle->GetComponent<TransformComponent>();
     cMesh* vehicleMesh = vehicle->GetComponent<cMesh>();
@@ -169,9 +182,9 @@ int main(void)
     vehicleCreator.customizeVehicleToLengthScale(gLengthScale, gVehicle4W->getRigidDynamicActor(), &gVehicle4W->mWheelsSimData, &gVehicle4W->mDriveSimData);
 
   //  PxTransform startTransform(PxVec3(0,-10, 20), PxQuat(PxIdentity));
-    PxTransform startTransform(PxVec3(-50, -10, 50), PxQuat(PxIdentity));
+    PxTransform startTransform(PxVec3(-330, -800,1400), PxQuat(PxIdentity));
     gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
-
+    gVehicle4W->getRigidDynamicActor()->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
     PhysXManager::getInstance()->gScene->addActor(*gVehicle4W->getRigidDynamicActor());
 
     //Set the vehicle to rest in first gear.
@@ -275,7 +288,7 @@ int main(void)
             PxShape* shape;
             gVehicle4W->getRigidDynamicActor()->getShapes(&shape, 1, i);
         
-            CarData* carData = (CarData*)shape->userData;
+            ShapeUserData* carData = (ShapeUserData*)shape->userData;
         
             //wheelShape->userData = wheelData;
             if (carData != nullptr)
@@ -283,14 +296,14 @@ int main(void)
                 PxTransform shapePose = PxShapeExt::getGlobalPose(*shape, *gVehicle4W->getRigidDynamicActor());
                 glm::vec3 pos = glm::vec3(shapePose.p.x, shapePose.p.y, shapePose.p.z);
                 glm::vec3 rotation = glm::eulerAngles(glm::quat(shapePose.q.w, shapePose.q.x, shapePose.q.y, shapePose.q.z));
-                if (carData->carPart == WHEEL)
+                if (carData->isWheel)
                 {
                     glm::vec3 finalPosition = glm::vec3(pos.x + vehicleXoffset, pos.y, pos.z + vehicleZoffset);
-					wheels[carData->index]->drawPosition = pos;
+					wheels[carData->wheelId]->drawPosition = pos;
                     glm::vec3 finalRotation = glm::vec3(rotation.x , rotation.y, rotation.z );
-					wheels[carData->index]->eulerRotation = finalRotation;
+					wheels[carData->wheelId]->eulerRotation = finalRotation;
                 }
-                if(carData->carPart == CHASSIS)
+                if(!carData->isWheel && carData->wheelId == -2)
 				{
                    // vehicleYoffset += pos.y;
 					vehicleTransform->drawPosition = glm::vec3(pos.x, pos.y, pos.z);

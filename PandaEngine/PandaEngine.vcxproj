@@ -308,6 +308,7 @@
     <ClInclude Include="PhysicsShapes.h" />
     <ClInclude Include="PhysXBody.h" />
     <ClInclude Include="PhysXManager.h" />
+    <ClInclude Include="PhysXVehicleEnums.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="RenderTexture.h" />

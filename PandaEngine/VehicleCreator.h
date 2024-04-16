@@ -2,18 +2,18 @@
 #include "PhysXManager.h"
 #include "VehicleSceneQueryData.h"
 
-enum CarPart
-{
-	WHEEL,
-	CHASSIS
-};
+//enum CarPart
+//{
+//	WHEEL,
+//	CHASSIS
+//};
 
-struct CarData
-{
-	CarPart carPart;
-	int index;
-	glm::vec3 offset;
-};
+//struct CarData
+//{
+//	CarPart carPart;
+//	int index;
+//	glm::vec3 offset;
+//};
 
 struct VehicleDesc
 {
@@ -49,6 +49,8 @@ struct VehicleDesc
 	PxU32 numWheels;
 	PxFilterData wheelSimFilterData;	//word0 = collide type, word1 = collide against types, word2 = PxPairFlags
 
+	ActorUserData* actorUserData;
+	ShapeUserData* shapeUserDatas;
 };
 
 class VehicleCreator
@@ -92,5 +94,7 @@ private:
 	void setupDrivableSurface(PxFilterData wheelQryFilterData);
 	PxVehicleDrivableSurfaceToTireFrictionPairs* gFrictionPairs = NULL;
 	PxVehicleDrivableSurfaceToTireFrictionPairs* createFrictionPairs(const PxMaterial* defaultMaterial);
+
+	void configureUserData(PxVehicleWheels* vehicle, ActorUserData* actorUserData, ShapeUserData* shapeUserDatas);
 };
 

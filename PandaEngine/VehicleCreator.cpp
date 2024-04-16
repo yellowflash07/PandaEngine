@@ -1,5 +1,12 @@
 #include "VehicleCreator.h"
 
+//Angle thresholds used to categorize contacts as suspension contacts or rigid body contacts.
+#define POINT_REJECT_ANGLE PxPi/4.0f
+#define NORMAL_REJECT_ANGLE PxPi/4.0f
+
+//Define the maximum acceleration for dynamic bodies under the wheel.
+#define MAX_ACCELERATION 50.0f
+
 PxQueryHitType::Enum WheelSceneQueryPreFilterBlocking
 (PxFilterData filterData0, PxFilterData filterData1,
 	const void* constantBlock, PxU32 constantBlockSize,
@@ -15,15 +22,45 @@ PxQueryHitType::Enum WheelSceneQueryPreFilterBlocking
 	return ((0 == (filterData1.word3 & DRIVABLE_SURFACE)) ? PxQueryHitType::eNONE : PxQueryHitType::eBLOCK);
 }
 
+PxQueryHitType::Enum WheelSceneQueryPreFilterNonBlocking
+(PxFilterData filterData0, PxFilterData filterData1,
+	const void* constantBlock, PxU32 constantBlockSize,
+	PxHitFlags& queryFlags)
+{
+	//filterData0 is the vehicle suspension query.
+	//filterData1 is the shape potentially hit by the query.
+	PX_UNUSED(filterData0);
+	PX_UNUSED(constantBlock);
+	PX_UNUSED(constantBlockSize);
+	PX_UNUSED(queryFlags);
+	return ((0 == (filterData1.word3 & DRIVABLE_SURFACE)) ? PxQueryHitType::eNONE : PxQueryHitType::eTOUCH);
+}
+
+PxQueryHitType::Enum WheelSceneQueryPostFilterNonBlocking
+(PxFilterData filterData0, PxFilterData filterData1,
+	const void* constantBlock, PxU32 constantBlockSize,
+	const PxQueryHit& hit)
+{
+	PX_UNUSED(filterData0);
+	PX_UNUSED(filterData1);
+	PX_UNUSED(constantBlock);
+	PX_UNUSED(constantBlockSize);
+	if ((static_cast<const PxSweepHit&>(hit)).hadInitialOverlap())
+		return PxQueryHitType::eNONE;
+	return PxQueryHitType::eTOUCH;
+}
+
 
 VehicleCreator::VehicleCreator()
 {
 	PxInitVehicleSDK(*PhysXManager::getInstance()->gPhysics);
 	PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(0, 0, 1));
 	PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
+	PxVehicleSetSweepHitRejectionAngles(POINT_REJECT_ANGLE, NORMAL_REJECT_ANGLE);
+	PxVehicleSetMaxHitActorAcceleration(MAX_ACCELERATION);
 
 	//Create the batched scene queries for the suspension raycasts.
-	gVehicleSceneQueryData = VehicleSceneQueryData::allocate(1, PX_MAX_NB_WHEELS, 1, 1, WheelSceneQueryPreFilterBlocking, NULL, PhysXManager::getInstance()->gAllocator);
+	gVehicleSceneQueryData = VehicleSceneQueryData::allocate(1, PX_MAX_NB_WHEELS, 8, 1, WheelSceneQueryPreFilterNonBlocking, WheelSceneQueryPostFilterNonBlocking, PhysXManager::getInstance()->gAllocator);
 	gBatchQuery = VehicleSceneQueryData::setUpBatchedSceneQuery(0, *gVehicleSceneQueryData, PhysXManager::getInstance()->gScene);
 	gFrictionPairs = createFrictionPairs(PhysXManager::getInstance()->gMaterial);
 }
@@ -146,6 +183,8 @@ PxVehicleDrive4W* VehicleCreator::CreateVehicle4W(const VehicleDesc& vehicle4WDe
 	PxVehicleDrive4W* vehDrive4W = PxVehicleDrive4W::allocate(numWheels);
 	vehDrive4W->setup(physics, veh4WActor, *wheelsSimData, driveSimData, numWheels - 4);
 
+	configureUserData(vehDrive4W, vehicle4WDesc.actorUserData, vehicle4WDesc.shapeUserDatas);
+
 	//Free the sim data because we don't need that any more.
 	wheelsSimData->free();
 	this->vehDrive4W = vehDrive4W;
@@ -186,16 +225,33 @@ PxFixedSizeLookupTable<8> gSteerVsForwardSpeedTable(gSteerVsForwardSpeedData, 4)
 void VehicleCreator::UpdateVehicle4W(const PxF32 timestep, const PxVec3& gravity, PxVehicleDrive4W* vehDrive4W, PxVehicleWheelQueryResult* vehWheelQueryResults, PxVehicleDrive4WRawInputData* vehDrive4WInputData)
 {
 	//Raycasts.
+	//PxVehicleWheels* vehicles[1] = { vehDrive4W };
+	//PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
+	//const PxU32 raycastResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
+	//PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicles, raycastResultsSize, raycastResults);
+
+	////Vehicle update.
+	//const PxVec3 grav = PhysXManager::getInstance()->gScene->getGravity();
+	//PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
+	//PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehDrive4W->mWheelsSimData.getNbWheels()} };
+	//PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, NULL);	
+
+		//Suspension sweeps (instead of raycasts).
+	//Sweeps provide more information about the geometry under the wheel.
 	PxVehicleWheels* vehicles[1] = { vehDrive4W };
-	PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
-	const PxU32 raycastResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
-	PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicles, raycastResultsSize, raycastResults);
+	PxSweepQueryResult* sweepResults = gVehicleSceneQueryData->getSweepQueryResultBuffer(0);
+	const PxU32 sweepResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
+	PxVehicleSuspensionSweeps(gBatchQuery, 1, vehicles, sweepResultsSize, sweepResults, 8, NULL, 1.0f, 1.01f);
 
 	//Vehicle update.
 	const PxVec3 grav = PhysXManager::getInstance()->gScene->getGravity();
-	PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
-	PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehDrive4W->mWheelsSimData.getNbWheels()} };
-	PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, NULL);	
+	PxVec3 scaledGrav = PxVec3(grav.x, grav.y, grav.z);
+	PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS][1];
+	PxVehicleWheelQueryResult vehicleQueryResults[1] =
+	{
+		{ wheelQueryResults[0], vehDrive4W->mWheelsSimData.getNbWheels() },
+	};
+	PxVehicleUpdates(timestep, scaledGrav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
 
 	//update input
 	PxVehicleDrive4WSmoothDigitalRawInputsAndSetAnalogInputs(gKeySmoothingData, gSteerVsForwardSpeedTable, *vehDrive4WInputData, timestep, false, *vehDrive4W);
@@ -379,19 +435,21 @@ PxRigidDynamic* VehicleCreator::CreateVehicleActor(const PxVehicleChassisData& c
 	for (PxU32 i = 0; i < numWheels; i++)
 	{
 		PxConvexMeshGeometry geom(wheelConvexMeshes[i]);
-		CarData* wheelData = new CarData();
 
 		PxShape* wheelShape = PxRigidActorExt::createExclusiveShape(*vehActor, geom, *wheelMaterials[i]);
-		wheelData->carPart = WHEEL;
-		wheelData->index = i;
 
 		wheelShape->setQueryFilterData(wheelQryFilterData);
 		wheelShape->setSimulationFilterData(wheelSimFilterData);
 		wheelShape->setLocalPose(PxTransform(PxIdentity));
 
+		ShapeUserData* chassisData = new ShapeUserData();
+		chassisData->isWheel = true;
+		chassisData->wheelId = i;
+
+		wheelShape->userData = chassisData;
+
+
 		PxTransform shapePose = PxShapeExt::getGlobalPose(*wheelShape, *vehActor);
-		wheelData->offset = glm::vec3(shapePose.p.x, shapePose.p.y, shapePose.p.z);
-		wheelShape->userData = wheelData;
 	}
 
 	//Add the chassis shapes to the actor.
@@ -401,11 +459,17 @@ PxRigidDynamic* VehicleCreator::CreateVehicleActor(const PxVehicleChassisData& c
 		chassisShape->setQueryFilterData(chassisQryFilterData);
 		chassisShape->setSimulationFilterData(chassisSimFilterData);
 		chassisShape->setLocalPose(PxTransform(PxIdentity));
-		CarData* chassisData = new CarData();
+
+		ShapeUserData* chassisData = new ShapeUserData();
+		chassisData->isWheel = false;
+		chassisData->wheelId = -2;
+
+		chassisShape->userData = chassisData;
+		/*CarData* chassisData = new CarData();
 		chassisData->carPart = CHASSIS;
 		chassisData->index = i;
 		chassisData->offset = glm::vec3(chassisShape->getLocalPose().p.x, chassisShape->getLocalPose().p.y, chassisShape->getLocalPose().p.z);
-		chassisShape->userData = chassisData;
+		chassisShape->userData = chassisData;*/
 	}
 
 	vehActor->setMass(chassisData.mMass);
@@ -647,21 +711,6 @@ void VehicleCreator::setupDrivableSurface(PxFilterData wheelQryFilterData)
 	wheelQryFilterData.word3 = DRIVABLE_SURFACE;
 }
 
-//Drivable surface types.
-enum
-{
-	SURFACE_TYPE_TARMAC,
-	MAX_NUM_SURFACE_TYPES
-};
-//Tire types.
-enum
-{
-	TIRE_TYPE_NORMAL = 0,
-	TIRE_TYPE_WORN,
-	MAX_NUM_TIRE_TYPES
-};
-
-
 //Tire model friction for each combination of drivable surface type and tire type.
 static PxF32 gTireFrictionMultipliers[MAX_NUM_SURFACE_TYPES][MAX_NUM_TIRE_TYPES] =
 {
@@ -690,4 +739,26 @@ PxVehicleDrivableSurfaceToTireFrictionPairs* VehicleCreator::createFrictionPairs
 		}
 	}
 	return surfaceTirePairs;
+}
+
+void VehicleCreator::configureUserData(PxVehicleWheels* vehicle, ActorUserData* actorUserData, ShapeUserData* shapeUserDatas)
+{
+	if (actorUserData)
+	{
+		vehicle->getRigidDynamicActor()->userData = actorUserData;
+		actorUserData->vehicle = vehicle;
+	}
+
+	/*if (shapeUserDatas)
+	{
+		PxShape* shapes[PX_MAX_NB_WHEELS + 1];
+		vehicle->getRigidDynamicActor()->getShapes(shapes, PX_MAX_NB_WHEELS + 1);
+		for (PxU32 i = 0; i < vehicle->mWheelsSimData.getNbWheels(); i++)
+		{
+			const PxI32 shapeId = vehicle->mWheelsSimData.getWheelShapeMapping(i);
+			shapes[shapeId]->userData = &shapeUserDatas[i];
+			shapeUserDatas[i].isWheel = true;
+			shapeUserDatas[i].wheelId = i;
+		}
+	}*/
 }

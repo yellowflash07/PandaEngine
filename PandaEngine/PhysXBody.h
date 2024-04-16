@@ -44,6 +44,9 @@ public:
 	glm::vec3 halfExtents;
 	float radius;
 	cMesh* mesh;
+
+	void SetDriveableGround();
+	void SetDriveableObject();
 private:
 	PxMaterial* material;
 	PxPhysics* gPhysics = NULL;

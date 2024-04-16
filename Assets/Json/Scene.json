@@ -243,7 +243,7 @@
             "children": []
         },
         {
-            "name": "GameObject",
+            "name": "Terrain",
             "transform": {
                 "position": [
                     0.0,
@@ -300,6 +300,74 @@
             },
             "physXObj": {
                 "type": 3,
+                "isDynamic": false,
+                "isTrigger": false
+            },
+            "children": []
+        },
+        {
+            "name": "Obstacle",
+            "transform": {
+                "position": [
+                    -232.68325805664063,
+                    -872.302734375,
+                    1253.1416015625
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    56.44719696044922,
+                    25.54375457763672,
+                    574.3038330078125
+                ]
+            },
+            "mesh": {
+                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": ""
+            },
+            "physXObj": {
+                "type": 1,
+                "halfExtents": [
+                    28.22359848022461,
+                    12.77187728881836,
+                    287.15191650390625
+                ],
                 "isDynamic": false,
                 "isTrigger": false
             },

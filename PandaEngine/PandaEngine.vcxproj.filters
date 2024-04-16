@@ -503,6 +503,9 @@
     <ClInclude Include="VehicleSceneQueryData.h">
       <Filter>Physics\PhysX\Vehicle Physics</Filter>
     </ClInclude>
+    <ClInclude Include="PhysXVehicleEnums.h">
+      <Filter>Physics\PhysX\Vehicle Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Assets\Shaders\fragmentshader.glsl">

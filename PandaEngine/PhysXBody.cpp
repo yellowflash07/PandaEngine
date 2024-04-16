@@ -9,6 +9,7 @@ PhysXBody::PhysXBody(TransformComponent* transform)
 {
 	gPhysics = PhysXManager::getInstance()->gPhysics;
 	gScene = PhysXManager::getInstance()->gScene;
+	//gMaterial = gPhysics->createMaterial(0.0f, 0.0f, 0.0f);
 	gMaterial = PhysXManager::getInstance()->gMaterial;
 	this->transform = transform;
 	SetBody(false);
@@ -61,8 +62,8 @@ void PhysXBody::SetShape(ColliderType type)
 	{
 		shape = CreateMeshCollider(mesh, false, false, false, 1);
 	}
-	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
-	shape->setSimulationFilterData(groundPlaneSimFilterData);
+	PxFilterData objectSimFilterData(COLLISION_FLAG_OBSTACLE, COLLISION_FLAG_WHEEL, PxPairFlag::eMODIFY_CONTACTS | PxPairFlag::eDETECT_CCD_CONTACT, 0);
+	shape->setSimulationFilterData(objectSimFilterData);
 	PxFilterData qryFilterData;
 	qryFilterData.word3 = DRIVABLE_SURFACE;
 	shape->setQueryFilterData(qryFilterData);
@@ -290,5 +291,23 @@ void PhysXBody::UpdateSphereDimensions(float radius)
 	this->shape->getSphereGeometry(sphereGeometry);
 	sphereGeometry.radius = radius;
 	this->shape->setGeometry(sphereGeometry);
+}
+
+void PhysXBody::SetDriveableGround()
+{
+	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_WHEEL, 0, 0);
+	shape->setSimulationFilterData(groundPlaneSimFilterData);
+	PxFilterData qryFilterData;
+	qryFilterData.word3 = DRIVABLE_SURFACE;
+	shape->setQueryFilterData(qryFilterData);
+}
+
+void PhysXBody::SetDriveableObject()
+{
+	PxFilterData objectSimFilterData(COLLISION_FLAG_OBSTACLE, COLLISION_FLAG_WHEEL, PxPairFlag::eMODIFY_CONTACTS | PxPairFlag::eDETECT_CCD_CONTACT, 0);
+	shape->setSimulationFilterData(objectSimFilterData);
+	PxFilterData qryFilterData;
+	qryFilterData.word3 = DRIVABLE_SURFACE;
+	shape->setQueryFilterData(qryFilterData);
 }
 
