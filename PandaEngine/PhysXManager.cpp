@@ -345,7 +345,7 @@ void PhysXManager::Init(bool connectToPvd)
     gDispatcher = PxDefaultCpuDispatcherCreate(2);
     sceneDesc.cpuDispatcher = gDispatcher;
    // sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-    sceneDesc.filterShader = VehicleFilterShader;
+    sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.contactModifyCallback = &gWheelContactModifyCallback;
 	sceneDesc.ccdContactModifyCallback = &gWheelCCDContactModifyCallback;	//Enable ccd contact modification
 
@@ -407,17 +407,6 @@ void PhysXManager::DrawDebug()
 		DebugRenderer::getInstance()->DrawLine(pos0, pos1, glm::vec3(1,0,0), glm::vec3(1, 0, 0));
 	}
 
-	for (PxU32 i = 0; i < rb.getNbPoints(); i++)
-	{
-		const PxDebugPoint& point = rb.getPoints()[i];
-		//DrawDebugPoint(glm::vec3(point.pos.x, point.pos.y, point.pos.z), glm::vec3(point.color));
-	}
-
-	for (PxU32 i = 0; i < rb.getNbTriangles(); i++)
-	{
-		const PxDebugTriangle& triangle = rb.getTriangles()[i];
-		//DrawDebugTriangle(glm::vec3(triangle.pos0.x, triangle.pos0.y, triangle.pos0.z), glm::vec3(triangle.pos1.x, triangle.pos1.y, triangle.pos1.z), glm::vec3(triangle.pos2.x, triangle.pos2.y, triangle.pos2.z), glm::vec3(triangle.color0), glm::vec3(triangle.color1), glm::vec3(triangle.color2));
-	}
 }
 
 void PhysXManager::Shutdown()

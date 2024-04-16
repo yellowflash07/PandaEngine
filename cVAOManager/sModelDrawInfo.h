@@ -55,8 +55,8 @@ struct BoneInfo
 	std::string boneName;
 	unsigned int boneID;		// Index of the bone
 	glm::mat4 BoneOffset = glm::mat4(1.0f);;	// How to move from bone space to mesh space
-	glm::mat4 FinalTransformation = glm::mat4(1.0f);	// Bone space to world space
-	//glm::mat4 GlobalTransformation = glm::mat4(1.0f);;	// Bone space to world space
+	glm::mat4 FinalTransformation = glm::mat4(1.0f);	// Bone space to local space
+	glm::mat4 GlobalTransformation = glm::mat4(1.0f);;	// Bone space to world space
 };
 
 
@@ -117,6 +117,10 @@ struct sModelDrawInfo
 	std::vector<AnimationInfo> Animations;
 	unsigned int getUniqueID(void);
 	std::map<std::string, glm::mat4> boneTransformations;
+
+	glm::mat4 GetWorldSpaceBoneTransformation(const std::string& boneName);
+
+	Node* FindNode(const std::string& name, Node* rootNode);
 private:
 	unsigned int m_UniqueID;
 	static const unsigned int FIRST_UNIQUE_ID = 1;

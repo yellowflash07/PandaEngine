@@ -52,5 +52,5 @@ private:
 	cBasicTextureManager* textureManager;
 	std::string basePath;
 	void SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID);
-	void CalculateMatrices(cMesh* pCurrentMesh, Node* node, const glm::mat4& parentTransformationMatrix, sModelDrawInfo &modelInfo);
+	void CalculateMatrices(cMesh* pCurrentMesh, Node* node, const glm::mat4& parentTransformationMatrix, sModelDrawInfo* modelInfo);
 };

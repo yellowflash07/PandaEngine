@@ -17,7 +17,7 @@ struct TransformComponent : public IEditorUI
 	glm::vec3 eulerRotation = glm::vec3(0);
 	glm::vec3 drawScale = glm::vec3(1);
 	glm::quat m_qOrientation = glm::quat(eulerRotation);
-
+	glm::mat4 parentTransform = glm::mat4(1.0f);
 	bool isDirty = false;
 
 	void setRotationFromEuler(glm::vec3 newEulerAngleXYZ)
@@ -66,7 +66,7 @@ struct TransformComponent : public IEditorUI
 
 	glm::mat4 GetTransform()
 	{
-		glm::mat4 matModel = glm::mat4(1.0f);
+		glm::mat4 matModel = parentTransform;
 
 		// Translation
 		glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f), drawPosition);
@@ -78,6 +78,7 @@ struct TransformComponent : public IEditorUI
 
 		return matModel * matTranslate * matRotation * matScale;
 	}
+
 
 	void Render()
 	{

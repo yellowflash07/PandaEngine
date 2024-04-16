@@ -42,6 +42,53 @@ unsigned int sModelDrawInfo::getUniqueID(void)
 	return this->m_UniqueID;
 }
 
+glm::mat4 sModelDrawInfo::GetWorldSpaceBoneTransformation(const std::string& boneName)
+{
+	glm::mat4 matBoneWorld = glm::mat4(1.0f);
+
+	Node* boneNode = FindNode(boneName, this->RootNode);
+	glm::mat4 nodeTransform = boneNode->Transformation;
+
+	while (boneNode != nullptr)
+	{
+		std::map<std::string, glm::mat4>::iterator boneIt =
+							boneTransformations.find(boneNode->Name);
+
+		if (boneIt != boneTransformations.end())
+		{
+			nodeTransform = boneIt->second;
+		}
+
+		matBoneWorld = nodeTransform * matBoneWorld;
+
+
+		boneNode = FindNode(boneNode->Name, this->RootNode)->Parent;
+	}
+
+	return matBoneWorld;
+
+}
+
+Node* sModelDrawInfo::FindNode(const std::string& name, Node* rootNode)
+{
+	if (rootNode->Name == name)
+	{
+		return rootNode;
+	}
+
+	for (Node* node : rootNode->Children)
+	{
+		Node* foundNode = this->FindNode(name, node);
+		if (foundNode != nullptr)
+		{
+			return foundNode;
+		}
+	}
+
+
+	return nullptr;
+}
+
 void sModelDrawInfo::calcExtents(void)
 {
 	if ( this->pVertices == NULL )

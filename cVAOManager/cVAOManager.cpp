@@ -379,6 +379,10 @@ Node* cVAOManager::GenerateBoneHierarchy(const aiNode* node)
         AssimpToGLM(parentNode->mTransformation, parent->Transformation);
 		newNode->Parent = parent;
 	}
+    else
+    {
+        newNode->Parent = nullptr;
+    }
 
     AssimpToGLM(node->mTransformation, newNode->Transformation);   
     for (int i = 0; i < node->mNumChildren; i++)
@@ -403,7 +407,7 @@ void cVAOManager::LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo&
             animInfo.AnimationName = pAnimation->mName.C_Str();
             animInfo.Duration = (float)pAnimation->mDuration;
             animInfo.TicksPerSecond = (float)pAnimation->mTicksPerSecond;
-            animInfo.RootNode = GenerateBoneHierarchy(scene->mRootNode);
+         //   animInfo.RootNode = GenerateBoneHierarchy(scene->mRootNode);
             for (unsigned int j = 0; j < pAnimation->mNumChannels; j++)
             {
                 aiNodeAnim* pNodeAnim = pAnimation->mChannels[j];

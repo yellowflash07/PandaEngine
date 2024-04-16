@@ -42,7 +42,6 @@ void AnimationSystem::AddAnimation(Animation* anim)
 	m_animations.push_back(anim);
 }
 
-
 void AnimationSystem::Pause()
 {
 	// Pause the animation system
@@ -54,8 +53,6 @@ void AnimationSystem::Resume()
 	// Resume the animation system
 	m_isPaused = false;
 }
-
-
 
 void AnimationSystem::UpdateAnimation(Animation* anim, float dt)
 {
@@ -283,32 +280,28 @@ void AnimationSystem::UpdateSkeleton(cMesh* mesh, float dt)
 	{
 		m_mesh = mesh; 
 	}
-
-	for(int i = 0; i < mesh->modelDrawInfo.size(); i++)
+	m_drawInfo = &m_mesh->modelDrawInfo[0];
+	//sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[0];
+	if (m_drawInfo->Animations.empty())
 	{
-		sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[i];
-		if (drawInfo->Animations.empty())
-		{
-			return;
-		}
+		return;
+	}
 
-		AnimationInfo info = drawInfo->Animations[currentAnimationIndex];
+	AnimationInfo info = m_drawInfo->Animations[currentAnimationIndex];
 
-		frameCount += dt * info.TicksPerSecond;
-		if (frameCount > info.Duration)
-		{
-			frameCount = 0.0f;
-		}
+	frameCount += dt * info.TicksPerSecond;
+	if (frameCount > info.Duration)
+	{
+		frameCount = 0.0f;
+	}
 
-		if (isBlending)
-		{
-			BlendBoneTransforms(drawInfo, *drawInfo->RootNode, frameCount, blendIndexA, blendIndexB, blendWeight);
-		}
-		else
-		{
-			UpdateBoneTransforms(drawInfo, *drawInfo->RootNode, frameCount);
-		}
-		//UpdateBoneTransforms(drawInfo, *drawInfo->RootNode, frameCount);
+	if (isBlending)
+	{
+		BlendBoneTransforms(m_drawInfo, *m_drawInfo->RootNode, frameCount, blendIndexA, blendIndexB, blendWeight);
+	}
+	else
+	{
+		UpdateBoneTransforms(m_drawInfo, *m_drawInfo->RootNode, frameCount);
 	}
 
 }
@@ -726,6 +719,22 @@ void AnimationSystem::LoadAnimationFromFile(std::string fileName)
 			printf("Added Animation: %s\n", animInfo.AnimationName.c_str());
 		}
 	}
+}
+
+void AnimationSystem::AttachObjectToBone(std::string boneName, TransformComponent* transform)
+{
+
+	// Attach an object to a bone
+	// Find the bone in the skeleton
+	for (int i = 0; i < m_drawInfo->vecBoneInfo.size(); i++)
+	{
+		BoneInfo* boneInfo = &m_drawInfo->vecBoneInfo[i];
+		if (boneInfo->boneName == boneName)
+		{
+			transform->parentTransform = boneInfo->GlobalTransformation;
+		}
+	}
+
 }
 
 

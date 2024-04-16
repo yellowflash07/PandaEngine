@@ -24,7 +24,7 @@ public:
 	// Check if the animation system is paused
 	bool IsDone() { return m_isDone; }
 
-	MeshManager* meshManager;
+	//MeshManager* meshManager;
 	float debug = 0.0f;
 	void SetAnimation(int index) { currentAnimationIndex = index; }
 
@@ -43,7 +43,10 @@ public:
 	cMesh* m_mesh;
 	void LoadAnimationFromFile(std::string fileName);
 
+	void AttachObjectToBone(std::string boneName, TransformComponent* transform);
+
 private:
+	sModelDrawInfo* m_drawInfo;
 	// The animations in the system
 	std::vector<Animation*> m_animations;
 	bool m_isPaused;

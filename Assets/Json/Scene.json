@@ -117,27 +117,27 @@
             "children": []
         },
         {
-            "name": "Vehicle",
+            "name": "vampire",
             "transform": {
                 "position": [
-                    -41.74060821533203,
-                    3.2176270484924316,
-                    -13.295029640197754
+                    0.0,
+                    0.0,
+                    0.0
                 ],
                 "rotation": [
-                    1.5433416366577148,
-                    -0.9038618206977844,
-                    3.1402435302734375
+                    0.0,
+                    0.0,
+                    0.0
                 ],
                 "scale": [
-                    18.0,
-                    18.0,
-                    18.0
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             },
             "mesh": {
-                "fileName": "monsterBody.fbx",
-                "friendlyName": "monsterBody.fbx",
+                "fileName": "dancing_vampire.dae",
+                "friendlyName": "dancing_vampire.dae",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -157,65 +157,7 @@
                 "isSkyBox": false,
                 "hasVertexColors": false,
                 "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "Beholder_Base_color.bmp",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": ""
-            },
-            "children": []
-        },
-        {
-            "name": "Ground",
-            "transform": {
-                "position": [
-                    0.0,
-                    -878.0842895507813,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scale": [
-                    7300.4921875,
-                    1.0,
-                    13860.24609375
-                ]
-            },
-            "mesh": {
-                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
+                "useBone": true,
                 "texture": [
                     "203536.png",
                     "",
@@ -228,22 +170,12 @@
                     1.0,
                     1.0
                 ],
-                "maskTexture": "Water_Texture_01.bmp"
-            },
-            "physXObj": {
-                "type": 1,
-                "halfExtents": [
-                    3650.5458984375,
-                    0.5,
-                    6930.123046875
-                ],
-                "isDynamic": false,
-                "isTrigger": false
+                "maskTexture": ""
             },
             "children": []
         },
         {
-            "name": "Terrain",
+            "name": "Sphere",
             "transform": {
                 "position": [
                     0.0,
@@ -256,14 +188,14 @@
                     0.0
                 ],
                 "scale": [
-                    1.0,
-                    1.0,
-                    1.0
+                    22.145000457763672,
+                    22.145000457763672,
+                    22.145000457763672
                 ]
             },
             "mesh": {
-                "fileName": "Terrain_xyz_n_rgba_uv.ply",
-                "friendlyName": "Terrain_xyz_n_rgba_uv.ply",
+                "fileName": "Isoshphere.ply",
+                "friendlyName": "Isoshphere.ply",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -297,79 +229,6 @@
                     1.0
                 ],
                 "maskTexture": ""
-            },
-            "physXObj": {
-                "type": 3,
-                "isDynamic": false,
-                "isTrigger": false
-            },
-            "children": []
-        },
-        {
-            "name": "Obstacle",
-            "transform": {
-                "position": [
-                    -232.68325805664063,
-                    -872.302734375,
-                    1253.1416015625
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scale": [
-                    56.44719696044922,
-                    25.54375457763672,
-                    574.3038330078125
-                ]
-            },
-            "mesh": {
-                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": ""
-            },
-            "physXObj": {
-                "type": 1,
-                "halfExtents": [
-                    28.22359848022461,
-                    12.77187728881836,
-                    287.15191650390625
-                ],
-                "isDynamic": false,
-                "isTrigger": false
             },
             "children": []
         }
