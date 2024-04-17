@@ -529,17 +529,5 @@
     <None Include="..\Assets\Shaders\DebugVert.glsl">
       <Filter>ShaderManager\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\CloudsFrag.glsl">
-      <Filter>ShaderManager\Shaders</Filter>
-    </None>
-    <None Include="..\Assets\Shaders\CloudsVert.glsl">
-      <Filter>ShaderManager\Shaders</Filter>
-    </None>
-    <None Include="..\Assets\Shaders\noiseFrag.glsl">
-      <Filter>ShaderManager\Shaders</Filter>
-    </None>
-    <None Include="..\Assets\Shaders\noiseVert.glsl">
-      <Filter>ShaderManager\Shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>

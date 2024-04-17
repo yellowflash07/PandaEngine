@@ -8,7 +8,6 @@ extern Camera* camera;
 int keyHit = 0;
 
 #include "Scene.h"
-#include "noiseGenerator.h"
 
 std::map<int, bool> keys;
 
