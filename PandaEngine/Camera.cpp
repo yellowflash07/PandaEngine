@@ -44,19 +44,43 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
 
     ratio = width / (float)height;
 
+ //   if (isFollowing)
+ //   {
+	//    cameraTarget = followTarget;
+ //       glm::mat4 transform = glm::mat4(glm::quat(followOrientation));
+ //       
+ //       offset = transform * glm::vec4(offset, 1.0f);
+ //       offset = glm::normalize(offset) /** 100.0f*/;
+ //       //cameraEye = cameraEye + followPos;
+
+ //       camControl = false;
+ //       forwardVector = glm::normalize(followTarget - cameraEye);
+ //       rightVector = glm::normalize(glm::cross(upVector, forwardVector));
+	//}
+
+
+
     if (isFollowing)
     {
-	    cameraTarget = followTarget;
-        //glm::mat4 transform = glm::mat4(glm::quat(followOrientation));
-        //
-        //offset = transform * glm::vec4(offset, 1.0f);
-        //offset = glm::normalize(offset) /** 100.0f*/;
-       // cameraEye = cameraEye + followPos;
+        // Update camera's target
+        cameraTarget = followTarget;
 
-        camControl = false;
+        // Calculate rotation matrix based on followOrientation
+        glm::mat4 transform = glm::mat4(glm::quat(followOrientation));
+
+        // Apply rotation to offset vector
+        glm::vec3 rotatedOffset = glm::vec3(transform * glm::vec4(offset, 1.0f));
+
+        // Update camera position based on followPos and rotated offset
+        cameraEye = followPos + rotatedOffset;
+
+        // Update camera orientation vectors
         forwardVector = glm::normalize(followTarget - cameraEye);
         rightVector = glm::normalize(glm::cross(upVector, forwardVector));
-	}
+
+        // Disable manual camera control
+        camControl = false;
+    }
 
     matProjection = glm::perspective(0.6f,
                                     ratio,
@@ -71,7 +95,7 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
     }
     else
     {
-		matView = glm::lookAt(cameraEye + offset,
+		matView = glm::lookAt(cameraEye,
                         cameraTarget,
             			upVector);
 	}
