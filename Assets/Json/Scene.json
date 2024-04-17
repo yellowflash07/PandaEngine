@@ -231,6 +231,64 @@
                 "maskTexture": ""
             },
             "children": []
+        },
+        {
+            "name": "GameObject",
+            "transform": {
+                "position": [
+                    -19.9787654876709,
+                    15.617961883544922,
+                    534.2699584960938
+                ],
+                "rotation": [
+                    -1.600000023841858,
+                    -0.03737711161375046,
+                    4.2870777150483264e-8
+                ],
+                "scale": [
+                    99.99999237060547,
+                    100.00015258789063,
+                    100.0
+                ]
+            },
+            "mesh": {
+                "fileName": "Grid_10x10_vertical_in_y.ply",
+                "friendlyName": "Grid_10x10_vertical_in_y.ply",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": ""
+            },
+            "children": []
         }
     ]
 }

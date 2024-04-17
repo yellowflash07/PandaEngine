@@ -8,7 +8,8 @@ in vec4 TvertexWorldPos[];
 in vec4 TvertexWorldNormal[];
 in vec2 TtexCoord[];
 in vec4 TfragPosLightSpace[];
-in vec3 esInWorldPos[];
+in vec3 TworldPos[];
+
 
 out vec4 colour;
 out vec4 vertexWorldPos;
@@ -43,10 +44,9 @@ uniform mat4 BoneMatrices[150];
 
 void main() {
 
-     worldPos = interpolate3D(esInWorldPos[0], esInWorldPos[1], esInWorldPos[2]);
+     worldPos = interpolate3D(TworldPos[0], TworldPos[1], TworldPos[2]);
 	if(isShadowMap)
 	{
-	//	worldPos = (matModel * vec4(worldPos.xyz, 1.0)).xyz;
 		gl_Position = lightSpaceMatrix * vec4(worldPos.xyz, 1.0);
 		return;
 	}   

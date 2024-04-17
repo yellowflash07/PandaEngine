@@ -11,6 +11,8 @@ extern Camera* camera;
 
 typedef void (*MeshLoadCalllback)(cMesh*);
 
+#define DRAW_PATCHES
+
 MeshManager::MeshManager()
 {
    vaoManager = new cVAOManager();
@@ -267,10 +269,23 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModel)
             if (!pCurrentMesh->hideParent)
             {
                 glBindVertexArray(drawInfo.VAO_ID); 		//  enable VAO (and everything else)
+
+#ifdef DRAW_PATCHES
                 glDrawElements(GL_PATCHES,
-                         drawInfo.numberOfIndices,
-                         GL_UNSIGNED_INT,
-                         0);
+                    drawInfo.numberOfIndices,
+                    GL_UNSIGNED_INT,
+                    0);
+#endif // DRAW_PATCHES
+
+#ifndef DRAW_PATCHES
+                glDrawElements(GL_TRIANGLES,
+                    drawInfo.numberOfIndices,
+                    GL_UNSIGNED_INT,
+                    0);
+#endif // !DRAW_PATCHES
+
+
+
              // glDrawElements(GL_TRIANGLES,
              //     drawInfo.numberOfIndices,
              //     GL_UNSIGNED_INT,
@@ -477,10 +492,19 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
             if (!pCurrentMesh->hideParent)
             {
                 glBindVertexArray(drawInfo.VAO_ID); 		//  enable VAO (and everything else)
+#ifdef DRAW_PATCHES
                 glDrawElements(GL_PATCHES,
                     drawInfo.numberOfIndices,
                     GL_UNSIGNED_INT,
                     0);
+#endif // DRAW_PATCHES
+
+#ifndef DRAW_PATCHES
+                glDrawElements(GL_TRIANGLES,
+                    drawInfo.numberOfIndices,
+                    GL_UNSIGNED_INT,
+                    0);
+#endif // !DRAW_PATCHES
                 glBindVertexArray(0);
                 // return;
             }
@@ -839,6 +863,9 @@ void MeshManager::DrawOnlyGeometry(cMesh* pCurrentMesh, glm::mat4 matModel)
     GLint matModel_IT_UL = glGetUniformLocation(shaderProgramID, "matModel_IT");
     glUniformMatrix4fv(matModel_IT_UL, 1, GL_FALSE, glm::value_ptr(matModel_InverseTranspose));
 
+    GLint useBone_UL = glGetUniformLocation(shaderProgramID, "useBones");
+    glUniform1f(useBone_UL, pCurrentMesh->useBone ? (GLfloat)GL_TRUE : (GLfloat)GL_FALSE);
+
     if (pCurrentMesh->useBone)
     {
         sModelDrawInfo* drawInfo = &pCurrentMesh->modelDrawInfo[0];
@@ -866,10 +893,21 @@ void MeshManager::DrawOnlyGeometry(cMesh* pCurrentMesh, glm::mat4 matModel)
             if (!pCurrentMesh->hideParent)
             {
                 glBindVertexArray(drawInfo.VAO_ID); 		//  enable VAO (and everything else)
+
+#ifdef DRAW_PATCHES
                 glDrawElements(GL_PATCHES,
                     drawInfo.numberOfIndices,
                     GL_UNSIGNED_INT,
                     0);
+#endif // DRAW_PATCHES
+
+#ifndef DRAW_PATCHES
+                glDrawElements(GL_TRIANGLES,
+                    drawInfo.numberOfIndices,
+                    GL_UNSIGNED_INT,
+                    0);
+#endif // !DRAW_PATCHES
+
                 glBindVertexArray(0);
                 // return;
             }

@@ -284,11 +284,11 @@ bool Engine::LoadDefaultShaders()
     vertexShader.fileName = "vertexshader.glsl";
 
     cShaderManager::cShader tessControlShader;
-    tessControlShader.fileName = "tesscontrolshader.glsl";
-   // tessControlShader.fileName = "";
+   tessControlShader.fileName = "tesscontrolshader.glsl";
+    //tessControlShader.fileName = "";
 
     cShaderManager::cShader tessEvalShader;
-   // tessEvalShader.fileName = "";
+    //tessEvalShader.fileName = "";
     tessEvalShader.fileName = "tessevalshader.glsl";
 
     cShaderManager::cShader fragmentShader;

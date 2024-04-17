@@ -82,6 +82,7 @@ int main(void)
 
         ImGui::Begin("Debug");
         ImGui::Text("FPS: %f", 1 / engine.deltaTime);
+        ImGui::Image((void*)(intptr_t)scene->shadowMap->m_shadowMap, ImVec2(200, 200));
         ImGui::End();
         engine.EndRender();
     }

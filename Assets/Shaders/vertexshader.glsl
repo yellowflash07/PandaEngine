@@ -82,6 +82,7 @@ void main()
 	mat4 matMVP = matProjection * matView * matModel;
 	gl_Position = matMVP * vec4(finalPos.xyz, 1.0);	
 	worldPos = (matModel * vec4(finalPos.xyz, 1.0)).xyz;
+
 	// Rotate the normal by the inverse transpose of the model matrix
 	// (so that it only is impacted by the rotation, not translation or scale)
 	vertexWorldNormal = matModel_IT * vec4(vNormal.xyz, 1.0f);

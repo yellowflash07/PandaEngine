@@ -9,7 +9,7 @@ in vec4 vertexWorldNormal[];
 in vec2 texCoord[];
 in vec4 fragPosLightSpace[];
 
-out vec3 esInWorldPos[];
+out vec3 TworldPos[];
 out vec4 Tcolour[];
 out vec4 TvertexWorldPos[];
 out vec4 TvertexWorldNormal[];
@@ -40,9 +40,9 @@ void main()
 {
     if (gl_InvocationID == 0) 
     {
-            float EyeToVertexDistance0 = distance(vec3(eyeLocation), esInWorldPos[0]);
-            float EyeToVertexDistance1 = distance(vec3(eyeLocation), esInWorldPos[1]);
-            float EyeToVertexDistance2 = distance(vec3(eyeLocation), esInWorldPos[2]);
+            float EyeToVertexDistance0 = distance(vec3(eyeLocation), TworldPos[0]);
+            float EyeToVertexDistance1 = distance(vec3(eyeLocation), TworldPos[1]);
+            float EyeToVertexDistance2 = distance(vec3(eyeLocation), TworldPos[2]);
 
             // Calculate the tessellation levels
             gl_TessLevelOuter[0] =   GetTessLevel(EyeToVertexDistance1, EyeToVertexDistance2);
@@ -76,6 +76,6 @@ void main()
     TvertexWorldNormal[gl_InvocationID] = vertexWorldNormal[gl_InvocationID];
     TtexCoord[gl_InvocationID] = texCoord[gl_InvocationID];
     TfragPosLightSpace[gl_InvocationID] = fragPosLightSpace[gl_InvocationID];
-    esInWorldPos[gl_InvocationID] = worldPos[gl_InvocationID];
+    TworldPos[gl_InvocationID] = worldPos[gl_InvocationID];
 
 }
