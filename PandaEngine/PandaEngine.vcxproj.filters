@@ -102,7 +102,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="vehicleMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
@@ -284,6 +284,9 @@
     </ClCompile>
     <ClCompile Include="VehicleSceneQueryData.cpp">
       <Filter>Physics\PhysX\Vehicle Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -524,6 +527,18 @@
       <Filter>ShaderManager\Shaders</Filter>
     </None>
     <None Include="..\Assets\Shaders\DebugVert.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\CloudsFrag.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\CloudsVert.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\noiseFrag.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\noiseVert.glsl">
       <Filter>ShaderManager\Shaders</Filter>
     </None>
   </ItemGroup>

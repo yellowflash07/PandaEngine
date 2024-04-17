@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "../PandaEngine/GraphicsCommon.h"	// For all the OpenGL calls, etc.
 
 class cShaderManager
 {

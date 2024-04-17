@@ -1004,7 +1004,9 @@ void MeshManager::CalculateMatrices(cMesh* pCurrentMesh, Node* node, const glm::
         BoneInfo* boneInfo = &modelInfo->vecBoneInfo[boneMapIt->second];
         glm::mat4 boneOffset = boneInfo->BoneOffset;
         glm::mat4 finalTransformation = modelInfo->GlobalInverseTransformation * globalTransformation * boneOffset;
+       //this is the bone transformation in global space w.r.t to origin
         boneInfo->GlobalTransformation = modelInfo->GlobalInverseTransformation * globalTransformation;
+       
         boneInfo->FinalTransformation = finalTransformation;
     }
 

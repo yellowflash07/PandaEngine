@@ -41,26 +41,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     camera->ProcessMouseMovement(xpos, ypos);
 }
 
-PxRigidStatic* createDrivablePlane(const PxFilterData& simFilterData, PxMaterial* material, PxPhysics* physics)
-{
-    //Add a plane to the scene.
-    PxRigidStatic* groundPlane = PxCreatePlane(*physics, PxPlane(0, 1, 0, 0), *material);
-
-    //Get the plane shape so we can set query and simulation filter data.
-    PxShape* shapes[1];
-    groundPlane->getShapes(shapes, 1);
-
-    //Set the query filter data of the ground plane so that the vehicle raycasts can hit the ground.
-    PxFilterData qryFilterData;
-    qryFilterData.word3 = DRIVABLE_SURFACE;
-    shapes[0]->setQueryFilterData(qryFilterData);
-
-    //Set the simulation filter data of the ground plane so that it collides with the chassis of a vehicle but not the wheels.
-    shapes[0]->setSimulationFilterData(simFilterData);
-
-    return groundPlane;
-}
-
 VehicleDesc initVehicleDesc(cMesh* chassisMesh)
 {
     //Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.

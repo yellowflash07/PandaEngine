@@ -1,6 +1,5 @@
 #include "cShaderManager.h"
 
-#include "../PandaEngine/GraphicsCommon.h"	// For all the OpenGL calls, etc.
 
 #include <fstream>
 #include <sstream>		// "string stream"
@@ -376,6 +375,8 @@ bool cShaderManager::createProgramFromFile(
 	this->m_ID_to_Shader[curProgram.ID] = curProgram;
 	// Save to other map, too
 	this->m_name_to_ID[curProgram.friendlyName] = curProgram.ID;
+
+	printf("Shader %s compiled and linked OK.\n", friendlyName.c_str());
 
 	return true;
 }

@@ -203,6 +203,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="vehicleMain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="MoveTo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -329,9 +333,13 @@
     <ClInclude Include="VehicleSceneQueryData.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Assets\Shaders\CloudsFrag.glsl" />
+    <None Include="..\Assets\Shaders\CloudsVert.glsl" />
     <None Include="..\Assets\Shaders\DebugFrag.glsl" />
     <None Include="..\Assets\Shaders\DebugVert.glsl" />
     <None Include="..\Assets\Shaders\fragmentshader.glsl" />
+    <None Include="..\Assets\Shaders\noiseFrag.glsl" />
+    <None Include="..\Assets\Shaders\noiseVert.glsl" />
     <None Include="..\Assets\Shaders\tesscontrolshader.glsl" />
     <None Include="..\Assets\Shaders\tessevalshader.glsl" />
     <None Include="..\Assets\Shaders\vertexshader.glsl" />

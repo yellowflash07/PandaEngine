@@ -74,7 +74,6 @@ int main(void)
     TransformComponent* sphere = scene->GetGameObjectByName("Sphere")->GetComponent<TransformComponent>();
 
 
-    bool hasReversed = false;
     while (!glfwWindowShouldClose(engine.window))
     {
         engine.BeginRender();
