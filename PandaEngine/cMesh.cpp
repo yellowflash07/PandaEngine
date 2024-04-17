@@ -112,6 +112,7 @@ void cMesh::Render()
 	}
 	ImGui::Checkbox("Shadow", &enableShadow);
 	ImGui::Checkbox("Wireframe", &bIsWireframe);
+	ImGui::Checkbox("Dynamic LOD", &dynamicLOD);
 	ImGui::SliderFloat("Transparency", &transperancy, 0.0f, 1.0f);
 	for (size_t i = 0; i < NUM_OF_TEXTURES; i++)
 	{

@@ -189,6 +189,8 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModel)
 
 
     // 
+    GLint dynamicLOD_UL = glGetUniformLocation(shaderProgramID, "isLOD");
+    glUniform1f(dynamicLOD_UL, pCurrentMesh->dynamicLOD ? GL_TRUE : GL_FALSE);
 
     GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");
     if (pCurrentMesh->isSkyBox)

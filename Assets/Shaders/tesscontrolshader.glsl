@@ -21,7 +21,13 @@ uniform float tessLevelInner;
 
 uniform bool isLOD;
 
-float GetTessLevel(float Distance0, float Distance1) {
+float GetTessLevel(float Distance0, float Distance1) 
+{
+    if(!isLOD)
+	{
+		return 1.0;
+	}
+
   float AvgDistance = (Distance0 + Distance1) / 2.0;
 
   AvgDistance = AvgDistance/ 1000.0f;
