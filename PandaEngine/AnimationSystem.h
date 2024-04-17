@@ -40,12 +40,15 @@ public:
 
 	void SetCurrentAnimation(int index) { currentAnimationIndex = index; }
 
-	cMesh* m_mesh;
+
 	void LoadAnimationFromFile(std::string fileName);
 
 	void AttachObjectToBone(std::string boneName, TransformComponent* transform);
 
+	void SetMesh(cMesh* mesh);
 private:
+
+	cMesh* m_mesh;
 	sModelDrawInfo* m_drawInfo;
 	// The animations in the system
 	std::vector<Animation*> m_animations;

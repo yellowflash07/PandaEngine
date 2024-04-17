@@ -276,16 +276,16 @@ void AnimationSystem::UpdateAnimation(Animation* anim, float dt)
 
 void AnimationSystem::UpdateSkeleton(cMesh* mesh, float dt)
 {
-	if (m_mesh == nullptr)
-	{
-		m_mesh = mesh; 
-	}
-	m_drawInfo = &m_mesh->modelDrawInfo[0];
-	//sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[0];
-	if (m_drawInfo->Animations.empty())
-	{
-		return;
-	}
+	//if (m_mesh == nullptr)
+	//{
+	//	m_mesh = mesh; 
+	//}
+	//m_drawInfo = &m_mesh->modelDrawInfo[0];
+	////sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[0];
+	//if (m_drawInfo->Animations.empty())
+	//{
+	//	return;
+	//}
 
 	AnimationInfo info = m_drawInfo->Animations[currentAnimationIndex];
 
@@ -723,6 +723,15 @@ void AnimationSystem::LoadAnimationFromFile(std::string fileName)
 
 void AnimationSystem::AttachObjectToBone(std::string boneName, TransformComponent* transform)
 {
+	if (m_mesh == nullptr)
+	{
+		return;
+	}
+
+	if (m_drawInfo == nullptr)
+	{
+		m_drawInfo = &m_mesh->modelDrawInfo[0];
+	}
 
 	// Attach an object to a bone
 	// Find the bone in the skeleton
@@ -735,6 +744,15 @@ void AnimationSystem::AttachObjectToBone(std::string boneName, TransformComponen
 		}
 	}
 
+}
+
+void AnimationSystem::SetMesh(cMesh* mesh)
+{
+	if (m_mesh == nullptr)
+	{
+		m_mesh = mesh;
+		m_drawInfo = &m_mesh->modelDrawInfo[0];
+	}
 }
 
 

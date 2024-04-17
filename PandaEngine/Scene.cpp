@@ -57,13 +57,17 @@ void Scene::Update(float deltaTime)
 				continue;
 			}
 			TransformComponent* transform = go->GetComponent<TransformComponent>();
-			meshManager->DrawOnlyGeometry(go->GetComponent<cMesh>(), transform->GetTransform());
 			AnimationSystem* anim = go->GetComponent<AnimationSystem>();
 			if (anim != nullptr)
 			{
 				mesh->useBone = true;
-				anim->UpdateSkeleton(mesh, deltaTime);
+				if (play)
+				{
+					anim->UpdateSkeleton(mesh, deltaTime);
+				}
 			}
+
+			meshManager->DrawOnlyGeometry(go->GetComponent<cMesh>(), transform->GetTransform());
 		}
 
 	}
@@ -190,7 +194,11 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		if (anim != nullptr)
 		{
 			mesh->useBone = true;
-			anim->UpdateSkeleton(mesh, deltaTime);
+			anim->SetMesh(mesh);
+			if (play)
+			{
+				anim->UpdateSkeleton(mesh, deltaTime);
+			}
 		}
 	}
 
