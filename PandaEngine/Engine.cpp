@@ -191,10 +191,10 @@ void Engine::Update()
             {
                 sceneSaver.SaveScene(scenes[currentScene]);
             }
-            if (ImGui::MenuItem("Load Scene", NULL))
+           /* if (ImGui::MenuItem("Load Scene", NULL))
             {
                 LoadSave();
-            }
+            }*/
                
             ImGui::EndMenu();
         }
@@ -316,9 +316,9 @@ void Engine::LoadDefaultLights()
     lightManager->theLights[0]->direction = glm::vec4(-1.0,-1.0,-1.0,1); //directional
 }
 
-void Engine::LoadSave()
+void Engine::LoadSave(std::string sceneName)
 {
-    Scene* scene = sceneSaver.LoadScene("scene.json");
+    Scene* scene = sceneSaver.LoadScene(sceneName);
    // scene->Init(this->meshManager, this->physicsManager, this->lightManager, cShaderManager::getInstance());
     AddScene(scene);
     //meshManager->LoadSavedMeshes(shaderProgramID);

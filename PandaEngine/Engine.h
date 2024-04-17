@@ -27,7 +27,7 @@ public:
 	PhysicsBody* AddPhysicsBody(std::string friendlyMeshName);
 	bool LoadDefaultShaders();
 	void LoadDefaultLights();
-	void LoadSave();
+	void LoadSave(std::string sceneName);
 	double deltaTime;
 	bool IsRunning;
 	void ShutDown();

@@ -8,7 +8,6 @@ extern Camera* camera;
 int keyHit = 0;
 
 #include "Scene.h"
-
 std::map<int, bool> keys;
 
 bool IsKeyPressed(int key)
@@ -55,7 +54,7 @@ int main(void)
 
     camera->SetPosition(glm::vec3(4.0f, 128.0f,714.0f));
 
-    engine.LoadSave();
+    engine.LoadSave("Scene.json");
     printf("DONE\n");
     float currTime = 0;
     float myTime = 0;

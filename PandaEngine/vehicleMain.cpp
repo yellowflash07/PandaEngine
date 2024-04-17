@@ -41,6 +41,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     camera->ProcessMouseMovement(xpos, ypos);
 }
 
+//vehicle 
+
+//init vehicle
 VehicleDesc initVehicleDesc(cMesh* chassisMesh)
 {
     //Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.
@@ -122,7 +125,7 @@ int main(void)
 
     camera->SetPosition(glm::vec3(11.0f,50.0f,444.0f));
 
-    engine.LoadSave(); 
+    engine.LoadSave("Scene_Vehicle.json");
     printf("DONE\n");
     float currTime = 0;
     float myTime = 0;
@@ -140,9 +143,13 @@ int main(void)
     GameObject* Obstacle = scene->GetGameObjectByName("Obstacle");
     PhysXBody* ObstacleBody = ground->GetComponent<PhysXBody>();
 
+    //vehicle.chassisTransformComponent
+
     GameObject* vehicle = scene->GetGameObjectByName("Vehicle");
     TransformComponent* vehicleTransform = vehicle->GetComponent<TransformComponent>();
     cMesh* vehicleMesh = vehicle->GetComponent<cMesh>();
+
+    //vehicle.chassisTransformComponent = 4
     std::vector<TransformComponent*> wheels;
     for (int i = 0; i < 4; i++)
     {
@@ -154,9 +161,11 @@ int main(void)
 
     }
 
+    //call this at init
     VehicleCreator vehicleCreator;
     VehicleDesc vehicleDesc = initVehicleDesc(vehicleMesh);
     PxVehicleDrive4W* gVehicle4W = vehicleCreator.CreateVehicle4W(vehicleDesc, PhysXManager::getInstance()->gPhysics, PhysXManager::getInstance()->gCooking);
+    
     
     float gLengthScale = 18.0f;
     vehicleCreator.customizeVehicleToLengthScale(gLengthScale, gVehicle4W->getRigidDynamicActor(), &gVehicle4W->mWheelsSimData, &gVehicle4W->mDriveSimData);
@@ -173,6 +182,7 @@ int main(void)
     gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
     gVehicle4W->mDriveDynData.setUseAutoGears(true);
 
+
     PxVec3 gravity = PhysXManager::getInstance()->gScene->getGravity();
     PxVehicleDrive4WRawInputData* gVehicleInputData = new PxVehicleDrive4WRawInputData();
 
@@ -182,9 +192,12 @@ int main(void)
     gVehicleInputData->setDigitalBrake(false);
     gVehicleInputData->setDigitalHandbrake(false);
 
+    //end init
+
     float vehicleYoffset = vehicleTransform->drawPosition.y;
     float vehicleXoffset = vehicleTransform->drawPosition.x;
     float vehicleZoffset = vehicleTransform->drawPosition.z;
+    //member variable
     float vehicleXrot = -1.6f;
 
     bool hasReversed = false;
@@ -213,6 +226,7 @@ int main(void)
         //transform->eulerRotation = glm::eulerAngles(rotation);
         if(IsKeyPressed(GLFW_KEY_SPACE))
         {
+            //reset function
             gVehicle4W->setToRestState();
             gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
             gVehicleInputData->setDigitalAccel(false);
@@ -242,6 +256,7 @@ int main(void)
             hasReversed = true;
 		}
 
+        //moveleft right (bool left, bool right)
         if (IsKeyPressed(GLFW_KEY_LEFT))
         {
             gVehicleInputData->setDigitalSteerLeft(false);
@@ -259,7 +274,7 @@ int main(void)
             gVehicleInputData->setDigitalSteerRight(false);
         }
 		
-
+        //udpate start
         vehicleCreator.UpdateVehicle4W(engine.deltaTime, gravity, gVehicle4W, NULL, gVehicleInputData);
 
         int numShapes = gVehicle4W->getRigidDynamicActor()->getNbShapes();
@@ -292,7 +307,7 @@ int main(void)
 				}
             }
         }
-
+        //update end
         engine.EndRender();   
     }
 
