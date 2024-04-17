@@ -21,6 +21,16 @@ struct sVertex
 		boneWeights[1] = 0.0f;
 		boneWeights[2] = 0.0f;
 		boneWeights[3] = 0.0f;
+
+		tx = 0.0f;
+		ty = 0.0f;
+		tz = 0.0f;
+		tw = 0.0f;
+
+		bx = 0.0f;
+		by = 0.0f;
+		bz = 0.0f;
+		bw = 0.0f;
 	}
 
 //	float x, y, z;		
@@ -32,6 +42,9 @@ struct sVertex
 
 	int boneIndex[4];	// Bone indexes
 	float boneWeights[4];	// Bone weights
+
+	float tx, ty, tz, tw;	// Tangent
+	float bx, by, bz, bw;	// BiTangent
 };
 
 struct sTriangle

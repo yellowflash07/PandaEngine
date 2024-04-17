@@ -15,6 +15,8 @@ in vec4 vNormal;	// NEW for 2023!
 in vec2 vTexCoord;
 layout (location = 5) in vec4 vBoneId;
 layout (location = 6) in vec4 vBoneWeight;
+layout (location = 7) in vec4 vTangent;
+layout (location = 8) in vec4 vBitangent;
 
 uniform mat4 BoneMatrices[150];
 uniform bool useBones;
@@ -25,6 +27,8 @@ out vec4 vertexWorldNormal;
 out vec2 texCoord;
 out vec4 fragPosLightSpace;
 out vec3 worldPos;
+out vec4 tangent;
+out vec4 bitangent;
 
 out vec4 boneId;
 out vec4 boneWeight;
@@ -95,4 +99,6 @@ void main()
 	texCoord = vTexCoord;
 	boneId = vBoneId;
 	boneWeight = vBoneWeight;
+	tangent = vTangent;
+	bitangent = vBitangent;
 }

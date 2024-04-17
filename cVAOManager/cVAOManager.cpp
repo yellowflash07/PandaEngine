@@ -167,7 +167,7 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, std::vector<sModelDrawInfo
     Assimp::Importer importer;
     std::string filePath = this->m_basePathWithoutSlash + "/" + fileName;
     const aiScene* scene = importer.ReadFile(filePath, aiProcess_ValidateDataStructure | aiProcess_GenNormals | aiProcess_Triangulate
-                                                       | aiProcess_PopulateArmatureData);
+                                                       | aiProcess_PopulateArmatureData | aiProcess_CalcTangentSpace);
 
     std::string errorString = importer.GetErrorString();
     if (!errorString.empty())
@@ -296,6 +296,20 @@ void cVAOManager::LoadVertexToGPU(sModelDrawInfo* drawInfo, GLuint shaderProgram
         sizeof(sVertex),
         (void*)offsetof(sVertex, boneWeights));
 
+    glEnableVertexAttribArray(7);		// vTangents
+
+    glVertexAttribPointer(7, 4,		// vTangents
+        GL_FLOAT, GL_FALSE,
+        sizeof(sVertex),
+        (void*)offsetof(sVertex, tx));
+
+    glEnableVertexAttribArray(8);		// vBiTangents
+
+    glVertexAttribPointer(8, 4,		// vBiTangents
+        		GL_FLOAT, GL_FALSE,
+        		sizeof(sVertex),
+        		(void*)offsetof(sVertex, bx));
+
     //glVertexAttribPointer(6, 4, sizeof(sVertex), GL_FALSE, stride, offset);
     //glVertexAttribPointer(6, 4,		// vBoneWeight
     //    				GL_FLOAT, GL_FALSE,
@@ -314,6 +328,8 @@ void cVAOManager::LoadVertexToGPU(sModelDrawInfo* drawInfo, GLuint shaderProgram
     glDisableVertexAttribArray(vTexureCoord_location);
     glDisableVertexAttribArray(5);
     glDisableVertexAttribArray(6);
+    glDisableVertexAttribArray(7);
+    glDisableVertexAttribArray(8);
    
 }
 
@@ -455,6 +471,8 @@ void cVAOManager::LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo&
         }
     }
 #pragma endregion
+
+    bool calculatedTangents = false;
     for (unsigned int i = 0; i < drawInfo.numberOfVertices; ++i)
     {
         const aiVector3D& vertex = mesh->mVertices[i];
@@ -485,6 +503,19 @@ void cVAOManager::LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo&
         {
             drawInfo.pVertices[i].u = mesh->mTextureCoords[0][i].x;
             drawInfo.pVertices[i].v = mesh->mTextureCoords[0][i].y;
+        }
+
+        if (mesh->HasTangentsAndBitangents()) 
+        {
+            //lucky us, we have tangents and bitangents. no need to calculate them
+            drawInfo.pVertices[i].tx = mesh->mTangents[i].x;
+			drawInfo.pVertices[i].ty = mesh->mTangents[i].y;
+			drawInfo.pVertices[i].tz = mesh->mTangents[i].z;
+
+			drawInfo.pVertices[i].bx = mesh->mBitangents[i].x;
+			drawInfo.pVertices[i].by = mesh->mBitangents[i].y;
+			drawInfo.pVertices[i].bz = mesh->mBitangents[i].z;
+            calculatedTangents = true;
         }
 
     }

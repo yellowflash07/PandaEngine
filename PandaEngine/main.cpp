@@ -65,12 +65,6 @@ int main(void)
 
     //left hand
 
-    GameObject* go = scene->GetGameObjectByName("vampire");
-    AnimationSystem* anim = &go->AddComponent<AnimationSystem>();
-    cMesh* mesh = go->GetComponent<cMesh>();
-
-    TransformComponent* sphere = scene->GetGameObjectByName("Sphere")->GetComponent<TransformComponent>();
-
 
     while (!glfwWindowShouldClose(engine.window))
     {
@@ -78,11 +72,8 @@ int main(void)
 
         engine.Update();     
 
-        anim->AttachObjectToBone("LeftHand", sphere);
-
         ImGui::Begin("Debug");
         ImGui::Text("FPS: %f", 1 / engine.deltaTime);
-        ImGui::Image((void*)(intptr_t)scene->shadowMap->m_shadowMap, ImVec2(200, 200));
         ImGui::End();
         engine.EndRender();
     }

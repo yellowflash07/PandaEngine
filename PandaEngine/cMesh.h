@@ -41,6 +41,7 @@ public:
 	std::string texture[NUM_OF_TEXTURES];
 	float textureRatio[NUM_OF_TEXTURES];
 	std::string maskTexture;
+	std::string normalMap;
 	GLuint renderTextureID =0;
 	glm::vec2 UV_Offset;
 	float transperancy = 1.0f;
@@ -65,6 +66,7 @@ public:
 	bool hideParent = false;
 	bool useBone = false;
 	bool dynamicLOD = false;
+	bool useNormalMap = false;
 	//glm::mat4 AnimatedTransform;
 	bool GetTransformedMeshDrawInfo(sModelDrawInfo& transformedInfo);
 	void Render();

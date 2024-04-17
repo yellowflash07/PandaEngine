@@ -1018,6 +1018,23 @@ void MeshManager::SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
 		glUniform1f(maskBool_UL, (GLfloat)GL_FALSE);
 	}
 
+    if (!pCurrentMesh->normalMap.empty())
+    {
+		GLint normalMapBool_UL = glGetUniformLocation(shaderProgramID, "hasNormalMap");
+		glUniform1f(normalMapBool_UL, (GLfloat)GL_TRUE);
+
+		GLint normalMap_UL = glGetUniformLocation(shaderProgramID, "normalMap");
+		GLint textureUnitNumber = 26;
+		GLuint normalMapID = textureManager->getTextureIDFromName(pCurrentMesh->normalMap);
+		glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+		glBindTexture(GL_TEXTURE_2D, normalMapID);
+		glUniform1i(normalMap_UL, textureUnitNumber);
+	}
+    else
+    {
+		GLint normalMapBool_UL = glGetUniformLocation(shaderProgramID, "hasNormalMap");
+		glUniform1f(normalMapBool_UL, (GLfloat)GL_FALSE);
+	}
 
    
 }

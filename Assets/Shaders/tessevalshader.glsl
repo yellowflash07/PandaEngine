@@ -9,7 +9,8 @@ in vec4 TvertexWorldNormal[];
 in vec2 TtexCoord[];
 in vec4 TfragPosLightSpace[];
 in vec3 TworldPos[];
-
+in vec4 Ttangent[];
+in vec4 Tbitangent[];
 
 out vec4 colour;
 out vec4 vertexWorldPos;
@@ -17,6 +18,8 @@ out vec4 vertexWorldNormal;
 out vec2 texCoord;
 out vec4 fragPosLightSpace;
 out vec3 worldPos;
+out vec4 tangent;
+out vec4 bitangent;
 
 uniform mat4 matView;
 uniform mat4 matProjection;
@@ -61,4 +64,8 @@ void main() {
     vertexWorldNormal = interpolate4D(TvertexWorldNormal[0], TvertexWorldNormal[1], TvertexWorldNormal[2]);
     texCoord = interpolate2D(TtexCoord[0], TtexCoord[1], TtexCoord[2]);
     fragPosLightSpace = interpolate4D(TfragPosLightSpace[0], TfragPosLightSpace[1], TfragPosLightSpace[2]);
+    tangent = interpolate4D(Ttangent[0], Ttangent[1], Ttangent[2]);
+    bitangent= interpolate4D(Tbitangent[0], Tbitangent[1], Tbitangent[2]);
+
+
 }

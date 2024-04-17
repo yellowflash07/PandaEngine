@@ -9,12 +9,17 @@ in vec4 vertexWorldNormal[];
 in vec2 texCoord[];
 in vec4 fragPosLightSpace[];
 
+in vec4 tangent[];
+in vec4 bitangent[];
+
 out vec3 TworldPos[];
 out vec4 Tcolour[];
 out vec4 TvertexWorldPos[];
 out vec4 TvertexWorldNormal[];
 out vec2 TtexCoord[];
 out vec4 TfragPosLightSpace[];
+out vec4 Ttangent[];
+out vec4 Tbitangent[];
 
 uniform float tessLevelOuter;
 uniform float tessLevelInner;
@@ -83,5 +88,7 @@ void main()
     TtexCoord[gl_InvocationID] = texCoord[gl_InvocationID];
     TfragPosLightSpace[gl_InvocationID] = fragPosLightSpace[gl_InvocationID];
     TworldPos[gl_InvocationID] = worldPos[gl_InvocationID];
+    Ttangent[gl_InvocationID] = tangent[gl_InvocationID];
+    Tbitangent[gl_InvocationID] = bitangent[gl_InvocationID];
 
 }

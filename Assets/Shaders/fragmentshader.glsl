@@ -8,7 +8,12 @@ in vec2 texCoord;
 in vec4 boneId;
 in vec4 boneWeight;
 in vec4 fragPosLightSpace;
+
+in vec4 tangent;
+in vec4 bitangent;
+
 out vec4 outputColour;		// To the frame buffer (aka screen)
+
 
 //uniform vec3 directionalLightColour;
 // rgb are the rgb of the light colour
@@ -73,7 +78,8 @@ float rand(vec2 co);
 
 uniform bool isShadowMap;
 uniform sampler2D shadowMap;
-
+uniform bool hasNormalMap;
+uniform sampler2D normalMap;
 float calculateShadowFactor(vec4 fragPosLightSpace)
 {
 	// Shadow value
@@ -102,6 +108,21 @@ float calculateShadowFactor(vec4 fragPosLightSpace)
 	return shadow;
 }
 
+vec3 calculateBumpNormal()
+{
+	vec4 Normal = normalize(vertexWorldNormal);
+    vec4 Tangent = normalize(tangent);
+    Tangent = normalize(Tangent - dot(Tangent, Normal) * Normal);
+    vec3 Bitangent = cross(Tangent.xyz, Normal.xyz);
+    vec3 BumpMapNormal = texture(normalMap, texCoord).xyz;
+    BumpMapNormal = 2.0 * BumpMapNormal - vec3(1.0, 1.0, 1.0);
+    vec3 NewNormal;
+    mat3 TBN = mat3(Tangent, Bitangent, Normal);
+    NewNormal = TBN * BumpMapNormal;
+    NewNormal = normalize(NewNormal);
+    return NewNormal;
+}
+
 
 
 void main()
@@ -125,6 +146,11 @@ void main()
   // outputColour.rgb = vec3(distanceToWorld,0,0);
 	// outputColour.a = 1.0f;
 	//return;
+
+	//outputColour = vec4(tangent.xyz, 1.0f);
+	//outputColour = vec4(bitangent.xyz, 1.0f);
+	//return;
+
 	if(isShadowMap)
 	{
 		float depthValue = texture(shadowMap, texCoord).r;
@@ -212,7 +238,13 @@ void main()
 	
 	float shadowFactor = calculateShadowFactor(fragPosLightSpace);
 
-	vec4 vertexColourLit = calculateLightContrib( vertexRGBA.rgb, vertexWorldNormal.xyz, 
+	vec3 normal = vertexWorldNormal.xyz;
+	if(hasNormalMap)
+	{
+		normal = calculateBumpNormal();
+	}
+
+	vec4 vertexColourLit = calculateLightContrib( vertexRGBA.rgb, normal, 
 	                                              vertexWorldPos.xyz, vertexSpecular, shadowFactor );
 	// *************************************
 			
@@ -274,40 +306,6 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 			vec3 lightColor = vec3(1.0f);
 			vec3 finalCol =  (diffuse * (1.0f - shadowFactor) + ambient) + specular  * (1.0f - shadowFactor) * lightColor;
 			finalObjectColour.rgb += vertexMaterialColour.rgb * finalCol;
-			//vec3 lightContrib = theLights[index].diffuse.rgb;
-			//
-			// //Get the dot product of the light and normalize
-			//float dotProduct = dot( -theLights[index].direction.xyz,  
-			//						   normalize(norm.xyz) );	// -1 to 1
-			//
-			//dotProduct = max( 0.0f, dotProduct );		// 0 to 1
-			//
-			// lightContrib *= (1.0 - shadowFactor); 
-			//
-			//
-			//finalObjectColour.rgb += (vertexMaterialColour.rgb * theLights[index].diffuse.rgb * lightContrib); 
-									// + (materialSpecular.rgb * lightSpecularContrib.rgb);
-			// NOTE: There isn't any attenuation, like with sunlight.
-			// (This is part of the reason directional lights are fast to calculate)
-//			vec3 lightColor = vec3(1.0);
-//			// ambient
-//			vec3 ambient = 0.15 * lightColor;
-//			// diffuse
-//			vec3 lightDir = normalize(vec3(theLights[index].position) - vertexWorldPos);
-//			float diff = max(dot(theLights[index].direction.xyz, vertexNormal), 0.0);
-//			vec3 diffuse = diff * lightColor;
-//			// specular
-//			vec3 viewDir = normalize(vec3(eyeLocation) - vertexWorldPos);
-//			float spec = 0.0;
-//			vec3 halfwayDir = normalize(lightDir + viewDir);  
-//			spec = pow(max(dot(vertexNormal, halfwayDir), 0.0), 64.0);
-//			vec3 specular = spec * lightColor;    
-//			// calculate shadow
-//			float shadow = shadowFactor;       
-//			vec3 lighting = (ambient + (diffuse + specular)) * vertexMaterialColour; 
-//			
-//			//vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * vertexMaterialColour; 
-//			finalObjectColour.rgb += lighting;
 			return finalObjectColour;		
 		}
 		

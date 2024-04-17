@@ -167,6 +167,26 @@ void cMesh::Render()
 			maskTexture = "";
 		}
 	}
+
+	ImGui::Text("Normal Map: %s", normalMap.c_str());
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture_DND"))
+		{
+			const char* payload_n = (const char*)payload->Data;
+			normalMap = payload_n;
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	if (!normalMap.empty())
+	{
+		if (ImGui::Button("Remove Normal Map"))
+		{
+			normalMap = "";
+		}
+	}
+
 	ImGui::Separator();
 	ImGui::EndChild();
 }
@@ -203,6 +223,8 @@ void cMesh::LoadMesh(std::string fileName, std::string friendlyName)
 	this->texture[1] = "";
 	this->texture[2] = "";
 	this->texture[3] = "";
+	this->maskTexture = "";
+	this->normalMap = "";
 	this->textureRatio[0] = 1.0f;
 	this->textureRatio[1] = 1.0f;
 	this->textureRatio[2] = 1.0f;
