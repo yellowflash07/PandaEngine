@@ -97,6 +97,8 @@ bool Engine::Initialize()
     assetLib.shaderProgramID = shaderProgramID;
     assetLib.Init();
 
+    sceneSaver.meshManager = meshManager;
+
     glPatchParameteri(GL_PATCH_VERTICES, 3);
     const GLubyte* version = glGetString(GL_VERSION);
     std::cout << "OPENGL VERSION: " << version << std::endl;

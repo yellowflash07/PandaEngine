@@ -17,6 +17,8 @@ public:
 	cMesh();
 
 	cMesh(std::string meshName, std::string friendlyName);
+
+	cMesh(cMesh* mesh);
 	~cMesh();		
 
 	std::string meshName;

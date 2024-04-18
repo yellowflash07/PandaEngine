@@ -249,6 +249,34 @@ cMesh::cMesh(std::string meshName, std::string friendlyName)
 	cMesh::m_nextUniqueID++;
 }
 
+cMesh::cMesh(cMesh* mesh)
+{
+
+	this->modelDrawInfo = mesh->modelDrawInfo;
+
+	this->uniqueName = mesh->uniqueName;
+	this->meshName = mesh->meshName;
+	this->friendlyName = friendlyName;
+	this->bIsWireframe = mesh->bIsWireframe;
+	this->bDoNotLight = mesh->bDoNotLight;
+	this->bIsVisible = mesh->bIsVisible;
+	this->bUseDebugColours = mesh->bUseDebugColours;
+	this->wholeObjectDebugColourRGBA = mesh->wholeObjectDebugColourRGBA;
+	this->color = mesh->color;
+	this->isSkyBox = mesh->isSkyBox;
+	this->hasVertexColors = mesh->hasVertexColors;
+	this->isReflective = mesh->isReflective;
+	this->enableShadow = mesh->enableShadow;
+	for (size_t i = 0; i < NUM_OF_TEXTURES; i++)
+	{
+		this->texture[i] = mesh->texture[i];
+		this->textureRatio[i] = mesh->textureRatio[i];
+	}
+	this->maskTexture = mesh->maskTexture;
+	this->normalMap = mesh->normalMap;
+	this->UV_Offset = mesh->UV_Offset;
+}
+
 // Destructor: Called on deletion   d'tor
 cMesh::~cMesh()
 {

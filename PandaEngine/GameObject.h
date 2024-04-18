@@ -40,6 +40,7 @@ public:
 
 	void Destroy();
 
+	bool LoadAsync = false;
 private:
 };
 

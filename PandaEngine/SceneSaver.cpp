@@ -5,6 +5,7 @@
 SceneSaver::SceneSaver()
 {
     jsonReader = new JsonReader();
+    shaderManager = cShaderManager::getInstance();
 }
 
 SceneSaver::~SceneSaver()
@@ -248,11 +249,43 @@ Scene* SceneSaver::LoadScene(std::string sceneFile)
 
     //TODO: thread?
 	rapidjson::Value& gameObjects = document["gameObjects"];
+    std::vector<GameObjectConfig> gameObjectConfigs;
     for (rapidjson::SizeType i = 0; i < gameObjects.Size(); i++)
     {		
-		GameObject* go = LoadGameObject(gameObjects[i], scene);
-        scene->AddGameObject(go);
+        GameObjectConfig gameObjectConfig;
+        GetLoadGameObjectConfig(gameObjects[i], gameObjectConfig);
+        gameObjectConfigs.push_back(gameObjectConfig);
+		//GameObject* go = LoadGameObject(gameObjects[i], scene);
+        //scene->AddGameObject(go);
     }
+
+
+
+    for (size_t i = 0; i < gameObjectConfigs.size(); i++)
+    {
+        GameObjectConfig config = gameObjectConfigs[i];
+       // GameObject* go = LoadGameObject(config, scene);
+       // scene->AddGameObject(go);
+        if (config.loadAsync)
+        {
+            
+            if (!config.mesh.fileName.empty())
+            {
+                meshManager->LoadMeshAsync(config.mesh.fileName, config.mesh.friendlyName, shaderManager->getIDFromFriendlyName("shader01"),
+                [config, scene, this](cMesh* mesh)
+                {
+                    GameObject* go =  LoadGameObjectAsync(mesh, config, scene);
+                    scene->AddGameObject(go);
+			    });
+            }
+
+		}
+        else
+        {
+             GameObject* go = LoadGameObject(config, scene);
+             scene->AddGameObject(go);
+        }
+	}
 
     return scene;
 
@@ -261,6 +294,8 @@ Scene* SceneSaver::LoadScene(std::string sceneFile)
 void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjectConfig)
 {
     gameObjectConfig.name = go->m_Name;
+
+    gameObjectConfig.loadAsync = go->LoadAsync;
 
     TransformConfig transformConfig = TransformConfig();
 
@@ -357,6 +392,7 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
 		gameObjectConfig.characterController = characterControllerConfig;
     }
 
+
     gameObjectConfig.children.clear();
     for (GameObject* child : go->m_Children)
     {
@@ -372,6 +408,9 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
     name.SetString(go.name.c_str(), go.name.size(), jsonDocument.GetAllocator());
 
     gameObjectValue.AddMember("name", name, jsonDocument.GetAllocator());
+
+    rapidjson::Value loadAsync(go.loadAsync);
+    gameObjectValue.AddMember("loadAsync", loadAsync, jsonDocument.GetAllocator());
 
     rapidjson::Value transform(rapidjson::kObjectType);
     rapidjson::Value position(rapidjson::kArrayType);
@@ -546,6 +585,8 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
 		gameObjectValue.AddMember("characterController", characterController, jsonDocument.GetAllocator());
     }
 
+
+
     rapidjson::Value children(rapidjson::kArrayType);
     for (size_t i = 0; i < go.children.size(); i++)
     {
@@ -557,46 +598,49 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
 	gameObjectValue.AddMember("children", children, jsonDocument.GetAllocator());
 }
 
-GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scene)
+void SceneSaver::GetLoadGameObjectConfig(rapidjson::Value& gameObject, GameObjectConfig& gameObjectConfig)
 {
-    GameObjectConfig gameObjectConfig;
-    gameObjectConfig.name = gameObject["name"].GetString();
+	gameObjectConfig.name = gameObject["name"].GetString();
 
-    GameObject* go = scene->NewGameObject(gameObjectConfig.name);
+    if (gameObject.HasMember("loadAsync"))
+    {
+        gameObjectConfig.loadAsync = gameObject["loadAsync"].GetBool();
+	}
+    else
+    {
+		gameObjectConfig.loadAsync = false;
+    }
+ //   gameObjectConfig.loadAsync = gameObject["loadAsync"].GetBool();
 
-    TransformConfig transformConfig = TransformConfig();
-    const rapidjson::Value& transform = gameObject["transform"];
-    transformConfig.position = glm::vec3(transform["position"][0].GetFloat(), transform["position"][1].GetFloat(), transform["position"][2].GetFloat());
-    transformConfig.rotation = glm::vec3(transform["rotation"][0].GetFloat(), transform["rotation"][1].GetFloat(), transform["rotation"][2].GetFloat());
-    transformConfig.scale = glm::vec3(transform["scale"][0].GetFloat(), transform["scale"][1].GetFloat(), transform["scale"][2].GetFloat());
+	TransformConfig transformConfig = TransformConfig();
+	const rapidjson::Value& transform = gameObject["transform"];
+	transformConfig.position = glm::vec3(transform["position"][0].GetFloat(), transform["position"][1].GetFloat(), transform["position"][2].GetFloat());
+	transformConfig.rotation = glm::vec3(transform["rotation"][0].GetFloat(), transform["rotation"][1].GetFloat(), transform["rotation"][2].GetFloat());
+	transformConfig.scale = glm::vec3(transform["scale"][0].GetFloat(), transform["scale"][1].GetFloat(), transform["scale"][2].GetFloat());
 
-    go->AddComponent<TransformComponent>();
-    TransformComponent* t = go->GetComponent<TransformComponent>();
-    t->drawPosition = transformConfig.position;
-    t->eulerRotation = transformConfig.rotation;
-    t->drawScale = transformConfig.scale;
+	gameObjectConfig.transform = transformConfig;
 
     if (gameObject.HasMember("mesh"))
     {
-        const rapidjson::Value& mesh = gameObject["mesh"];
-        MeshConfig meshConfig;
-        meshConfig.fileName = mesh["fileName"].GetString();
-        meshConfig.friendlyName = mesh["friendlyName"].GetString();
-        meshConfig.bIsWireframe = mesh["bIsWireframe"].GetBool();
-        meshConfig.bDoNotLight = mesh["bDoNotLight"].GetBool();
-        meshConfig.bIsVisible = mesh["bIsVisible"].GetBool();
-        meshConfig.bUseDebugColours = mesh["bUseDebugColours"].GetBool();
+		const rapidjson::Value& mesh = gameObject["mesh"];
+		MeshConfig meshConfig;
+		meshConfig.fileName = mesh["fileName"].GetString();
+		meshConfig.friendlyName = mesh["friendlyName"].GetString();
+		meshConfig.bIsWireframe = mesh["bIsWireframe"].GetBool();
+		meshConfig.bDoNotLight = mesh["bDoNotLight"].GetBool();
+		meshConfig.bIsVisible = mesh["bIsVisible"].GetBool();
+		meshConfig.bUseDebugColours = mesh["bUseDebugColours"].GetBool();
 
-        const rapidjson::Value& wholeObjectDebugColourRGBA = mesh["wholeObjectDebugColourRGBA"];
-        meshConfig.wholeObjectDebugColourRGBA = glm::vec4(wholeObjectDebugColourRGBA[0].GetFloat(), wholeObjectDebugColourRGBA[1].GetFloat(), wholeObjectDebugColourRGBA[2].GetFloat(), wholeObjectDebugColourRGBA[3].GetFloat());
+		const rapidjson::Value& wholeObjectDebugColourRGBA = mesh["wholeObjectDebugColourRGBA"];
+		meshConfig.wholeObjectDebugColourRGBA = glm::vec4(wholeObjectDebugColourRGBA[0].GetFloat(), wholeObjectDebugColourRGBA[1].GetFloat(), wholeObjectDebugColourRGBA[2].GetFloat(), wholeObjectDebugColourRGBA[3].GetFloat());
 
-        const rapidjson::Value& color = mesh["color"];
-        meshConfig.color = glm::vec4(color[0].GetFloat(), color[1].GetFloat(), color[2].GetFloat(), color[3].GetFloat());
+		const rapidjson::Value& color = mesh["color"];
+		meshConfig.color = glm::vec4(color[0].GetFloat(), color[1].GetFloat(), color[2].GetFloat(), color[3].GetFloat());
 
-        meshConfig.isSkyBox = mesh["isSkyBox"].GetBool();
-        meshConfig.hasVertexColors = mesh["hasVertexColors"].GetBool();
-        meshConfig.isReflective = mesh["isReflective"].GetBool();
-        meshConfig.useBone = mesh["useBone"].GetBool();
+		meshConfig.isSkyBox = mesh["isSkyBox"].GetBool();
+		meshConfig.hasVertexColors = mesh["hasVertexColors"].GetBool();
+		meshConfig.isReflective = mesh["isReflective"].GetBool();
+		meshConfig.useBone = mesh["useBone"].GetBool();
 
         const rapidjson::Value& texture = mesh["texture"];
         for (rapidjson::SizeType k = 0; k < texture.Size(); k++)
@@ -612,28 +656,7 @@ GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scen
 
         meshConfig.maskTexture = mesh["maskTexture"].GetString();
 
-
-        cMesh* m = &go->AddComponent<cMesh>(meshConfig.fileName, meshConfig.friendlyName);
-        m->bIsWireframe = meshConfig.bIsWireframe;
-        m->bDoNotLight = meshConfig.bDoNotLight;
-        m->bIsVisible = meshConfig.bIsVisible;
-        m->bUseDebugColours = meshConfig.bUseDebugColours;
-        m->wholeObjectDebugColourRGBA = meshConfig.wholeObjectDebugColourRGBA;
-        m->color = meshConfig.color;
-        m->isSkyBox = meshConfig.isSkyBox;
-        m->hasVertexColors = meshConfig.hasVertexColors;
-        m->isReflective = meshConfig.isReflective;
-        m->useBone = meshConfig.useBone;
-        m->texture[0] = meshConfig.texture[0];
-        m->texture[1] = meshConfig.texture[1];
-        m->texture[2] = meshConfig.texture[2];
-        m->texture[3] = meshConfig.texture[3];
-        m->textureRatio[0] = meshConfig.textureRatio[0];
-        m->textureRatio[1] = meshConfig.textureRatio[1];
-        m->textureRatio[2] = meshConfig.textureRatio[2];
-        m->textureRatio[3] = meshConfig.textureRatio[3];
-        m->maskTexture = meshConfig.maskTexture;
-        m->transform = *t;
+        gameObjectConfig.mesh = meshConfig;
     }
 
     if (gameObject.HasMember("light"))
@@ -663,6 +686,125 @@ GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scen
         const rapidjson::Value& param2 = light["param2"];
         lightConfig.param2 = glm::vec3(param2[0].GetFloat(), 0, 0);
 
+        gameObjectConfig.light = lightConfig;
+    }
+    else
+    {
+        LightConfig lightConfig;
+		lightConfig.index = -1;
+		gameObjectConfig.light = lightConfig;
+    }
+
+    if (gameObject.HasMember("physXObj"))
+    {
+        const rapidjson::Value& physXObj = gameObject["physXObj"];
+        PhysXConfig physXConfig;
+        physXConfig.type = (ColliderType)physXObj["type"].GetInt();
+
+
+        physXConfig.isDynamic = physXObj["isDynamic"].GetBool();
+        physXConfig.isTrigger = physXObj["isTrigger"].GetBool();     
+
+        if (physXObj.HasMember("halfExtents"))
+        {
+            const rapidjson::Value& halfExtents = physXObj["halfExtents"];
+            glm::vec3 halfExtentsVec = glm::vec3(halfExtents[0].GetFloat(), halfExtents[1].GetFloat(), halfExtents[2].GetFloat());
+            physXConfig.halfExtents = halfExtentsVec;
+            //p->UpdateBoxDimensions(halfExtentsVec);
+            //p->halfExtents = halfExtentsVec;
+        }
+        else if (physXObj.HasMember("radius"))
+        {
+            physXConfig.radius = physXObj["radius"].GetFloat();
+            // p->UpdateSphereDimensions(physXObj["radius"].GetFloat());
+            //p->radius = physXObj["radius"].GetFloat();
+        }
+
+        gameObjectConfig.physXObj = physXConfig;
+    }
+    else
+    {
+        PhysXConfig physXConfig;
+		physXConfig.type = NONE;
+		gameObjectConfig.physXObj = physXConfig;
+    }
+
+    if (gameObject.HasMember("characterController"))
+    {
+        const rapidjson::Value& characterController = gameObject["characterController"];
+        CharacterControllerConfig characterControllerConfig;
+        characterControllerConfig.height = characterController["height"].GetFloat();
+        characterControllerConfig.radius = characterController["radius"].GetFloat();
+
+        const rapidjson::Value& position = characterController["position"];
+        characterControllerConfig.position = glm::vec3(position[0].GetFloat(), position[1].GetFloat(), position[2].GetFloat());
+
+        gameObjectConfig.characterController = characterControllerConfig;
+    }
+    else
+    {
+		CharacterControllerConfig characterControllerConfig;
+        characterControllerConfig.height = 0;
+        characterControllerConfig.radius = 0;
+    }
+
+    if (gameObject.HasMember("children"))
+    {
+        rapidjson::Value& children = gameObject["children"];
+        for (rapidjson::SizeType i = 0; i < children.Size(); i++)
+        {
+            rapidjson::Value& childValue = children[i];
+            GameObjectConfig childConfig;
+            GetLoadGameObjectConfig(childValue, childConfig);
+            gameObjectConfig.children.push_back(childConfig);
+        }
+    }
+}
+
+GameObject* SceneSaver::LoadGameObject(GameObjectConfig& gameObjectConfig, Scene* scene)
+{
+    GameObject* go = scene->NewGameObject(gameObjectConfig.name);
+
+    go->LoadAsync = gameObjectConfig.loadAsync;
+
+    TransformConfig transformConfig = gameObjectConfig.transform;   
+
+    go->AddComponent<TransformComponent>();
+    TransformComponent* t = go->GetComponent<TransformComponent>();
+    t->drawPosition = transformConfig.position;
+    t->eulerRotation = transformConfig.rotation;
+    t->drawScale = transformConfig.scale;
+
+    if (!gameObjectConfig.mesh.fileName.empty())
+    {
+        MeshConfig meshConfig = gameObjectConfig.mesh;
+        cMesh* m = &go->AddComponent<cMesh>(meshConfig.fileName, meshConfig.friendlyName);
+        m->bIsWireframe = meshConfig.bIsWireframe;
+        m->bDoNotLight = meshConfig.bDoNotLight;
+        m->bIsVisible = meshConfig.bIsVisible;
+        m->bUseDebugColours = meshConfig.bUseDebugColours;
+        m->wholeObjectDebugColourRGBA = meshConfig.wholeObjectDebugColourRGBA;
+        m->color = meshConfig.color;
+        m->isSkyBox = meshConfig.isSkyBox;
+        m->hasVertexColors = meshConfig.hasVertexColors;
+        m->isReflective = meshConfig.isReflective;
+        m->useBone = meshConfig.useBone;
+        m->texture[0] = meshConfig.texture[0];
+        m->texture[1] = meshConfig.texture[1];
+        m->texture[2] = meshConfig.texture[2];
+        m->texture[3] = meshConfig.texture[3];
+        m->textureRatio[0] = meshConfig.textureRatio[0];
+        m->textureRatio[1] = meshConfig.textureRatio[1];
+        m->textureRatio[2] = meshConfig.textureRatio[2];
+        m->textureRatio[3] = meshConfig.textureRatio[3];
+        m->maskTexture = meshConfig.maskTexture;
+        m->transform = *t;
+    }
+
+    if (gameObjectConfig.light.index >= 0)
+    {
+        LightConfig lightConfig = gameObjectConfig.light;
+
         cLight* l = &go->AddComponent<cLight>();
         l->index = lightConfig.index;
         l->position = glm::vec4(lightConfig.position, 1.0);
@@ -674,47 +816,34 @@ GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scen
         l->param2 = glm::vec4(lightConfig.param2, 1.0);
     }
 
-    if (gameObject.HasMember("physXObj"))
+    if (gameObjectConfig.physXObj.type != NONE)
     {
-		const rapidjson::Value& physXObj = gameObject["physXObj"];
-		PhysXConfig physXConfig;
-		physXConfig.type = (ColliderType)physXObj["type"].GetInt();
+		PhysXConfig physXConfig = gameObjectConfig.physXObj;
 
-
-		physXConfig.isDynamic = physXObj["isDynamic"].GetBool();
-        physXConfig.isTrigger = physXObj["isTrigger"].GetBool();
 
 		PhysXBody* p = &go->AddComponent<PhysXBody>(t);
         p->mesh = go->GetComponent<cMesh>();
 		p->SetBody(physXConfig.isDynamic);
         p->SetShape(physXConfig.type);
         
-        if (physXObj.HasMember("halfExtents"))
-        {
-			const rapidjson::Value& halfExtents = physXObj["halfExtents"];
-			glm::vec3 halfExtentsVec = glm::vec3(halfExtents[0].GetFloat(), halfExtents[1].GetFloat(), halfExtents[2].GetFloat());
-			p->UpdateBoxDimensions(halfExtentsVec);
-            p->halfExtents = halfExtentsVec;
+        if (physXConfig.halfExtents.x > 0)
+        {		
+			p->UpdateBoxDimensions(physXConfig.halfExtents);
+            p->halfExtents = physXConfig.halfExtents;
         }
-		else if (physXObj.HasMember("radius"))
+		else if (physXConfig.radius > 0)
 		{
-			p->UpdateSphereDimensions(physXObj["radius"].GetFloat());
-			p->radius = physXObj["radius"].GetFloat();
+			p->UpdateSphereDimensions(physXConfig.radius);
+			p->radius = physXConfig.radius;
 		}
 
         p->isTrigger = physXConfig.isTrigger;
         p->SetTrigger();
 	}
 
-    if (gameObject.HasMember("characterController"))
+    if (gameObjectConfig.characterController.height > 0)
     {
-		const rapidjson::Value& characterController = gameObject["characterController"];
-		CharacterControllerConfig characterControllerConfig;
-		characterControllerConfig.height = characterController["height"].GetFloat();
-		characterControllerConfig.radius = characterController["radius"].GetFloat();
-
-		const rapidjson::Value& position = characterController["position"];
-		characterControllerConfig.position = glm::vec3(position[0].GetFloat(), position[1].GetFloat(), position[2].GetFloat());
+		CharacterControllerConfig characterControllerConfig = gameObjectConfig.characterController;
 
 		CharacterController* c = &go->AddComponent<CharacterController>(t);
 		c->height = characterControllerConfig.height;
@@ -725,16 +854,103 @@ GameObject* SceneSaver::LoadGameObject(rapidjson::Value& gameObject, Scene* scen
     }
 
    
-    if (gameObject.HasMember("children"))
+    if (gameObjectConfig.children.size() > 0)
     {
-        rapidjson::Value& children = gameObject["children"];
-        for (rapidjson::SizeType i = 0; i < children.Size(); i++)
+        for (int i = 0; i < gameObjectConfig.children.size(); i++)
         {
-            rapidjson::Value& childValue = children[i];
-            GameObject* child = LoadGameObject(childValue, scene);
+            GameObjectConfig childConfig = gameObjectConfig.children[i];
+            GameObject* child = LoadGameObject(childConfig, scene);
             go->m_Children.push_back(child);
 		}
 	}
+
+    return go;
+}
+
+GameObject* SceneSaver::LoadGameObjectAsync(cMesh* loadedMesh, GameObjectConfig config, Scene* scene)
+{
+    
+    GameObject* go = scene->NewGameObject(config.name);
+    TransformComponent* t = &go->AddComponent<TransformComponent>();
+
+    t->drawPosition = config.transform.position;
+    t->eulerRotation = config.transform.rotation;
+    t->drawScale = config.transform.scale;
+
+
+    cMesh* mesh = &go->AddComponent<cMesh>(loadedMesh);
+    mesh->meshName = config.mesh.fileName;
+    mesh->friendlyName = config.mesh.friendlyName;
+    mesh->bIsWireframe = config.mesh.bIsWireframe;
+    mesh->bDoNotLight = config.mesh.bDoNotLight;
+    mesh->bIsVisible = config.mesh.bIsVisible;
+    mesh->bUseDebugColours = config.mesh.bUseDebugColours;
+    mesh->wholeObjectDebugColourRGBA = config.mesh.wholeObjectDebugColourRGBA;
+    mesh->color = config.mesh.color;
+    mesh->isSkyBox = config.mesh.isSkyBox;
+    mesh->hasVertexColors = config.mesh.hasVertexColors;
+    mesh->isReflective = config.mesh.isReflective;
+    mesh->useBone = config.mesh.useBone;
+    for (size_t i = 0; i < 4; i++)
+    {
+        mesh->texture[i] = config.mesh.texture[i];
+        mesh->textureRatio[i] = config.mesh.textureRatio[i];
+    }
+
+    mesh->maskTexture = config.mesh.maskTexture;
+
+    if (config.light.index >= 0)
+    {
+        LightConfig lightConfig = config.light;
+
+        cLight* l = &go->AddComponent<cLight>();
+        l->index = lightConfig.index;
+        l->position = glm::vec4(lightConfig.position, 1.0);
+        l->diffuse = glm::vec4(lightConfig.diffuse, 1.0);
+        l->specular = glm::vec4(lightConfig.specular, 1.0);
+        l->atten = glm::vec4(lightConfig.atten, 1.0);
+        l->direction = glm::vec4(lightConfig.direction, 1.0);
+        l->param1 = glm::vec4(lightConfig.param1, 1.0);
+        l->param2 = glm::vec4(lightConfig.param2, 1.0);
+    }
+
+    if (config.physXObj.type != NONE)
+    {
+        PhysXConfig physXConfig = config.physXObj;
+
+
+        PhysXBody* p = &go->AddComponent<PhysXBody>(t);
+        p->mesh = go->GetComponent<cMesh>();
+        p->SetBody(physXConfig.isDynamic);
+        p->SetShape(physXConfig.type);
+
+        if (physXConfig.halfExtents.x > 0)
+        {
+            p->UpdateBoxDimensions(physXConfig.halfExtents);
+            p->halfExtents = physXConfig.halfExtents;
+        }
+        else if (physXConfig.radius > 0)
+        {
+            p->UpdateSphereDimensions(physXConfig.radius);
+            p->radius = physXConfig.radius;
+        }
+
+        p->isTrigger = physXConfig.isTrigger;
+        p->SetTrigger();
+    }
+
+    if (config.characterController.height > 0)
+    {
+        CharacterControllerConfig characterControllerConfig = config.characterController;
+
+        CharacterController* c = &go->AddComponent<CharacterController>(t);
+        c->height = characterControllerConfig.height;
+        c->radius = characterControllerConfig.radius;
+        c->position = characterControllerConfig.position;
+        c->controller->setHeight(c->height);
+        c->controller->setRadius(c->radius);
+    }
+
 
     return go;
 }

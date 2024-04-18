@@ -163,6 +163,7 @@ void Scene::DrawUI(GameObject* go)
 
 	ImGui::BeginChild(go->m_Name.c_str(), ImVec2(0, 40));
 	ImGui::Text(go->m_Name.c_str());
+	ImGui::SameLine(); ImGui::Checkbox("Load Async", &go->LoadAsync);
 	std::string friendName = go->m_Name;
 	if (ImGui::InputText("Name", &friendName[0], 100, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
 	{

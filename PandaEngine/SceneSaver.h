@@ -2,7 +2,9 @@
 #include <vector>
 #include "Scene.h"
 #include "JsonReader.h"
+#include "MeshManager.h"
 #include <string>
+#include <functional>
 struct TransformConfig
 {
 	glm::vec3 position;
@@ -46,8 +48,8 @@ struct PhysXConfig
 	ColliderType type = NONE;
 	bool isDynamic;
 	bool isTrigger;
-	glm::vec3 halfExtents;
-	float radius;
+	glm::vec3 halfExtents = glm::vec3(0.0f);
+	float radius = 0.0f;
 };
 
 struct AnimationConfig
@@ -57,8 +59,8 @@ struct AnimationConfig
 
 struct CharacterControllerConfig
 {
-	float height;
-	float radius;
+	float height = 0.0f;
+	float radius = 0.0f;
 	glm::vec3 position;
 };
 
@@ -72,6 +74,7 @@ struct GameObjectConfig
 	PhysXConfig physXObj;
 	CharacterControllerConfig characterController;
 	std::vector<GameObjectConfig> children;
+	bool loadAsync;
 };
 
 struct SceneConfig
@@ -80,6 +83,7 @@ struct SceneConfig
 	std::vector<GameObjectConfig> gameObjects;
 };
 
+//typedef std::function<void(GameObject*)> OnGameObjectLoadCallBack;
 
 class SceneSaver
 {
@@ -92,11 +96,19 @@ public:
 
 	void SaveScene(Scene* scene);
 	Scene* LoadScene(std::string sceneName);
+
+	//void LoadGameObjectAsync(GameObjectConfig go, Scene* scene, OnGameObjectLoadCallBack callback);
+	MeshManager* meshManager;
 private:
 	JsonReader* jsonReader;
 
 	void GetGameObjectConifg(GameObject* go, GameObjectConfig& config);
 	void SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjectValue, rapidjson::Document& document);
 
-	GameObject* LoadGameObject(rapidjson::Value& gameObjectValue, Scene* scene);
+	void GetLoadGameObjectConfig(rapidjson::Value& gameObjectValue, GameObjectConfig& config);
+	GameObject* LoadGameObject(GameObjectConfig& config, Scene* scene);
+
+	cShaderManager* shaderManager;
+
+	GameObject* LoadGameObjectAsync(cMesh* mesh, GameObjectConfig config, Scene* scene);
 };
