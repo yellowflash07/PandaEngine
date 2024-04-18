@@ -35,7 +35,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	camera->ProcessMouseMovement(xpos, ypos);
 }
 
-void UpdatePlayer(cPlayerAnimations playerAnimations, CharacterController* controller, TransformComponent* soldierTransform, float speed, float deltaTime);
 
 int main(void)
 {
@@ -78,8 +77,6 @@ int main(void)
 
 
 	float speed = 35.0f;
-	cPlayerAnimations::PlayerState currentState = cPlayerAnimations::PlayerState::IDLE;
-	cPlayerAnimations::PlayerState changeToState = cPlayerAnimations::PlayerState::IDLE;
 
 	glm::vec3 cameraOffset = glm::vec3(0, 300, -500);
 	glm::vec3 cameraTarget = glm::vec3(0, 150, 0);
@@ -136,7 +133,7 @@ int main(void)
 		ImGui::DragFloat3("Camera Position", &cameraOffset[0], 0.1f);
 		ImGui::DragFloat3("Look Ahead", &cameraTarget[0], 0.1f);
 		ImGui::Checkbox("Is Inside Vehicle", &isInsideVehicle);
-		ImGui::Text("Distance from vehicle %f", glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition));
+		//ImGui::Text("Distance from vehicle %f", glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition));
 		ImGui::End();
 
 
@@ -161,6 +158,7 @@ int main(void)
 		//isInsideVehicle = true;
 		if (!isInsideVehicle)
 		{
+			soldierTransform->setRotationFromEuler(glm::vec3(0, -camera->yaw / 100.0f, 0));
 
 			glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
 			camera->Follow(soldierTransform->drawPosition, cameraOffset,
@@ -190,7 +188,6 @@ int main(void)
 				playerAnimations.SetState(cPlayerAnimations::PlayerState::IDLE);
 				controller->Move(glm::vec3(0, 0, 0), engine.deltaTime);
 			}
-		//	UpdatePlayer(playerAnimations, controller, soldierTransform, speed, engine.deltaTime);
 		}
 		else
 		{
@@ -233,19 +230,9 @@ int main(void)
 			
 		}
 
-		//follow the tie fighter
-		/*camera->Follow(soldierTransform->drawPosition,cameraOffset,
-			soldierTransform->drawPosition + cameraTarget, cameraRot);*/
-
-
-		//rotate the tie fighter
-		soldierTransform->setRotationFromEuler(glm::vec3(0, -camera->yaw / 100.0f, 0));
-
 		vehicleClass.Update(engine.deltaTime);
 
 		playerAnimations.Update(engine.deltaTime);
-
-		//playerAnimations.BlendTo(currentState, engine.deltaTime);
 
 		engine.EndRender();
 	}
@@ -254,12 +241,3 @@ int main(void)
 }
 
 
-//
-void UpdatePlayer(cPlayerAnimations playerAnimations, 
-	CharacterController* controller, 
-	TransformComponent* soldierTransform, 
-	float speed, float deltaTime)
-{
-	////player is not in vehicle
-
-}
