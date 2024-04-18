@@ -16,6 +16,7 @@ public:
 
 	GLuint m_shadowMap;
 	GLFWwindow* window;
+	glm::vec3 lightOffset;
 private:
 	GLuint m_fbo;
 	int m_shadowWidth;

@@ -84,22 +84,14 @@ int main(void)
 	//camera->camControl = false;
 
 	bool isInsideVehicle = false;
-
-	//vehicle.chassisTransformComponent
 	cVehicle vehicleClass;
-
-
 	GameObject* vehicle = scene->GetGameObjectByName("Vehicle");
 	TransformComponent* vehicleTransform = vehicle->GetComponent<TransformComponent>();
 	vehicleClass.SetChassis(vehicleTransform);
 	
-
-	// Assuming vehicle is an instance of cVehicle
 	cMesh* vehicleMesh = vehicle->GetComponent<cMesh>();
 	VehicleDesc vehicleDesc = vehicleClass.initVehicleDesc(vehicleMesh);
 
-
-	//vehicle.chassisTransformComponent = 4
 	std::vector<TransformComponent*> wheels;
 	for (int i = 0; i < 4; i++)
 	{
@@ -136,6 +128,8 @@ int main(void)
 		//ImGui::Text("Distance from vehicle %f", glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition));
 		ImGui::End();
 
+		scene->shadowMap->lightOffset = glm::vec3(soldierTransform->drawPosition.x + 10, 
+														0, soldierTransform->drawPosition.z - 30);
 
 		if (glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition) < 150.0f)
 		{

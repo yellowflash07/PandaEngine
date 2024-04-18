@@ -49,14 +49,13 @@ void ShadowMap::BeginRender(cLight* light)
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 	glClear(GL_DEPTH_BUFFER_BIT); 
 	glEnable(GL_CULL_FACE);
-	// (Usually) the default - does NOT draw "back facing" triangles
 	glCullFace(GL_FRONT);
 
 	float near_plane = 1.0f, far_plane = 1000.0f;
 	float orthoSize = 1000.0f;
 	glm::mat4 lightProjection = glm::ortho(-orthoSize, orthoSize, -orthoSize, orthoSize, 0.1f, far_plane);
 
-	glm::vec3 lightPos = glm::vec3(light->position);
+	glm::vec3 lightPos = glm::vec3(light->position) + lightOffset;
 	//light->position = glm::vec4(lightPos,1.0f);
 	glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0), glm::vec3(0.0, 1.0, 0.0));
 
