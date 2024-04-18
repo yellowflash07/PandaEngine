@@ -45,10 +45,10 @@ public:
 
 	void AttachObjectToBone(std::string boneName, TransformComponent* transform);
 
-	void SetMesh(cMesh* mesh);
+	//void SetMesh(cMesh* mesh);
+	cMesh* m_mesh;
 private:
 
-	cMesh* m_mesh;
 	sModelDrawInfo* m_drawInfo;
 	// The animations in the system
 	std::vector<Animation*> m_animations;

@@ -195,7 +195,7 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		if (anim != nullptr)
 		{
 			mesh->useBone = true;
-			anim->SetMesh(mesh);
+			//anim->SetMesh(mesh);
 			if (play)
 			{
 				anim->UpdateSkeleton(mesh, deltaTime);

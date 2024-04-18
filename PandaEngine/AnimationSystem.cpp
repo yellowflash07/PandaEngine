@@ -276,33 +276,39 @@ void AnimationSystem::UpdateAnimation(Animation* anim, float dt)
 
 void AnimationSystem::UpdateSkeleton(cMesh* mesh, float dt)
 {
-	//if (m_mesh == nullptr)
-	//{
-	//	m_mesh = mesh; 
-	//}
-	//m_drawInfo = &m_mesh->modelDrawInfo[0];
-	////sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[0];
-	//if (m_drawInfo->Animations.empty())
-	//{
-	//	return;
-	//}
-
-	AnimationInfo info = m_drawInfo->Animations[currentAnimationIndex];
-
-	frameCount += dt * info.TicksPerSecond;
-	if (frameCount > info.Duration)
+	if (m_mesh == nullptr)
 	{
-		frameCount = 0.0f;
+		m_mesh = mesh; 
 	}
+	m_drawInfo = &m_mesh->modelDrawInfo[0];
+	for(int i = 0; i < m_mesh->modelDrawInfo.size(); i++)
+	{
+		sModelDrawInfo* pDrawInfo = &m_mesh->modelDrawInfo[i];
 
-	if (isBlending)
-	{
-		BlendBoneTransforms(m_drawInfo, *m_drawInfo->RootNode, frameCount, blendIndexA, blendIndexB, blendWeight);
+		//sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[0];
+		if (pDrawInfo->Animations.empty())
+		{
+			return;
+		}
+
+		AnimationInfo info = pDrawInfo->Animations[currentAnimationIndex];
+
+		frameCount += dt * info.TicksPerSecond * animationSpeed;
+		if (frameCount > info.Duration)
+		{
+			frameCount = 0.0f;
+		}
+
+		if (isBlending)
+		{
+			BlendBoneTransforms(pDrawInfo, *m_drawInfo->RootNode, frameCount, blendIndexA, blendIndexB, blendWeight);
+		}
+		else
+		{
+			UpdateBoneTransforms(pDrawInfo, *m_drawInfo->RootNode, frameCount);
+		}
 	}
-	else
-	{
-		UpdateBoneTransforms(m_drawInfo, *m_drawInfo->RootNode, frameCount);
-	}
+	
 
 }
 
@@ -723,18 +729,11 @@ void AnimationSystem::LoadAnimationFromFile(std::string fileName)
 
 void AnimationSystem::AttachObjectToBone(std::string boneName, TransformComponent* transform)
 {
-	if (m_mesh == nullptr)
-	{
-		return;
-	}
-
-	if (m_drawInfo == nullptr)
-	{
-		m_drawInfo = &m_mesh->modelDrawInfo[0];
-	}
 
 	// Attach an object to a bone
 	// Find the bone in the skeleton
+	Node* boneNode = m_drawInfo->FindNode(boneName, m_drawInfo->RootNode);
+	int index =m_drawInfo->BoneNameToIdMap[boneNode->Name];
 	for (int i = 0; i < m_drawInfo->vecBoneInfo.size(); i++)
 	{
 		BoneInfo* boneInfo = &m_drawInfo->vecBoneInfo[i];
@@ -744,15 +743,6 @@ void AnimationSystem::AttachObjectToBone(std::string boneName, TransformComponen
 		}
 	}
 
-}
-
-void AnimationSystem::SetMesh(cMesh* mesh)
-{
-	if (m_mesh == nullptr)
-	{
-		m_mesh = mesh;
-		m_drawInfo = &m_mesh->modelDrawInfo[0];
-	}
 }
 
 

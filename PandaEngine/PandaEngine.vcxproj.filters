@@ -100,6 +100,12 @@
     <Filter Include="Physics\PhysX\Vehicle Physics">
       <UniqueIdentifier>{b013b502-db19-43bb-8200-9e38e76c14cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vehicle">
+      <UniqueIdentifier>{16d6e69e-503e-487e-a7fa-ce394577eaae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{43b4fb68-4ac0-44c8-95bb-3e56c95616f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vehicleMain.cpp">
@@ -287,6 +293,18 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicleClassNewMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainAnimationBlend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cVehicle.cpp">
+      <Filter>Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="cPlayerAnimations.cpp">
+      <Filter>Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -508,6 +526,12 @@
     </ClInclude>
     <ClInclude Include="PhysXVehicleEnums.h">
       <Filter>Physics\PhysX\Vehicle Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="cVehicle.h">
+      <Filter>Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="cPlayerAnimations.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
