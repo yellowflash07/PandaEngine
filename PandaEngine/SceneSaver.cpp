@@ -832,6 +832,7 @@ GameObject* SceneSaver::LoadGameObject(GameObjectConfig& gameObjectConfig, Scene
         l->direction = glm::vec4(lightConfig.direction, 1.0);
         l->param1 = glm::vec4(lightConfig.param1, 1.0);
         l->param2 = glm::vec4(lightConfig.param2, 1.0);
+        l->transform = t;
     }
 
     if (gameObjectConfig.physXObj.type != NONE)

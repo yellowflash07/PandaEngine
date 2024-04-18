@@ -64,6 +64,9 @@ int main(void)
 
 	Scene* scene = engine.GetCurrentScene();
 
+	GameObject* skyBox = scene->GetGameObjectByName("SkyBox");
+	TransformComponent* skyBoxTransform = nullptr;
+
 	GameObject* gun = scene->GetGameObjectByName("Pistol");
 	TransformComponent* gunTransformComponent = gun->GetComponent<TransformComponent>();
 
@@ -111,6 +114,8 @@ int main(void)
 	{
 		engine.BeginRender();
 
+		//scene->shadowMap->lightOffset = glm::vec3(soldierTransform->drawPosition.x, soldierTransform->drawPosition.y, soldierTransform->drawPosition.z);
+
 		engine.Update();
 
 		playerAnimations.animationSystem->AttachObjectToBone("mixamorig_LeftHand", gunTransformComponent);
@@ -128,14 +133,23 @@ int main(void)
 		//ImGui::Text("Distance from vehicle %f", glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition));
 		ImGui::End();
 
-		scene->shadowMap->lightOffset = glm::vec3(soldierTransform->drawPosition.x + 10, 
-														0, soldierTransform->drawPosition.z - 30);
+
+		if (skyBox == nullptr)
+		{
+			skyBox = scene->GetGameObjectByName("SkyBox");
+		}
+		else
+		{
+			skyBoxTransform = skyBox->GetComponent<TransformComponent>();
+			skyBoxTransform->drawPosition = camera->cameraEye;
+		}
 
 		if (glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition) < 150.0f)
 		{
 			if (keyHit == GLFW_KEY_E)
 			{
 				isInsideVehicle = true;
+				soldierMesh->bIsVisible = false;
 				keyHit = 0;
 			}
 		}
@@ -145,6 +159,7 @@ int main(void)
 			if (keyHit == GLFW_KEY_E)
 			{
 				isInsideVehicle = false;
+				soldierMesh->bIsVisible = true;
 				vehicleClass.brake();
 				keyHit = 0;
 			}
@@ -188,6 +203,9 @@ int main(void)
 			glm::vec3 cameraRot = glm::vec3(camera->pitch / 50.0f, -camera->yaw / 50.0f, 0);
 			camera->Follow(vehicleTransform->drawPosition, cameraOffset,
 				vehicleTransform->drawPosition + vehicleTarget, cameraRot);
+
+			glm::vec3 soldierPos = vehicleTransform->drawPosition + glm::vec3(300,0, 0);
+			controller->controller->setPosition(PxExtendedVec3(soldierPos.x, soldierPos.y, soldierPos.z));
 
 			//player is in vehicle
 			if (IsKeyPressed(GLFW_KEY_W))

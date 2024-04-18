@@ -107,6 +107,11 @@ void MeshManager::LoadMeshAsync(std::string modelNameAtPath,
 
 void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModel)
 {
+    if (!pCurrentMesh->bIsVisible)
+    {
+		return;
+	}
+
    // glm::mat4 matModel = transform->GetTransform();
     //HACK:
     TransformComponent transform;
@@ -852,7 +857,10 @@ void MeshManager::UpdateVAOBuffers(std::string friendlyName, sModelDrawInfo& dra
 
 void MeshManager::DrawOnlyGeometry(cMesh* pCurrentMesh, glm::mat4 matModel)
 {
-   // glm::mat4 matModel = transform->GetTransform();
+    if (!pCurrentMesh->bIsVisible)
+    {
+		return;
+	}
 
     GLint matModel_UL = glGetUniformLocation(shaderProgramID, "matModel");
     glUniformMatrix4fv(matModel_UL, 1, GL_FALSE, glm::value_ptr(matModel));

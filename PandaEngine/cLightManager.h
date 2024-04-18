@@ -48,6 +48,7 @@ public:
     int index = -1;
 
     GLint shaderID;
+    TransformComponent* transform;
 };
 
 class cLightManager

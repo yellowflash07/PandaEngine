@@ -117,7 +117,7 @@ void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightMan
 	this->shaderManager = shaderManager;
 
 	this->shadowMap = new ShadowMap();
-	this->shadowMap->Initialize(2048 , 2048 );
+	this->shadowMap->Initialize(7048 , 7048 );
 	this->shadowMap->shaderProgramID = shaderManager->getIDFromFriendlyName("shader01");
 	this->shadowMap->window = window;
 }

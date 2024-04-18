@@ -39,6 +39,8 @@ cLight::cLight()
 	this->param2_UL = -1;
 
 	uniformLocationIsSet = false;
+
+	
 }
 
 	// And the uniforms:
@@ -86,6 +88,7 @@ void cLight::SetUniformLocations(GLuint shaderID, int lightIndex)
 void cLight::UpdateLight(TransformComponent* transform)
 {
 	this->position = glm::vec4(transform->drawPosition, 1.0f);
+	this->transform = transform;
 
 	glUniform4f(this->position_UL,
 		position.x,

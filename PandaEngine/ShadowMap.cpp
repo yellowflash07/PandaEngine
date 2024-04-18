@@ -52,10 +52,12 @@ void ShadowMap::BeginRender(cLight* light)
 	glCullFace(GL_FRONT);
 
 	float near_plane = 1.0f, far_plane = 1000.0f;
-	float orthoSize = 1000.0f;
+	float orthoSize = 5000.0f;
 	glm::mat4 lightProjection = glm::ortho(-orthoSize, orthoSize, -orthoSize, orthoSize, 0.1f, far_plane);
 
-	glm::vec3 lightPos = glm::vec3(light->position) + lightOffset;
+	glm::vec3 lightPos = glm::vec3(light->position);
+	light->position = glm::vec4(lightPos, 1.0f);
+	//printf("Light Pos: %f %f %f\n", lightPos.x, lightPos.y, lightPos.z);
 	//light->position = glm::vec4(lightPos,1.0f);
 	glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0), glm::vec3(0.0, 1.0, 0.0));
 
