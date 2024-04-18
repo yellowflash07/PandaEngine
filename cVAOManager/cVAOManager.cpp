@@ -167,7 +167,7 @@ bool cVAOManager::m_LoadTheFile(std::string fileName, std::vector<sModelDrawInfo
     Assimp::Importer importer;
     std::string filePath = this->m_basePathWithoutSlash + "/" + fileName;
     const aiScene* scene = importer.ReadFile(filePath, aiProcess_ValidateDataStructure | aiProcess_GenNormals | aiProcess_Triangulate
-                                                       | aiProcess_PopulateArmatureData | aiProcess_CalcTangentSpace);
+                                                       | aiProcess_PopulateArmatureData | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
 
     std::string errorString = importer.GetErrorString();
     if (!errorString.empty())

@@ -111,8 +111,6 @@ int main(void)
 	{
 		engine.BeginRender();
 
-		//scene->shadowMap->lightOffset = glm::vec3(soldierTransform->drawPosition.x, soldierTransform->drawPosition.y, soldierTransform->drawPosition.z);
-
 		engine.Update();
 
 		if (IsKeyPressed(GLFW_KEY_G))
@@ -159,7 +157,6 @@ int main(void)
 				keyHit = 0;
 			}
 		}
-		//isInsideVehicle = true;
 		if (!isInsideVehicle)
 		{
 			soldierTransform->setRotationFromEuler(glm::vec3(0, -camera->yaw / 100.0f, 0));
