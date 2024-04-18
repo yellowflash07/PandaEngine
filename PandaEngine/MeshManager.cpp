@@ -244,28 +244,27 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModel)
     GLint transparency_UL = glGetUniformLocation(shaderProgramID, "transparency");
     glUniform1f(transparency_UL, pCurrentMesh->transperancy);
 
-    if (pCurrentMesh->useBone)
-    {
-        sModelDrawInfo* drawInfo = &pCurrentMesh->modelDrawInfo[0];
-        CalculateMatrices(pCurrentMesh, drawInfo->RootNode,
-            glm::mat4(1.0f),
-            drawInfo);
-        //printf("----------------\n");
-        for (int j = 0; j < drawInfo->vecBoneInfo.size(); ++j)
-        {
-            glm::mat4 boneMatrix = drawInfo->vecBoneInfo[j].FinalTransformation;
-            std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
-            GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
-            glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
-        }
-    }
-
 
     for (sModelDrawInfo drawInfo : pCurrentMesh->modelDrawInfo)
     {
 
         if (!drawInfo.meshName.empty())
         {
+            if (pCurrentMesh->useBone)
+            {
+                sModelDrawInfo* pDrawInfo = &drawInfo;
+                CalculateMatrices(pCurrentMesh, pDrawInfo->RootNode,
+                    glm::mat4(1.0f),
+                    pDrawInfo);
+                //printf("----------------\n");
+                for (int j = 0; j < pDrawInfo->vecBoneInfo.size(); ++j)
+                {
+                    glm::mat4 boneMatrix = pDrawInfo->vecBoneInfo[j].FinalTransformation;
+                    std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+                    GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+                    glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+                }
+            }
 
             // Found it!!!
             if (!pCurrentMesh->hideParent)
@@ -468,27 +467,26 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLui
     GLint transparency_UL = glGetUniformLocation(shaderProgramID, "transparency");
     glUniform1f(transparency_UL, pCurrentMesh->transperancy);
 
-    if (pCurrentMesh->useBone)
-    {
-        CalculateMatrices(pCurrentMesh, pCurrentMesh->modelDrawInfo[0].RootNode,
-            glm::mat4(1.0f),
-            &pCurrentMesh->modelDrawInfo[0]);
-        //printf("----------------\n");
-        for (int j = 0; j < pCurrentMesh->modelDrawInfo[0].vecBoneInfo.size(); ++j)
-        {
-            glm::mat4 boneMatrix = pCurrentMesh->modelDrawInfo[0].vecBoneInfo[j].FinalTransformation;
-            std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
-            GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
-            glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
-        }
-    }
-
     for (sModelDrawInfo drawInfo : pCurrentMesh->modelDrawInfo)
     {
 
         if (!drawInfo.meshName.empty())
         {
-            
+            if (pCurrentMesh->useBone)
+            {
+                sModelDrawInfo* pDrawInfo = &drawInfo;
+                CalculateMatrices(pCurrentMesh, pDrawInfo->RootNode,
+                    glm::mat4(1.0f),
+                    pDrawInfo);
+                //printf("----------------\n");
+                for (int j = 0; j < pDrawInfo->vecBoneInfo.size(); ++j)
+                {
+                    glm::mat4 boneMatrix = pDrawInfo->vecBoneInfo[j].FinalTransformation;
+                    std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+                    GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+                    glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+                }
+            }
 
             // Found it!!!
             if (!pCurrentMesh->hideParent)
@@ -868,29 +866,27 @@ void MeshManager::DrawOnlyGeometry(cMesh* pCurrentMesh, glm::mat4 matModel)
     GLint useBone_UL = glGetUniformLocation(shaderProgramID, "useBones");
     glUniform1f(useBone_UL, pCurrentMesh->useBone ? (GLfloat)GL_TRUE : (GLfloat)GL_FALSE);
 
-    if (pCurrentMesh->useBone)
-    {
-        sModelDrawInfo* drawInfo = &pCurrentMesh->modelDrawInfo[0];
-        CalculateMatrices(pCurrentMesh, drawInfo->RootNode,
-            glm::mat4(1.0f),
-            drawInfo);
-        //printf("----------------\n");
-        for (int j = 0; j < drawInfo->vecBoneInfo.size(); ++j)
-        {
-            glm::mat4 boneMatrix = drawInfo->vecBoneInfo[j].FinalTransformation;
-            std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
-            GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
-            glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
-        }
-    }
-
 
     for (sModelDrawInfo drawInfo : pCurrentMesh->modelDrawInfo)
     {
 
         if (!drawInfo.meshName.empty())
         {
-
+            if (pCurrentMesh->useBone)
+            {
+                sModelDrawInfo* pDrawInfo = &drawInfo;
+                CalculateMatrices(pCurrentMesh, pDrawInfo->RootNode,
+                    glm::mat4(1.0f),
+                    pDrawInfo);
+                //printf("----------------\n");
+                for (int j = 0; j < pDrawInfo->vecBoneInfo.size(); ++j)
+                {
+                    glm::mat4 boneMatrix = pDrawInfo->vecBoneInfo[j].FinalTransformation;
+                    std::string boneUL = "BoneMatrices[" + std::to_string(j) + "]";
+                    GLint boneUL_ID = glGetUniformLocation(shaderProgramID, boneUL.c_str());
+                    glUniformMatrix4fv(boneUL_ID, 1, GL_FALSE, glm::value_ptr(boneMatrix));
+                }
+            }
             // Found it!!!
             if (!pCurrentMesh->hideParent)
             {
