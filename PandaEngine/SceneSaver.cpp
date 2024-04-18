@@ -330,6 +330,9 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
         meshConfig.textureRatio[2] = mesh->textureRatio[2];
         meshConfig.textureRatio[3] = mesh->textureRatio[3];
         meshConfig.maskTexture = mesh->maskTexture;
+        meshConfig.normalMap = mesh->normalMap;
+        meshConfig.enableShadow = mesh->enableShadow;
+        meshConfig.isDynamicLOD = mesh->dynamicLOD;
         gameObjectConfig.mesh = meshConfig;
     }
 
@@ -489,6 +492,13 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
         rapidjson::Value maskTexture;
         maskTexture.SetString(go.mesh.maskTexture.c_str(), go.mesh.maskTexture.size(), jsonDocument.GetAllocator());
         mesh.AddMember("maskTexture", maskTexture, jsonDocument.GetAllocator());
+
+        rapidjson::Value normalMap;
+        normalMap.SetString(go.mesh.normalMap.c_str(), go.mesh.normalMap.size(), jsonDocument.GetAllocator());
+        mesh.AddMember("normalMap", normalMap, jsonDocument.GetAllocator());
+
+        mesh.AddMember("enableShadow", go.mesh.enableShadow, jsonDocument.GetAllocator());
+        mesh.AddMember("isDynamicLOD", go.mesh.isDynamicLOD, jsonDocument.GetAllocator());
 
         gameObjectValue.AddMember("mesh", mesh, jsonDocument.GetAllocator());
     }
@@ -655,7 +665,9 @@ void SceneSaver::GetLoadGameObjectConfig(rapidjson::Value& gameObject, GameObjec
         }
 
         meshConfig.maskTexture = mesh["maskTexture"].GetString();
-
+        meshConfig.normalMap = mesh["normalMap"].GetString();
+        meshConfig.enableShadow = mesh["enableShadow"].GetBool();
+        meshConfig.isDynamicLOD = mesh["isDynamicLOD"].GetBool();
         gameObjectConfig.mesh = meshConfig;
     }
 
@@ -798,6 +810,9 @@ GameObject* SceneSaver::LoadGameObject(GameObjectConfig& gameObjectConfig, Scene
         m->textureRatio[2] = meshConfig.textureRatio[2];
         m->textureRatio[3] = meshConfig.textureRatio[3];
         m->maskTexture = meshConfig.maskTexture;
+        m->normalMap = meshConfig.normalMap;
+        m->enableShadow = meshConfig.enableShadow;
+        m->dynamicLOD = meshConfig.isDynamicLOD;
         m->transform = *t;
     }
 
@@ -871,6 +886,9 @@ GameObject* SceneSaver::LoadGameObjectAsync(cMesh* loadedMesh, GameObjectConfig 
 {
     
     GameObject* go = scene->NewGameObject(config.name);
+
+    go->LoadAsync = config.loadAsync;
+
     TransformComponent* t = &go->AddComponent<TransformComponent>();
 
     t->drawPosition = config.transform.position;
@@ -898,6 +916,9 @@ GameObject* SceneSaver::LoadGameObjectAsync(cMesh* loadedMesh, GameObjectConfig 
     }
 
     mesh->maskTexture = config.mesh.maskTexture;
+    mesh->normalMap = config.mesh.normalMap;
+    mesh->enableShadow = config.mesh.enableShadow;
+    mesh->dynamicLOD = config.mesh.isDynamicLOD;
 
     if (config.light.index >= 0)
     {

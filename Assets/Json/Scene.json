@@ -60,28 +60,28 @@
             "children": []
         },
         {
-            "name": "GameObject",
+            "name": "new",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    0.0,
-                    106.39886474609375,
-                    0.0
+                    -19.9787654876709,
+                    15.617961883544922,
+                    534.2699584960938
                 ],
                 "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
+                    -1.600000023841858,
+                    -0.03737711161375046,
+                    4.2870777150483264e-8
                 ],
                 "scale": [
-                    1.0,
-                    1.0,
-                    1.0
+                    99.99999237060547,
+                    100.00015258789063,
+                    100.0
                 ]
             },
             "mesh": {
-                "fileName": "tie_fighter.ply",
-                "friendlyName": "tie_fighter.ply",
+                "fileName": "Grid_10x10_vertical_in_y.ply",
+                "friendlyName": "Grid_10x10_vertical_in_y.ply",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -114,7 +114,10 @@
                     1.0,
                     1.0
                 ],
-                "maskTexture": ""
+                "maskTexture": "",
+                "normalMap": "",
+                "enableShadow": false,
+                "isDynamicLOD": true
             },
             "children": []
         },
@@ -173,33 +176,36 @@
                     1.0,
                     1.0
                 ],
-                "maskTexture": ""
+                "maskTexture": "",
+                "normalMap": "",
+                "enableShadow": false,
+                "isDynamicLOD": false
             },
             "children": []
         },
         {
-            "name": "new",
+            "name": "GameObject",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    -19.9787654876709,
-                    15.617961883544922,
-                    534.2699584960938
+                    0.0,
+                    106.39886474609375,
+                    0.0
                 ],
                 "rotation": [
-                    -1.600000023841858,
-                    -0.03737711161375046,
-                    4.2870777150483264e-8
+                    0.0,
+                    -0.0,
+                    0.0
                 ],
                 "scale": [
-                    99.99999237060547,
-                    100.00015258789063,
-                    100.0
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             },
             "mesh": {
-                "fileName": "Grid_10x10_vertical_in_y.ply",
-                "friendlyName": "Grid_10x10_vertical_in_y.ply",
+                "fileName": "tie_fighter.ply",
+                "friendlyName": "tie_fighter.ply",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -232,7 +238,10 @@
                     1.0,
                     1.0
                 ],
-                "maskTexture": ""
+                "maskTexture": "",
+                "normalMap": "",
+                "enableShadow": true,
+                "isDynamicLOD": false
             },
             "children": []
         }

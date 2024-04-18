@@ -29,6 +29,9 @@ struct MeshConfig
 	std::string texture[4];
 	float textureRatio[4];
 	std::string maskTexture;
+	std::string normalMap;
+	bool enableShadow;
+	bool isDynamicLOD;
 };
 
 struct LightConfig
