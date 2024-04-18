@@ -191,7 +191,7 @@ void Engine::Update()
         {
             if (ImGui::MenuItem("Save Scene", "Ctrl + S"))
             {
-                sceneSaver.SaveScene(scenes[currentScene]);
+                sceneSaver.SaveScene(scenes[currentScene], currentFile);
             }
            /* if (ImGui::MenuItem("Load Scene", NULL))
             {
@@ -321,6 +321,7 @@ void Engine::LoadDefaultLights()
 void Engine::LoadSave(std::string sceneName)
 {
     Scene* scene = sceneSaver.LoadScene(sceneName);
+    currentFile = sceneName;
    // scene->Init(this->meshManager, this->physicsManager, this->lightManager, cShaderManager::getInstance());
     AddScene(scene);
     //meshManager->LoadSavedMeshes(shaderProgramID);

@@ -97,7 +97,7 @@ public:
 	//void SaveMeshes(std::vector<cMesh*> meshes);
 	//std::vector<cMesh*> LoadMeshes();
 
-	void SaveScene(Scene* scene);
+	void SaveScene(Scene* scene, std::string fileName);
 	Scene* LoadScene(std::string sceneName);
 
 	//void LoadGameObjectAsync(GameObjectConfig go, Scene* scene, OnGameObjectLoadCallBack callback);

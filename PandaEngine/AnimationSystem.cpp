@@ -276,33 +276,39 @@ void AnimationSystem::UpdateAnimation(Animation* anim, float dt)
 
 void AnimationSystem::UpdateSkeleton(cMesh* mesh, float dt)
 {
-	//if (m_mesh == nullptr)
-	//{
-	//	m_mesh = mesh; 
-	//}
+	if (m_mesh == nullptr)
+	{
+		m_mesh = mesh; 
+	}
 	//m_drawInfo = &m_mesh->modelDrawInfo[0];
-	////sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[0];
-	//if (m_drawInfo->Animations.empty())
-	//{
-	//	return;
-	//}
-
-	AnimationInfo info = m_drawInfo->Animations[currentAnimationIndex];
-
-	frameCount += dt * info.TicksPerSecond;
-	if (frameCount > info.Duration)
+	for(int i = 0; i < m_drawInfos.size(); i++)
 	{
-		frameCount = 0.0f;
-	}
+		sModelDrawInfo* pDrawInfo = m_drawInfos[i];
 
-	if (isBlending)
-	{
-		BlendBoneTransforms(m_drawInfo, *m_drawInfo->RootNode, frameCount, blendIndexA, blendIndexB, blendWeight);
+		//sModelDrawInfo* drawInfo = &mesh->modelDrawInfo[0];
+		if (pDrawInfo->Animations.empty())
+		{
+			return;
+		}
+
+		AnimationInfo info = pDrawInfo->Animations[currentAnimationIndex];
+
+		frameCount += dt * info.TicksPerSecond * animationSpeed;
+		if (frameCount > info.Duration)
+		{
+			frameCount = 0.0f;
+		}
+
+		if (isBlending)
+		{
+			BlendBoneTransforms(pDrawInfo, *pDrawInfo->RootNode, frameCount, blendIndexA, blendIndexB, blendWeight);
+		}
+		else
+		{
+			UpdateBoneTransforms(pDrawInfo, *pDrawInfo->RootNode, frameCount);
+		}
 	}
-	else
-	{
-		UpdateBoneTransforms(m_drawInfo, *m_drawInfo->RootNode, frameCount);
-	}
+	
 
 }
 
@@ -340,14 +346,14 @@ void AnimationSystem::BlendBoneTransforms(sModelDrawInfo* drawInfo, Node& node, 
 
 	if (blendWeight <= 0.0f)
 	{
-		currentAnimationIndex = animationIndexB;
+		currentAnimationIndex = animationIndexA ;
 		isBlending = false;
 		return;
 	}
 
 	if (blendWeight >= 1.0f)
 	{
-		currentAnimationIndex = animationIndexA;
+		currentAnimationIndex = animationIndexB;
 		isBlending = false;
 		//UpdateBoneTransforms(drawInfo, node, dt);
 		return;
@@ -374,7 +380,7 @@ void AnimationSystem::BlendBoneTransforms(sModelDrawInfo* drawInfo, Node& node, 
 		glm::mat4 boneTransformB = InterpolateNodeTransforms(nodeAnimInfoB, dt);
 
 		// Blend the interpolated transforms based on weight
-		glm::mat4 blendedTransform = blendWeight * boneTransformA + (1.0f - blendWeight) * boneTransformB;
+		glm::mat4 blendedTransform = blendWeight * boneTransformB + (1.0f - blendWeight) * boneTransformA;
 
 
 		// Update bone transformations in drawInfo
@@ -386,6 +392,19 @@ void AnimationSystem::BlendBoneTransforms(sModelDrawInfo* drawInfo, Node& node, 
 	{
 		BlendBoneTransforms(drawInfo, *child, dt, animationIndexA, animationIndexB, blendWeight);
 	}
+}
+
+void AnimationSystem::SetBlendIndex(int indexA, int indexB)
+{
+	if (isBlending) return;
+	blendIndexA = indexA;
+	blendIndexB = indexB;
+	isBlending = true;
+}
+
+void AnimationSystem::SetBlendWeight(float weight)
+{
+	blendWeight = weight;
 }
 
 void AnimationSystem::Render()
@@ -648,6 +667,7 @@ glm::mat4 AnimationSystem::InterpolateNodeTransforms(NodeAnimation* nodeAnim, fl
 	return matModel;
 }
 
+
 void AnimationSystem::LoadAnimationFromFile(std::string fileName)
 {
 	Assimp::Importer importer;
@@ -723,35 +743,40 @@ void AnimationSystem::LoadAnimationFromFile(std::string fileName)
 
 void AnimationSystem::AttachObjectToBone(std::string boneName, TransformComponent* transform)
 {
-	if (m_mesh == nullptr)
-	{
-		return;
-	}
-
-	if (m_drawInfo == nullptr)
-	{
-		m_drawInfo = &m_mesh->modelDrawInfo[0];
-	}
 
 	// Attach an object to a bone
 	// Find the bone in the skeleton
-	for (int i = 0; i < m_drawInfo->vecBoneInfo.size(); i++)
+
+	for (int j = 0; j < m_mesh->modelDrawInfo.size(); j++)
 	{
-		BoneInfo* boneInfo = &m_drawInfo->vecBoneInfo[i];
-		if (boneInfo->boneName == boneName)
+		sModelDrawInfo* drawInfo = &m_mesh->modelDrawInfo[j];
+		for (int i = 0; i < drawInfo->vecBoneInfo.size(); i++)
 		{
-			transform->parentTransform = boneInfo->GlobalTransformation;
+			BoneInfo* boneInfo = &drawInfo->vecBoneInfo[i];
+			if (boneInfo->boneName == boneName)
+			{
+				transform->parentTransform = boneInfo->GlobalTransformation;
+			}
 		}
 	}
+
+	
 
 }
 
 void AnimationSystem::SetMesh(cMesh* mesh)
 {
-	if (m_mesh == nullptr)
+	if (this->m_mesh == nullptr)
 	{
-		m_mesh = mesh;
-		m_drawInfo = &m_mesh->modelDrawInfo[0];
+		this->m_mesh = mesh;
+
+		for (int i = 0; i < mesh->modelDrawInfo.size(); i++)
+		{
+			this->m_drawInfos.push_back(&mesh->modelDrawInfo[i]);
+			//m_drawInfos.push_back()
+		}
+
+		//this->m_drawInfo = &m_mesh->modelDrawInfo[0];
 	}
 }
 

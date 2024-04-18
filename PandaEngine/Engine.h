@@ -56,5 +56,6 @@ private:
 	SceneSaver sceneSaver;
 	bool saveFile = false;
 	bool loadFile = false;
+	std::string currentFile;
 	//Camera* camera;
 };

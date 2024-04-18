@@ -527,7 +527,7 @@ void cVAOManager::LoadMeshes(aiMesh* mesh, const aiScene* scene, sModelDrawInfo&
         aiNode* root = scene->mRootNode;
         drawInfo.RootNode = GenerateBoneHierarchy(root);
         drawInfo.GlobalInverseTransformation = glm::inverse(drawInfo.RootNode->Transformation);
-
+        
         unsigned int numBones = mesh->mNumBones;
         for (unsigned int boneIdx = 0; boneIdx < numBones; ++boneIdx)
         {

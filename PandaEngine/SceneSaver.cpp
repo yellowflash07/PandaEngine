@@ -192,7 +192,7 @@ SceneSaver::~SceneSaver()
 //}
 
 
-void SceneSaver::SaveScene(Scene* scene)
+void SceneSaver::SaveScene(Scene* scene, std::string fileName)
 {
 
     SceneConfig sceneConfig;
@@ -229,7 +229,9 @@ void SceneSaver::SaveScene(Scene* scene)
 
     document.AddMember("gameObjects", gameObjects, document.GetAllocator());
 
-    jsonReader->WriteJsonFile("../Assets/Json/scene.json", document);
+    std::string filePath = "../Assets/Json/" + fileName;
+
+    jsonReader->WriteJsonFile(filePath.c_str(), document);
 
 }
 
@@ -663,6 +665,7 @@ void SceneSaver::GetLoadGameObjectConfig(rapidjson::Value& gameObject, GameObjec
         {
             meshConfig.textureRatio[k] = textureRatio[k].GetFloat();
         }
+        
 
         meshConfig.maskTexture = mesh["maskTexture"].GetString();
         meshConfig.normalMap = mesh["normalMap"].GetString();
