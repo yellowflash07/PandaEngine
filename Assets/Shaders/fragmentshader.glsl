@@ -43,6 +43,7 @@ uniform sampler2D renderTexture;
 
 uniform samplerCube skyBoxCubeMap;
 uniform vec2 UV_Offset;
+uniform vec2 UV_Tiling;
 uniform vec4 textureMixRatio_0_3;
 
 struct sLight
@@ -114,7 +115,7 @@ vec3 calculateBumpNormal()
     vec4 Tangent = normalize(tangent);
     Tangent = normalize(Tangent - dot(Tangent, Normal) * Normal);
     vec3 Bitangent = cross(Tangent.xyz, Normal.xyz);
-    vec3 BumpMapNormal = texture(normalMap, texCoord).xyz;
+    vec3 BumpMapNormal = texture(normalMap,  (texCoord.st * UV_Tiling.xy)).xyz;
     BumpMapNormal = 2.0 * BumpMapNormal - vec3(1.0, 1.0, 1.0);
     vec3 NewNormal;
     mat3 TBN = mat3(Tangent, Bitangent, Normal);
@@ -202,10 +203,10 @@ void main()
 	if(hasTexture)
 	{
 
-		vec4 texColour = texture( texture_00, texCoord.st + UV_Offset.xy).rgba * textureMixRatio_0_3.x 	
-						+ texture( texture_01, texCoord.st ).rgba * textureMixRatio_0_3.y
-						+ texture( texture_02, texCoord.st ).rgba * textureMixRatio_0_3.z
-						+ texture( texture_03, texCoord.st ).rgba * textureMixRatio_0_3.w;
+		vec4 texColour = texture( texture_00, (texCoord.st * UV_Tiling.xy)+ UV_Offset.xy).rgba * textureMixRatio_0_3.x 	
+						+ texture( texture_01, (texCoord.st * UV_Tiling.xy) ).rgba * textureMixRatio_0_3.y
+						+ texture( texture_02,  (texCoord.st * UV_Tiling.xy) ).rgba * textureMixRatio_0_3.z
+						+ texture( texture_03,  (texCoord.st * UV_Tiling.xy) ).rgba * textureMixRatio_0_3.w;
 		vertexRGBA = texColour;
 	}
 

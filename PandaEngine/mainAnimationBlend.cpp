@@ -67,9 +67,6 @@ int main(void)
 	GameObject* skyBox = scene->GetGameObjectByName("SkyBox");
 	TransformComponent* skyBoxTransform = nullptr;
 
-	GameObject* gun = scene->GetGameObjectByName("Pistol");
-	TransformComponent* gunTransformComponent = gun->GetComponent<TransformComponent>();
-
 	cPlayerAnimations playerAnimations;
 	playerAnimations.playerGameObject = scene->GetGameObjectByName("Soldier");
 	cMesh* soldierMesh = playerAnimations.playerGameObject->GetComponent<cMesh>(); 
@@ -117,8 +114,6 @@ int main(void)
 		//scene->shadowMap->lightOffset = glm::vec3(soldierTransform->drawPosition.x, soldierTransform->drawPosition.y, soldierTransform->drawPosition.z);
 
 		engine.Update();
-
-		playerAnimations.animationSystem->AttachObjectToBone("mixamorig_LeftHand", gunTransformComponent);
 
 		if (IsKeyPressed(GLFW_KEY_G))
 		{
@@ -169,9 +164,9 @@ int main(void)
 		{
 			soldierTransform->setRotationFromEuler(glm::vec3(0, -camera->yaw / 100.0f, 0));
 
-			glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
+		/*	glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
 			camera->Follow(soldierTransform->drawPosition, cameraOffset,
-				soldierTransform->drawPosition + cameraTarget, cameraRot);
+				soldierTransform->drawPosition + cameraTarget, cameraRot);*/
 			if (IsKeyPressed(GLFW_KEY_W))
 			{
 				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKFRONT);
@@ -200,9 +195,9 @@ int main(void)
 		}
 		else
 		{
-			glm::vec3 cameraRot = glm::vec3(camera->pitch / 50.0f, -camera->yaw / 50.0f, 0);
+		/*	glm::vec3 cameraRot = glm::vec3(camera->pitch / 50.0f, -camera->yaw / 50.0f, 0);
 			camera->Follow(vehicleTransform->drawPosition, cameraOffset,
-				vehicleTransform->drawPosition + vehicleTarget, cameraRot);
+				vehicleTransform->drawPosition + vehicleTarget, cameraRot);*/
 
 			glm::vec3 soldierPos = vehicleTransform->drawPosition + glm::vec3(300,0, 0);
 			controller->controller->setPosition(PxExtendedVec3(soldierPos.x, soldierPos.y, soldierPos.z));

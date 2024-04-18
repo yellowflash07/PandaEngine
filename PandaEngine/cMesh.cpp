@@ -147,7 +147,8 @@ void cMesh::Render()
 			}
 		}
 	}
-
+	ImGui::DragFloat2("UV Offset", &UV_Offset[0], 0.01f);
+	ImGui::DragFloat2("UV Tiling", &UV_Tiling[0], 0.01f);
 	//ImGui::NewLine();
 	ImGui::Text("Mask Texture: %s", maskTexture.c_str());
 	if (ImGui::BeginDragDropTarget())

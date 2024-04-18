@@ -45,7 +45,8 @@ public:
 	std::string maskTexture;
 	std::string normalMap;
 	GLuint renderTextureID =0;
-	glm::vec2 UV_Offset;
+	glm::vec2 UV_Offset = glm::vec2(0.0f, 0.0f);
+	glm::vec2 UV_Tiling = glm::vec2(1.0f, 1.0f);
 	float transperancy = 1.0f;
 	std::vector<cMesh*> vec_pChildMeshes;
 	unsigned int getUniqueID(void);

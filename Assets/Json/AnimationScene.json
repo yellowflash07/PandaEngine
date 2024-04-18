@@ -116,6 +116,14 @@
                 ],
                 "maskTexture": "",
                 "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
                 "enableShadow": true,
                 "isDynamicLOD": false
             },
@@ -131,9 +139,9 @@
                     0.0
                 ],
                 "rotation": [
-                    -3.141592502593994,
-                    1.3345928192138672,
-                    -3.141592502593994
+                    0.0,
+                    1.6980057954788208,
+                    0.0
                 ],
                 "scale": [
                     0.4150925576686859,
@@ -178,6 +186,14 @@
                 ],
                 "maskTexture": "",
                 "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
                 "enableShadow": true,
                 "isDynamicLOD": false
             },
@@ -197,13 +213,13 @@
             "loadAsync": false,
             "transform": {
                 "position": [
-                    60.221168518066406,
-                    83.73412322998047,
-                    127.15239715576172
+                    100.0,
+                    100.0,
+                    100.0
                 ],
                 "rotation": [
                     -1.600000023841858,
-                    0.0,
+                    -0.0,
                     0.0
                 ],
                 "scale": [
@@ -249,6 +265,14 @@
                 ],
                 "maskTexture": "",
                 "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
                 "enableShadow": true,
                 "isDynamicLOD": false
             },
@@ -311,6 +335,14 @@
                 ],
                 "maskTexture": "",
                 "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
                 "enableShadow": false,
                 "isDynamicLOD": false
             },
@@ -331,9 +363,9 @@
             "loadAsync": true,
             "transform": {
                 "position": [
-                    0.0,
-                    0.0,
-                    0.0
+                    11.0,
+                    158.0,
+                    401.0
                 ],
                 "rotation": [
                     0.0,
@@ -383,6 +415,14 @@
                 ],
                 "maskTexture": "",
                 "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
                 "enableShadow": false,
                 "isDynamicLOD": false
             },

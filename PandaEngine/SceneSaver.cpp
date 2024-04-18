@@ -335,6 +335,8 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
         meshConfig.normalMap = mesh->normalMap;
         meshConfig.enableShadow = mesh->enableShadow;
         meshConfig.isDynamicLOD = mesh->dynamicLOD;
+        meshConfig.UV_Offset = mesh->UV_Offset;
+        meshConfig.UV_Tiling = mesh->UV_Tiling;
         gameObjectConfig.mesh = meshConfig;
     }
 
@@ -498,6 +500,16 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
         rapidjson::Value normalMap;
         normalMap.SetString(go.mesh.normalMap.c_str(), go.mesh.normalMap.size(), jsonDocument.GetAllocator());
         mesh.AddMember("normalMap", normalMap, jsonDocument.GetAllocator());
+
+        rapidjson::Value UV_Offset(rapidjson::kArrayType);
+        UV_Offset.PushBack(go.mesh.UV_Offset.x, jsonDocument.GetAllocator());
+        UV_Offset.PushBack(go.mesh.UV_Offset.y, jsonDocument.GetAllocator());
+        mesh.AddMember("UV_Offset", UV_Offset, jsonDocument.GetAllocator());
+
+        rapidjson::Value UV_Tiling(rapidjson::kArrayType);
+        UV_Tiling.PushBack(go.mesh.UV_Tiling.x, jsonDocument.GetAllocator());
+        UV_Tiling.PushBack(go.mesh.UV_Tiling.y, jsonDocument.GetAllocator());
+        mesh.AddMember("UV_Tiling", UV_Tiling, jsonDocument.GetAllocator());
 
         mesh.AddMember("enableShadow", go.mesh.enableShadow, jsonDocument.GetAllocator());
         mesh.AddMember("isDynamicLOD", go.mesh.isDynamicLOD, jsonDocument.GetAllocator());
@@ -671,6 +683,19 @@ void SceneSaver::GetLoadGameObjectConfig(rapidjson::Value& gameObject, GameObjec
         meshConfig.normalMap = mesh["normalMap"].GetString();
         meshConfig.enableShadow = mesh["enableShadow"].GetBool();
         meshConfig.isDynamicLOD = mesh["isDynamicLOD"].GetBool();
+
+        if (mesh.HasMember("UV_Offset"))
+        {
+			const rapidjson::Value& UV_Offset = mesh["UV_Offset"];
+			meshConfig.UV_Offset = glm::vec2(UV_Offset[0].GetFloat(), UV_Offset[1].GetFloat());
+		}
+
+        if (mesh.HasMember("UV_Tiling"))
+        {
+            const rapidjson::Value& UV_Tiling = mesh["UV_Tiling"];
+            meshConfig.UV_Tiling = glm::vec2(UV_Tiling[0].GetFloat(), UV_Tiling[1].GetFloat());
+        }
+
         gameObjectConfig.mesh = meshConfig;
     }
 
@@ -816,6 +841,8 @@ GameObject* SceneSaver::LoadGameObject(GameObjectConfig& gameObjectConfig, Scene
         m->normalMap = meshConfig.normalMap;
         m->enableShadow = meshConfig.enableShadow;
         m->dynamicLOD = meshConfig.isDynamicLOD;
+        m->UV_Offset = meshConfig.UV_Offset;
+        m->UV_Tiling = meshConfig.UV_Tiling;
         m->transform = *t;
     }
 

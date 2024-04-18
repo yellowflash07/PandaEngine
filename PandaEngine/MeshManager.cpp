@@ -213,6 +213,9 @@ void MeshManager::DrawObject(cMesh* pCurrentMesh, glm::mat4 matModel)
 
     glUniform2f(uvoffset_ul, pCurrentMesh->UV_Offset.x, pCurrentMesh->UV_Offset.y);
 
+    GLint uvTiling_UL = glGetUniformLocation(shaderProgramID, "UV_Tiling");
+    glUniform2f(uvTiling_UL, pCurrentMesh->UV_Tiling.x, pCurrentMesh->UV_Tiling.y);
+
     GLint isReflective_UL = glGetUniformLocation(shaderProgramID, "IsReflective");
     if (pCurrentMesh->isReflective)
     {

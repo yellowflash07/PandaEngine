@@ -32,6 +32,8 @@ struct MeshConfig
 	std::string normalMap;
 	bool enableShadow;
 	bool isDynamicLOD;
+	glm::vec2 UV_Offset = glm::vec2(0.0f);
+	glm::vec2 UV_Tiling = glm::vec2(1.0f);
 };
 
 struct LightConfig
