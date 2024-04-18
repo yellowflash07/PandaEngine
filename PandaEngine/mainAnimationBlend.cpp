@@ -84,11 +84,19 @@ int main(void)
 	cPlayerAnimations playerAnimations;
 	playerAnimations.playerGameObject = scene->GetGameObjectByName("Soldier");
 	cMesh* soldierMesh = playerAnimations.playerGameObject->GetComponent<cMesh>(); 
+	TransformComponent* soldierTransform = playerAnimations.playerGameObject->GetComponent<TransformComponent>();
+	CharacterController* controller = playerAnimations.playerGameObject->GetComponent<CharacterController>();
 	//add animation component
 	playerAnimations.animInit(soldierMesh);
 
+
+	float speed = 35.0f;
 	cPlayerAnimations::PlayerState currentState = cPlayerAnimations::PlayerState::IDLE;
 	cPlayerAnimations::PlayerState changeToState = cPlayerAnimations::PlayerState::IDLE;
+
+	glm::vec3 cameraOffset = glm::vec3(0, 300, -500);
+	glm::vec3 cameraTarget = glm::vec3(0, 150, 0);
+	camera->camControl = false;
 	while (!glfwWindowShouldClose(engine.window))
 	{
 		engine.BeginRender();
@@ -96,28 +104,52 @@ int main(void)
 		engine.Update();
 
 		playerAnimations.animationSystem->AttachObjectToBone("mixamorig_LeftHand", gunTransformComponent);
+
+		glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
+
+
+		//follow the tie fighter
+		camera->Follow(soldierTransform->drawPosition,cameraOffset,
+			soldierTransform->drawPosition + cameraTarget, cameraRot);
+
+
+		ImGui::Begin("Debug");
+		ImGui::DragFloat3("Camera Position", &cameraOffset[0], 0.1f);
+		ImGui::DragFloat3("Look Ahead", &cameraTarget[0], 0.1f);
+		ImGui::End();
+		//rotate the tie fighter
+		soldierTransform->setRotationFromEuler(glm::vec3(0, -camera->yaw / 100.0f, 0));
+
+		//get the forward and right vectors of the tie fighter
+		glm::vec3 forward = soldierTransform->GetForwardVector();
+		forward = glm::vec3(forward.x, 0, forward.z); // Flatten the forward vector
+		glm::vec3 right = soldierTransform->GetRightVector();
+
 		//playerAnimations.animationSystem->AttachObjectToBone("mixamorig_LeftHand", sphereTransformComponent);
 		//vampireAnimationSystem->AttachObjectToBone("LeftHand", sphereTransformComponent);
 
 		if (IsKeyPressed(GLFW_KEY_W))
 		{
 			playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKFRONT);
+			controller->Move(-forward * speed, engine.deltaTime);
 		}
 		
 		if (IsKeyPressed(GLFW_KEY_S))
 		{
 			playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKBACK);
-		
+			controller->Move(forward * speed, engine.deltaTime);
 		}
 		
 		if (IsKeyPressed(GLFW_KEY_A))
 		{
 			playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKRIGHT);
+			controller->Move(right * speed, engine.deltaTime);
 		
 		}
 		if (IsKeyPressed(GLFW_KEY_D))
 		{
 			playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKLEFT);
+			controller->Move(-right * speed, engine.deltaTime);
 		}
 
 		playerAnimations.Update(engine.deltaTime);

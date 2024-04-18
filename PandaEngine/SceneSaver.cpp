@@ -869,6 +869,7 @@ GameObject* SceneSaver::LoadGameObject(GameObjectConfig& gameObjectConfig, Scene
 		c->position = characterControllerConfig.position;
         c->controller->setHeight(c->height);
         c->controller->setRadius(c->radius);
+        c->controller->setPosition(PxExtendedVec3(c->position.x, c->position.y, c->position.z));
     }
 
    

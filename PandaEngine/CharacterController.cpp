@@ -14,8 +14,8 @@ CharacterController::CharacterController(TransformComponent* transform)
 	desc->radius = 0.5f;
 	this->radius = 0.5f;
 	this->height = 1.0f;
-	desc->position = PxExtendedVec3(transform->drawPosition.x, transform->drawPosition.y, transform->drawPosition.z);
-	this->position = transform->drawPosition;
+	//desc->position = PxExtendedVec3(transform->drawPosition.x, transform->drawPosition.y, transform->drawPosition.z);
+	//this->position = transform->drawPosition;
 	desc->upDirection = PxVec3(0, 1, 0);
 	desc->slopeLimit = 10.0f;
 	desc->stepOffset = 1.6f;
@@ -61,8 +61,10 @@ void CharacterController::Update(float deltaTime)
 	// Move the character controller (assuming direction is set elsewhere)
 	controller->move(disp, 0.0f, deltaTime, 0);
 
+//	PxTransform poseTransform = PxShapeExt::getGlobalPose(controller->getActor()->getGlobalPose(), *gVehicle4W->getRigidDynamicActor());
+
 	// Update character's draw position based on actual position after move
-	transform->drawPosition = glm::vec3(controller->getPosition().x, controller->getPosition().y, controller->getPosition().z);
+	transform->drawPosition = glm::vec3(controller->getFootPosition().x, controller->getFootPosition().y, controller->getFootPosition().z);
 }
 
 void CharacterController::Move(glm::vec3 direction, float deltaTime)

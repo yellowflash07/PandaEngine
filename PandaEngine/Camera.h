@@ -36,6 +36,7 @@ public:
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix();
 	glm::mat4 GetViewProjectionMatrix();
+	float lookAhead = 0.5f;
 	float speed;
 	float yaw;
 	float pitch;
