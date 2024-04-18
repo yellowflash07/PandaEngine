@@ -132,7 +132,7 @@
                 ],
                 "rotation": [
                     0.0,
-                    -0.0,
+                    1.806999921798706,
                     0.0
                 ],
                 "scale": [
@@ -322,6 +322,68 @@
                 "maskTexture": "",
                 "normalMap": "",
                 "enableShadow": false,
+                "isDynamicLOD": false
+            },
+            "children": []
+        },
+        {
+            "name": "Vehicle",
+            "loadAsync": false,
+            "transform": {
+                "position": [
+                    143.24667358398438,
+                    169.71240234375,
+                    284.9413146972656
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    18.0,
+                    17.999988555908203,
+                    17.999988555908203
+                ]
+            },
+            "mesh": {
+                "fileName": "monsterBody.fbx",
+                "friendlyName": "monsterBody.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Beholder_Base_color.bmp",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    0.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "enableShadow": true,
                 "isDynamicLOD": false
             },
             "children": []

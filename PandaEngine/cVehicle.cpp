@@ -3,7 +3,7 @@
 
 cVehicle::cVehicle()
 {
- 
+	startPos= glm::vec3(0, 0, 0);
 }
 
 cVehicle::~cVehicle()
@@ -19,8 +19,8 @@ void cVehicle::vehicleInit()
 
 	//  PxTransform startTransform(PxVec3(0,-10, 20), PxQuat(PxIdentity));
 
-
-	startTransform = PxTransform(PxVec3(-330, -800, 1400), PxQuat(PxIdentity));
+	PxVec3 PxstartPos = PxVec3(startPos.x, startPos.y, startPos.z);
+	startTransform = PxTransform(PxstartPos, PxQuat(PxIdentity));
 	gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
 	gVehicle4W->getRigidDynamicActor()->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
 	PhysXManager::getInstance()->gScene->addActor(*gVehicle4W->getRigidDynamicActor());
@@ -148,9 +148,6 @@ void cVehicle::Update(float deltaTime)
 			}
 		}
 	}
-	//update end
-
-
 }
 
 void cVehicle::reset()
@@ -176,6 +173,8 @@ void cVehicle::moveForward()
 		hasReversed = false;
 	}
 	gVehicleInputData->setDigitalAccel(true);
+	gVehicleInputData->setDigitalBrake(false);
+	gVehicleInputData->setDigitalHandbrake(false);
 }
 
 void cVehicle::moveBackward()
@@ -184,13 +183,16 @@ void cVehicle::moveBackward()
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
 	gVehicleInputData->setDigitalAccel(true);
 	hasReversed = true;
-
+	gVehicleInputData->setDigitalBrake(false);
+	gVehicleInputData->setDigitalHandbrake(false);
 }
 
 void cVehicle::turnLeft()
 {
 	gVehicleInputData->setDigitalSteerLeft(false);
 	gVehicleInputData->setDigitalSteerRight(true);
+
+
 }
 
 void cVehicle::turnRight()
@@ -203,4 +205,10 @@ void cVehicle::stopTurning()
 {
 	gVehicleInputData->setDigitalSteerLeft(false);
 	gVehicleInputData->setDigitalSteerRight(false);
+}
+
+void cVehicle::brake()
+{
+	gVehicleInputData->setDigitalBrake(true);
+	gVehicleInputData->setDigitalHandbrake(true);
 }

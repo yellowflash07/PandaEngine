@@ -26,6 +26,8 @@ public:
 	void turnLeft();
 	void turnRight();
 	void stopTurning();
+	void brake();
+	glm::vec3 startPos;
 
 private:
 

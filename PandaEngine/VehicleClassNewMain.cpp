@@ -152,8 +152,7 @@ int main(void)
             vehicleClass.moveForward();
         }
         if (IsKeyPressed(GLFW_KEY_DOWN))
-        {
-       
+        {      
 
             vehicleClass.moveBackward();
         }

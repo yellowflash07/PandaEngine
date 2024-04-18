@@ -1,14 +1,10 @@
 #include "Engine.h"
 #include "Random.h"
 #include <iostream>
-#include "AnimationSystem.h"
-//#include <px>
-#include "PhysXManager.h"
-#include "PhysXBody.h"
-#include "Raycast.h"
 #include <glm/gtx/string_cast.hpp>
 #include <map>
 #include "cPlayerAnimations.h"
+#include "cVehicle.h"
 extern Camera* camera;
 int keyHit = 0;
 
@@ -23,14 +19,13 @@ bool IsKeyPressed(int key)
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS && keyMap[key] == false)
 	{
 		keyHit = key;
 		keyMap[key] = true;
 	}
 	if (action == GLFW_RELEASE)
 	{
-		keyHit = 0;
 		keyMap[key] = false;
 	}
 }
@@ -40,7 +35,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	camera->ProcessMouseMovement(xpos, ypos);
 }
 
-
+void UpdatePlayer(cPlayerAnimations playerAnimations, CharacterController* controller, TransformComponent* soldierTransform, float speed, float deltaTime);
 
 int main(void)
 {
@@ -73,14 +68,6 @@ int main(void)
 	GameObject* gun = scene->GetGameObjectByName("Pistol");
 	TransformComponent* gunTransformComponent = gun->GetComponent<TransformComponent>();
 
-	//Vampire
-	//GameObject* vampire = scene->GetGameObjectByName("Vampire");
-	//AnimationSystem* vampireAnimationSystem = &vampire->AddComponent<AnimationSystem>();
-
-	//Sphere
-	//GameObject* sphere = scene->GetGameObjectByName("Sphere");
-	//TransformComponent* sphereTransformComponent = sphere->GetComponent<TransformComponent>();
-
 	cPlayerAnimations playerAnimations;
 	playerAnimations.playerGameObject = scene->GetGameObjectByName("Soldier");
 	cMesh* soldierMesh = playerAnimations.playerGameObject->GetComponent<cMesh>(); 
@@ -96,7 +83,41 @@ int main(void)
 
 	glm::vec3 cameraOffset = glm::vec3(0, 300, -500);
 	glm::vec3 cameraTarget = glm::vec3(0, 150, 0);
-	camera->camControl = false;
+	glm::vec3 vehicleTarget = glm::vec3(0, 100, 0);
+	//camera->camControl = false;
+
+	bool isInsideVehicle = false;
+
+	//vehicle.chassisTransformComponent
+	cVehicle vehicleClass;
+
+
+	GameObject* vehicle = scene->GetGameObjectByName("Vehicle");
+	TransformComponent* vehicleTransform = vehicle->GetComponent<TransformComponent>();
+	vehicleClass.SetChassis(vehicleTransform);
+	
+
+	// Assuming vehicle is an instance of cVehicle
+	cMesh* vehicleMesh = vehicle->GetComponent<cMesh>();
+	VehicleDesc vehicleDesc = vehicleClass.initVehicleDesc(vehicleMesh);
+
+
+	//vehicle.chassisTransformComponent = 4
+	std::vector<TransformComponent*> wheels;
+	for (int i = 0; i < 4; i++)
+	{
+		GameObject* wheel = scene->CreateGameObject(std::to_string(i));
+		wheel->AddComponent<cMesh>("carWheel.ply", "carWheel");
+		TransformComponent* wheelTransform = wheel->GetComponent<TransformComponent>();
+		wheelTransform->drawScale = glm::vec3(1.23, 0.75, 0.75);
+		wheels.push_back(wheelTransform);
+
+	}
+	vehicleClass.SetWheel(wheels);
+
+	vehicleClass.startPos = glm::vec3(100,100, 100);
+	vehicleClass.vehicleInit();
+
 	while (!glfwWindowShouldClose(engine.window))
 	{
 		engine.BeginRender();
@@ -105,52 +126,122 @@ int main(void)
 
 		playerAnimations.animationSystem->AttachObjectToBone("mixamorig_LeftHand", gunTransformComponent);
 
-		glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
-
-
-		//follow the tie fighter
-		camera->Follow(soldierTransform->drawPosition,cameraOffset,
-			soldierTransform->drawPosition + cameraTarget, cameraRot);
+		if (IsKeyPressed(GLFW_KEY_G))
+		{
+			scene->Play();
+		}
 
 
 		ImGui::Begin("Debug");
 		ImGui::DragFloat3("Camera Position", &cameraOffset[0], 0.1f);
 		ImGui::DragFloat3("Look Ahead", &cameraTarget[0], 0.1f);
+		ImGui::Checkbox("Is Inside Vehicle", &isInsideVehicle);
+		ImGui::Text("Distance from vehicle %f", glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition));
 		ImGui::End();
+
+
+		if (glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition) < 150.0f)
+		{
+			if (keyHit == GLFW_KEY_E)
+			{
+				isInsideVehicle = true;
+				keyHit = 0;
+			}
+		}
+
+		if (isInsideVehicle)
+		{
+			if (keyHit == GLFW_KEY_E)
+			{
+				isInsideVehicle = false;
+				vehicleClass.brake();
+				keyHit = 0;
+			}
+		}
+		//isInsideVehicle = true;
+		if (!isInsideVehicle)
+		{
+
+			glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
+			camera->Follow(soldierTransform->drawPosition, cameraOffset,
+				soldierTransform->drawPosition + cameraTarget, cameraRot);
+			if (IsKeyPressed(GLFW_KEY_W))
+			{
+				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKFRONT);
+				controller->Move(soldierTransform->GetForwardVector() * speed, engine.deltaTime);
+			}
+			if (IsKeyPressed(GLFW_KEY_S))
+			{
+				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKBACK);
+				controller->Move(-soldierTransform->GetForwardVector() * speed, engine.deltaTime);
+			}
+			if (IsKeyPressed(GLFW_KEY_A))
+			{
+				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKLEFT);
+				controller->Move(soldierTransform->GetRightVector() * speed, engine.deltaTime);
+			}
+			if (IsKeyPressed(GLFW_KEY_D))
+			{
+				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKRIGHT);
+				controller->Move(-soldierTransform->GetRightVector() * speed, engine.deltaTime);
+			}
+			if (!IsKeyPressed(GLFW_KEY_W) && !IsKeyPressed(GLFW_KEY_S) && !IsKeyPressed(GLFW_KEY_A) && !IsKeyPressed(GLFW_KEY_D))
+			{
+				playerAnimations.SetState(cPlayerAnimations::PlayerState::IDLE);
+				controller->Move(glm::vec3(0, 0, 0), engine.deltaTime);
+			}
+		//	UpdatePlayer(playerAnimations, controller, soldierTransform, speed, engine.deltaTime);
+		}
+		else
+		{
+			glm::vec3 cameraRot = glm::vec3(camera->pitch / 50.0f, -camera->yaw / 50.0f, 0);
+			camera->Follow(vehicleTransform->drawPosition, cameraOffset,
+				vehicleTransform->drawPosition + vehicleTarget, cameraRot);
+
+			//player is in vehicle
+			if (IsKeyPressed(GLFW_KEY_W))
+			{
+				vehicleClass.moveForward();
+			}
+			if (IsKeyPressed(GLFW_KEY_S))
+			{
+				vehicleClass.moveBackward();
+			}
+
+			if (IsKeyPressed(GLFW_KEY_A))
+			{
+				vehicleClass.turnLeft();
+			}
+			else if (IsKeyPressed(GLFW_KEY_D))
+			{
+				vehicleClass.turnRight();
+			}
+			else
+			{
+				vehicleClass.stopTurning();
+			}
+
+			if (IsKeyPressed(GLFW_KEY_SPACE))
+			{
+				vehicleClass.brake();
+			}
+
+			if (IsKeyPressed(GLFW_KEY_R))
+			{
+				vehicleClass.reset();
+			}
+			
+		}
+
+		//follow the tie fighter
+		/*camera->Follow(soldierTransform->drawPosition,cameraOffset,
+			soldierTransform->drawPosition + cameraTarget, cameraRot);*/
+
+
 		//rotate the tie fighter
 		soldierTransform->setRotationFromEuler(glm::vec3(0, -camera->yaw / 100.0f, 0));
 
-		//get the forward and right vectors of the tie fighter
-		glm::vec3 forward = soldierTransform->GetForwardVector();
-		forward = glm::vec3(forward.x, 0, forward.z); // Flatten the forward vector
-		glm::vec3 right = soldierTransform->GetRightVector();
-
-		//playerAnimations.animationSystem->AttachObjectToBone("mixamorig_LeftHand", sphereTransformComponent);
-		//vampireAnimationSystem->AttachObjectToBone("LeftHand", sphereTransformComponent);
-
-		if (IsKeyPressed(GLFW_KEY_W))
-		{
-			playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKFRONT);
-			controller->Move(-forward * speed, engine.deltaTime);
-		}
-		
-		if (IsKeyPressed(GLFW_KEY_S))
-		{
-			playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKBACK);
-			controller->Move(forward * speed, engine.deltaTime);
-		}
-		
-		if (IsKeyPressed(GLFW_KEY_A))
-		{
-			playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKRIGHT);
-			controller->Move(right * speed, engine.deltaTime);
-		
-		}
-		if (IsKeyPressed(GLFW_KEY_D))
-		{
-			playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKLEFT);
-			controller->Move(-right * speed, engine.deltaTime);
-		}
+		vehicleClass.Update(engine.deltaTime);
 
 		playerAnimations.Update(engine.deltaTime);
 
@@ -160,4 +251,15 @@ int main(void)
 	}
 
 	engine.ShutDown();
+}
+
+
+//
+void UpdatePlayer(cPlayerAnimations playerAnimations, 
+	CharacterController* controller, 
+	TransformComponent* soldierTransform, 
+	float speed, float deltaTime)
+{
+	////player is not in vehicle
+
 }
