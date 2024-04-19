@@ -71,8 +71,8 @@ PxFilterFlags contactReportFilterShader(PxFilterObjectAttributes attributes0, Px
 		| PxPairFlag::eNOTIFY_TOUCH_LOST
 		| PxPairFlag::eNOTIFY_CONTACT_POINTS;
 
-	if ((0 == (filterData0.word0 & filterData1.word1)) && (0 == (filterData1.word0 & filterData0.word1)))
-		return PxFilterFlag::eSUPPRESS;
+	/*if ((0 == (filterData0.word0 & filterData1.word1)) && (0 == (filterData1.word0 & filterData0.word1)))
+		return PxFilterFlag::eSUPPRESS;*/
 
 	pairFlags |= PxPairFlag::eCONTACT_DEFAULT;
 	pairFlags |= PxPairFlags(PxU16(filterData0.word2 | filterData1.word2));

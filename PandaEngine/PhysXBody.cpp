@@ -35,12 +35,6 @@ void PhysXBody::SetShape(ColliderType type)
 {
 	this->type = type;
 
-	if (shape)
-	{
-		//body->detachShape(*shape);
-		//shape->release();
-	}
-	//PxMaterial* surfaceMaterial = PhysXManager::getInstance()->gPhysics->createMaterial(0.01, 0.01, 0.01);
 	PxMaterial* surfaceMaterial = PhysXManager::getInstance()->gMaterial;
 
 	if (type == BOX)
@@ -84,6 +78,7 @@ void PhysXBody::SetBody(bool isDynamic)
 	if (isDynamic)
 	{
 		body = gPhysics->createRigidDynamic(pxTransform);
+		body->is<PxRigidDynamic>()->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
 	}
 	else
 	{
@@ -93,6 +88,7 @@ void PhysXBody::SetBody(bool isDynamic)
 	std::cout << "Body created: " << dynamic << std::endl;
 	gScene->addActor(*body);
 	gActorMap[this->body] = this;
+
 	body->setActorFlag(PxActorFlag::eVISUALIZATION, true);
 }
 

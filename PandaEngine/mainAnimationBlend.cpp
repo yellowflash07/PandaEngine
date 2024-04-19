@@ -102,7 +102,17 @@ int main(void)
 		wheelMesh->textureRatio[0] = 1.0f;
 		wheelMesh->normalMap = "Wheel_Texture_Normal.png";
 		TransformComponent* wheelTransform = wheel->GetComponent<TransformComponent>();
-		wheelTransform->drawScale = glm::vec3(1.23, 0.75, 0.75);
+
+		if (i % 2 == 0)
+		{
+			wheelTransform->drawScale = glm::vec3(-1.23, 0.75, 0.75);
+		}
+		else
+		{
+			wheelTransform->drawScale = glm::vec3(1.23, 0.75, 0.75);
+		}
+
+
 		wheels.push_back(wheelTransform);
 
 	}
@@ -191,12 +201,12 @@ int main(void)
 			if (IsKeyPressed(GLFW_KEY_A))
 			{
 				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKRIGHT);
-				controller->Move(soldierTransform->GetRightVector() * speed, engine.deltaTime);
+				controller->Move(-soldierTransform->GetRightVector() * speed, engine.deltaTime);
 			}
 			if (IsKeyPressed(GLFW_KEY_D))
 			{				
 				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKLEFT);
-				controller->Move(-soldierTransform->GetRightVector() * speed, engine.deltaTime);
+				controller->Move(soldierTransform->GetRightVector() * speed, engine.deltaTime);
 			}
 			if (!IsKeyPressed(GLFW_KEY_W) && !IsKeyPressed(GLFW_KEY_S) && !IsKeyPressed(GLFW_KEY_A) && !IsKeyPressed(GLFW_KEY_D))
 			{
