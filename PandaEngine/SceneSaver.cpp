@@ -379,6 +379,7 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
 
 		physXConfig.isDynamic = physXBody->isDynamic;
         physXConfig.isTrigger = physXBody->isTrigger;
+        physXConfig.position = physXBody->position;
 		gameObjectConfig.physXObj = physXConfig;
 	}
 
@@ -594,7 +595,12 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
 		physXObj.AddMember("isDynamic", go.physXObj.isDynamic, jsonDocument.GetAllocator());
 		physXObj.AddMember("isTrigger", go.physXObj.isTrigger, jsonDocument.GetAllocator());
 
+        rapidjson::Value position(rapidjson::kArrayType);
+        position.PushBack(go.physXObj.position.x, jsonDocument.GetAllocator());
+        position.PushBack(go.physXObj.position.y, jsonDocument.GetAllocator());
+        position.PushBack(go.physXObj.position.z, jsonDocument.GetAllocator());
 
+        physXObj.AddMember("position", position, jsonDocument.GetAllocator());
 
         gameObjectValue.AddMember("physXObj", physXObj, jsonDocument.GetAllocator());
 	}
@@ -773,8 +779,13 @@ void SceneSaver::GetLoadGameObjectConfig(rapidjson::Value& gameObject, GameObjec
             //p->radius = physXObj["radius"].GetFloat();
         }
 
+        if (physXObj.HasMember("position"))
+        {
+            physXConfig.position = glm::vec3(physXObj["position"][0].GetFloat(), physXObj["position"][1].GetFloat(), physXObj["position"][2].GetFloat());
 
+        }
         gameObjectConfig.physXObj = physXConfig;
+
     }
     else
     {
@@ -912,6 +923,8 @@ GameObject* SceneSaver::LoadGameObject(GameObjectConfig& gameObjectConfig, Scene
         p->isTrigger = physXConfig.isTrigger;
         p->SetTrigger();
         p->GameObject = go;
+        p->position = physXConfig.position;
+        p->shape->setLocalPose(PxTransform(PxVec3(physXConfig.position.x, physXConfig.position.y, physXConfig.position.z)));
 	}
 
     if (gameObjectConfig.characterController.height > 0)
@@ -1025,6 +1038,8 @@ GameObject* SceneSaver::LoadGameObjectAsync(cMesh* loadedMesh, GameObjectConfig 
         p->isTrigger = physXConfig.isTrigger;
         p->SetTrigger();
         p->GameObject = go;
+        p->position = physXConfig.position;
+        p->shape->setLocalPose(PxTransform(PxVec3(physXConfig.position.x, physXConfig.position.y, physXConfig.position.z)));
     }
 
     if (config.characterController.height > 0)

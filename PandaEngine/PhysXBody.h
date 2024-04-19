@@ -42,6 +42,7 @@ public:
 	void UpdateBoxDimensions(glm::vec3 halfExtents);
 	void UpdateSphereDimensions(float radius);
 	glm::vec3 halfExtents;
+	glm::vec3 position = glm::vec3(0.0f);
 	float radius;
 	cMesh* mesh;
 	void SetDriveableGround();

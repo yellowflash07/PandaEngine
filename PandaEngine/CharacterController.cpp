@@ -30,6 +30,10 @@ CharacterController::CharacterController(TransformComponent* transform)
 	manager->setOverlapRecoveryModule(true);
 
 	controller = (PxCapsuleController*)manager->createController(*desc);
+	//PhysXBody* physXBody = new PhysXBody(transform);
+	//physXBody->body = controller->getActor();
+	//controller->getActor()->userData = physXBody;
+
 	PhysXBody* body = new PhysXBody(transform);
 	body->body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
 	body->body = controller->getActor();

@@ -67,6 +67,10 @@ void Camera::Update(GLFWwindow* window, double deltaTime)
 
         camControl = false;
     }
+    else
+    {
+		camControl = true;
+	}
 
     matProjection = glm::perspective(0.6f,
                                     ratio,
@@ -150,7 +154,7 @@ void Camera::ProcessKeyboardInput(GLFWwindow* window, double deltaTime)
 {
     if (!camControl)
     {
-      //  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         return;
     }
     if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)

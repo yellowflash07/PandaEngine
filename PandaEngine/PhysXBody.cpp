@@ -27,7 +27,7 @@ PhysXBody::~PhysXBody()
 	body->release();
 	if (shape)
 	{
-		shape->release();
+	//	shape->re
 	}
 }
 
@@ -46,22 +46,27 @@ void PhysXBody::SetShape(ColliderType type)
 		PxVec3 halfExtents = PxVec3(halfX, halfY, halfZ);
 		this->halfExtents = halfExtentsVec;
 		shape = gPhysics->createShape(PxBoxGeometry(halfExtents), *surfaceMaterial, true);
+		shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
+
 	}
 	else if (type == SPHERE)
 	{
 		this->radius = transform->drawScale.x;
 		shape = gPhysics->createShape(PxSphereGeometry(transform->drawScale.x), *surfaceMaterial, true);
+		shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
+
 	}
 	else if (type == MESH)
 	{
 		shape = CreateMeshCollider(mesh, false, false, false, 1);
+		shape->setFlag(PxShapeFlag::eVISUALIZATION, false);
+
 	}
 	PxFilterData objectSimFilterData(COLLISION_FLAG_OBSTACLE, COLLISION_FLAG_WHEEL, PxPairFlag::eMODIFY_CONTACTS | PxPairFlag::eDETECT_CCD_CONTACT, 0);
 	shape->setSimulationFilterData(objectSimFilterData);
 	PxFilterData qryFilterData;
 	qryFilterData.word3 = DRIVABLE_SURFACE;
 	shape->setQueryFilterData(qryFilterData);
-	shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
 	body->attachShape(*shape);
 	shape->userData = this;
 	body->userData = this;
@@ -80,14 +85,14 @@ void PhysXBody::SetBody(bool isDynamic)
 	if (isDynamic)
 	{
 		body = gPhysics->createRigidDynamic(pxTransform);
-		body->is<PxRigidDynamic>()->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
+		//body->is<PxRigidDynamic>()->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
 	}
 	else
 	{
 		body = gPhysics->createRigidStatic(pxTransform);
 	}
 	std::string dynamic = isDynamic ? "Dynamic" : "Static";
-	std::cout << "Body created: " << dynamic << std::endl;
+	//std::cout << "Body created: " << dynamic << std::endl;
 	gScene->addActor(*body);
 	gActorMap[this->body] = this;
 	body->userData = this;
@@ -104,13 +109,9 @@ void PhysXBody::Update(float deltaTime)
 		return;
 	}
 	
-	if (body->is<PxRigidDynamic>()->isSleeping())
-	{
-		return;
-	}
-
-	transform->drawPosition = glm::vec3(body->getGlobalPose().p.x, body->getGlobalPose().p.y, body->getGlobalPose().p.z);
-	glm::quat sphereRotation = glm::quat(body->getGlobalPose().q.w, body->getGlobalPose().q.x, body->getGlobalPose().q.y, body->getGlobalPose().q.z);
+	PxTransform pxTransform = PxShapeExt::getGlobalPose(*shape, *body);
+	transform->drawPosition = glm::vec3(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z);
+	glm::quat sphereRotation = glm::quat(pxTransform.q.w, pxTransform.q.x, pxTransform.q.y, pxTransform.q.z);
 	transform->eulerRotation = glm::eulerAngles(sphereRotation);
 }
 
@@ -134,12 +135,22 @@ void PhysXBody::Render()
 			UpdateBoxDimensions(halfExtents);
 			PhysXManager::getInstance()->updateDebug = true;
 		}
+		if (ImGui::DragFloat3("Position", &position[0], 0.1f))
+		{
+			shape->setLocalPose(PxTransform(position.x, position.y, position.z));
+			PhysXManager::getInstance()->updateDebug = true;
+		}
 	}
 	else if (type == SPHERE)
 	{
 		if (ImGui::DragFloat("Radius", &radius, 0.1f))
 		{
 			UpdateSphereDimensions(radius);
+			PhysXManager::getInstance()->updateDebug = true;
+		}
+		if (ImGui::DragFloat3("Position", &position[0], 0.1f))
+		{
+			shape->setLocalPose(PxTransform(position.x, position.y, position.z));
 			PhysXManager::getInstance()->updateDebug = true;
 		}
 	}

@@ -44,11 +44,14 @@ PxFilterFlags VehicleFilterShader
 	PX_UNUSED(constantBlock);
 	PX_UNUSED(constantBlockSize);
 
-	if ((0 == (filterData0.word0 & filterData1.word1)) && (0 == (filterData1.word0 & filterData0.word1)))
-		return PxFilterFlag::eSUPPRESS;
+	if ((0 != (filterData0.word0 & filterData1.word1)) && (0 != (filterData1.word0 & filterData0.word1)))
+	{
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+		pairFlags |= PxPairFlags(PxU16(filterData0.word2 | filterData1.word2));
+	}
+		//return PxFilterFlag::eSUPPRESS;
 
-	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-	pairFlags |= PxPairFlags(PxU16(filterData0.word2 | filterData1.word2));
+
 
 	return PxFilterFlags();
 }
@@ -76,6 +79,7 @@ PxFilterFlags contactReportFilterShader(PxFilterObjectAttributes attributes0, Px
 		pairFlags |= PxPairFlag::eCONTACT_DEFAULT;
 		pairFlags |= PxPairFlags(PxU16(filterData0.word2 | filterData1.word2));
 	}
+		//return PxFilterFlag::eSUPPRESS;
 
 	
 
@@ -260,6 +264,12 @@ public:
 				if (actor->userData && (static_cast<ActorUserData*>(actor->userData))->vehicle)
 				{
 					const PxVehicleWheels* vehicle = (static_cast<ActorUserData*>(actor->userData))->vehicle;
+					const PxActor* vehicleActor = (static_cast<ActorUserData*>(actor->userData))->actor;
+					if (vehicleActor == nullptr)
+					{
+						return;
+					}
+
 					PX_ASSERT(vehicle->getRigidDynamicActor() == actors[j]);
 
 					const PxShape* shape = shapes[j];
@@ -349,7 +359,7 @@ void PhysXManager::Init(bool connectToPvd)
    // sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.contactModifyCallback = &gWheelContactModifyCallback;
-	sceneDesc.ccdContactModifyCallback = &gWheelCCDContactModifyCallback;	//Enable ccd contact modification
+	//sceneDesc.ccdContactModifyCallback = &gWheelCCDContactModifyCallback;	//Enable ccd contact modification
 
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;

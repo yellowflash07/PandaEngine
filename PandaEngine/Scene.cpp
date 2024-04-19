@@ -193,6 +193,11 @@ void Scene::DrawUI(GameObject* go)
 
 void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime)
 {
+	if (go == nullptr)
+	{
+		return;
+	}
+
 	TransformComponent* transform = go->GetComponent<TransformComponent>();
 
 	matModel = transform->GetTransform() * matModel;
@@ -232,11 +237,6 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		if (physXBody != nullptr)
 		{
 			physXBody->Update(deltaTime);
-			GameObject* physXGo = (GameObject*)physXBody->GameObject;
-			if (go == nullptr)
-			{
-				physXBody->GameObject = go;
-			}
 		}
 
 		CharacterController* controller = go->GetComponent<CharacterController>();
@@ -292,7 +292,8 @@ void Scene::DestroyGameObject(GameObject* go)
 	{
 		if (m_GameObjects[i] == go)
 		{
-			//m_Registry.destroy(go->entity);
+			m_Registry.destroy(go->entity);
+			go = nullptr;
 			m_GameObjects.erase(m_GameObjects.begin() + i);
 			//delete go;
 			break;

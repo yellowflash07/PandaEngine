@@ -36,6 +36,7 @@ struct TransformComponent : public IEditorUI
 	{
 		glm::quat qChange = glm::quat(EulerAngleXYZ_Adjust);
 		this->m_qOrientation *= qChange;
+		this->eulerRotation = glm::eulerAngles(this->m_qOrientation);
 	}
 
 	glm::quat get_qOrientation(void)

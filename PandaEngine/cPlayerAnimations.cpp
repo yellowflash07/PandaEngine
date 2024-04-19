@@ -62,7 +62,7 @@ void cPlayerAnimations::BlendTo(PlayerState playerState, float deltaTime)
 	float lerpedValue = 0.0f;
 
 	lerpTime += deltaTime;
-	lerpedValue = lerp(0.0f, 1.0f, lerpTime * 3.0f);
+	lerpedValue = lerp(0.0f, 1.0f, lerpTime * 5.0f);
 	animationSystem->SetBlendWeight(lerpedValue);
 
 

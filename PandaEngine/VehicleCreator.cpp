@@ -224,19 +224,7 @@ PxFixedSizeLookupTable<8> gSteerVsForwardSpeedTable(gSteerVsForwardSpeedData, 4)
 
 void VehicleCreator::UpdateVehicle4W(const PxF32 timestep, const PxVec3& gravity, PxVehicleDrive4W* vehDrive4W, PxVehicleWheelQueryResult* vehWheelQueryResults, PxVehicleDrive4WRawInputData* vehDrive4WInputData)
 {
-	//Raycasts.
-	//PxVehicleWheels* vehicles[1] = { vehDrive4W };
-	//PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
-	//const PxU32 raycastResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
-	//PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicles, raycastResultsSize, raycastResults);
-
-	////Vehicle update.
-	//const PxVec3 grav = PhysXManager::getInstance()->gScene->getGravity();
-	//PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
-	//PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehDrive4W->mWheelsSimData.getNbWheels()} };
-	//PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, NULL);	
-
-		//Suspension sweeps (instead of raycasts).
+	//Suspension sweeps (instead of raycasts).
 	//Sweeps provide more information about the geometry under the wheel.
 	PxVehicleWheels* vehicles[1] = { vehDrive4W };
 	PxSweepQueryResult* sweepResults = gVehicleSceneQueryData->getSweepQueryResultBuffer(0);

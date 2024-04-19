@@ -300,6 +300,9 @@
     <ClCompile Include="cVehicle.cpp">
       <Filter>Physics\PhysX\Vehicle Physics</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Basic Shader Manager\cShaderManager.h">
@@ -506,9 +509,6 @@
     <ClInclude Include="ShadowMap.h">
       <Filter>ShadowMap</Filter>
     </ClInclude>
-    <ClInclude Include="Debug.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="DebugRenderer.h">
       <Filter>Debug</Filter>
     </ClInclude>
@@ -526,6 +526,12 @@
     </ClInclude>
     <ClInclude Include="cVehicle.h">
       <Filter>Physics\PhysX\Vehicle Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

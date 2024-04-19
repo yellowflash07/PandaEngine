@@ -22,6 +22,9 @@ public:
 	PxCapsuleController* controller;
 	float stepOffset = 0.5f;
 	float slopeLimit = 0.1f;
+
+	//for hit detection
+	//PhysXBody* body; 
 private:
 	PxControllerManager* manager;
 	PxMaterial* material;
@@ -31,6 +34,7 @@ private:
 	TransformComponent* transform;
 	PxCapsuleControllerDesc* desc;
 	glm::vec3 direction;
+
 
 };
 

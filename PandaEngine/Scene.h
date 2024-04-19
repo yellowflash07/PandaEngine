@@ -50,6 +50,7 @@ public:
 
 	void DestroyGameObject(GameObject* go);
 
+	bool play = false;
 	ShadowMap* shadowMap;
 	GLFWwindow* window;
 private:
@@ -72,7 +73,6 @@ private:
 
 	void DrawContextMenu(GameObject* go);
 
-	bool play = false;
 
 };
 
