@@ -38,10 +38,9 @@ public:
 
 	std::vector<GameObject*> m_Children;
 
-	void Destroy();
-
 	bool LoadAsync = false;
 
+	std::string tag;
 private:
 };
 

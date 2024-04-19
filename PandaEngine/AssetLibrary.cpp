@@ -4,7 +4,7 @@
 #include <imgui.h>
 
 #define THREADED
-
+extern bool IMGUI_ENABLE;
 AssetLibrary::AssetLibrary()
 {
     m_modelFiles = GetFiles("../Assets/Models");
@@ -26,6 +26,8 @@ void AssetLibrary::Init()
         GLuint texID = m_texManager->getTextureIDFromName(fileStr);
         m_texIDs.push_back(texID);
     }
+
+    if (!IMGUI_ENABLE) return;
 
     for (size_t i = 0; i < m_modelFiles.size(); i++)
     {

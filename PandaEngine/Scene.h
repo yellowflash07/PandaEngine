@@ -48,6 +48,8 @@ public:
 	void Stop();
 	GameObject* CreateChildObject(GameObject* go, std::string childName);
 
+	void DestroyGameObject(GameObject* go);
+
 	ShadowMap* shadowMap;
 	GLFWwindow* window;
 private:

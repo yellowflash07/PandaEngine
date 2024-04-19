@@ -8,7 +8,7 @@
 #include "ImGuizmo.h"
 #include "Debug.h"
 
-#define IMGUI_DISABLE
+bool IMGUI_ENABLE = true;
 
 static void error_callback(int error, const char* description)
 {
@@ -63,20 +63,22 @@ bool Engine::Initialize()
 
   
 
-  
+    if (IMGUI_ENABLE)
+    {
+        // Setup Dear ImGui context
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;        // Enable Docking
 
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;        // Enable Docking
+        // Setup Platform/Renderer backends
+        ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+        ImGui_ImplOpenGL3_Init();
+    }
 
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
-    ImGui_ImplOpenGL3_Init();
     audioManager->Initialize();
 
     SetShaderPath("../Assets/Shaders");
@@ -96,7 +98,6 @@ bool Engine::Initialize()
     assetLib.m_meshManager = meshManager;
     assetLib.shaderProgramID = shaderProgramID;
     assetLib.Init();
-
     sceneSaver.meshManager = meshManager;
 
     glPatchParameteri(GL_PATCH_VERTICES, 3);
@@ -125,23 +126,28 @@ void Engine::BeginRender()
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+    if (IMGUI_ENABLE)
+    {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-    ImGuizmo::SetOrthographic(false);
-    ImGuizmo::BeginFrame();
-    ImGuiIO& io = ImGui::GetIO();
-    ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::BeginFrame();
+        ImGuiIO& io = ImGui::GetIO();
+        ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+	}
 }
 
 void Engine::EndRender()
 {
-    //render the frame
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+    if (IMGUI_ENABLE)
+    {
+        //render the frame
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -161,15 +167,8 @@ void Engine::Update()
 
     meshManager->vaoManager->CheckQueue();
 
- 
-    //update lights
-   // lightManager->UpdateUniformValues(shaderProgramID);
-
     //update camera
     camera->Update(window, deltaTime);
-
-    //draw meshes
-  //  meshManager->DrawAllObjects(shaderProgramID);   
 
     if (scenes.size() > 0)
     {
@@ -181,44 +180,45 @@ void Engine::Update()
 		}*/
     }
 
-    ImGuiWindowFlags window_flags = 0;
-    window_flags |= ImGuiWindowFlags_MenuBar;
-    window_flags |= ImGuiWindowFlags_NoTitleBar;
-    ImGui::Begin("X", &loadFile, window_flags);
-    if (ImGui::BeginMenuBar())
+    if (IMGUI_ENABLE)
     {
-        if (ImGui::BeginMenu("Menu"))
+        ImGuiWindowFlags window_flags = 0;
+        window_flags |= ImGuiWindowFlags_MenuBar;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        ImGui::Begin("X", &loadFile, window_flags);
+        if (ImGui::BeginMenuBar())
         {
-            if (ImGui::MenuItem("Save Scene", "Ctrl + S"))
+            if (ImGui::BeginMenu("Menu"))
             {
-                sceneSaver.SaveScene(scenes[currentScene], currentFile);
+                if (ImGui::MenuItem("Save Scene", "Ctrl + S"))
+                {
+                    sceneSaver.SaveScene(scenes[currentScene], currentFile);
+                }
+                /* if (ImGui::MenuItem("Load Scene", NULL))
+                 {
+                     LoadSave();
+                 }*/
+
+                ImGui::EndMenu();
             }
-           /* if (ImGui::MenuItem("Load Scene", NULL))
+
+            if (ImGui::Button("Play"))
             {
-                LoadSave();
-            }*/
-               
-            ImGui::EndMenu();
+                scenes[currentScene]->Play();
+            }
+            if (ImGui::Button("Stop"))
+            {
+                scenes[currentScene]->Stop();
+            }
+
+            ImGui::EndMenuBar();
         }
 
-        if (ImGui::Button("Play"))
-        {
-			scenes[currentScene]->Play();
-		}
-        if (ImGui::Button("Stop"))
-        {
-            scenes[currentScene]->Stop();
-        }
-
-        ImGui::EndMenuBar();
-    }
-  
-    ImGui::End();
-    //show asset library
-    assetLib.RenderBox();
-
-   
-
+        ImGui::End();
+        //show asset library
+        assetLib.RenderBox();
+	}
+    
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
 		glfwSetWindowShouldClose(window, true);

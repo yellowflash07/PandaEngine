@@ -85,41 +85,41 @@ int main(void)
 	//camera->camControl = false;
 
 	bool isInsideVehicle = false;
-	cVehicle vehicleClass;
-	GameObject* vehicle = scene->GetGameObjectByName("Vehicle");
-	TransformComponent* vehicleTransform = vehicle->GetComponent<TransformComponent>();
-	vehicleClass.SetChassis(vehicleTransform);
-	
-	cMesh* vehicleMesh = vehicle->GetComponent<cMesh>();
-	VehicleDesc vehicleDesc = vehicleClass.initVehicleDesc(vehicleMesh);
+	//cVehicle vehicleClass;
+	//GameObject* vehicle = scene->GetGameObjectByName("Vehicle");
+	//TransformComponent* vehicleTransform = vehicle->GetComponent<TransformComponent>();
+	//vehicleClass.SetChassis(vehicleTransform);
+	//
+	//cMesh* vehicleMesh = vehicle->GetComponent<cMesh>();
+	//VehicleDesc vehicleDesc = vehicleClass.initVehicleDesc(vehicleMesh);
 
-	std::vector<TransformComponent*> wheels;
-	for (int i = 0; i < 4; i++)
-	{
-		GameObject* wheel = scene->CreateGameObject(std::to_string(i));
-		cMesh* wheelMesh = &wheel->AddComponent<cMesh>("CarWheel_UV.fbx", "carWheel");
-		wheelMesh->texture[0] = "Wheel_Texture.png";
-		wheelMesh->textureRatio[0] = 1.0f;
-		wheelMesh->normalMap = "Wheel_Texture_Normal.png";
-		TransformComponent* wheelTransform = wheel->GetComponent<TransformComponent>();
+	//std::vector<TransformComponent*> wheels;
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	GameObject* wheel = scene->CreateGameObject(std::to_string(i));
+	//	cMesh* wheelMesh = &wheel->AddComponent<cMesh>("CarWheel_UV.fbx", "carWheel");
+	//	wheelMesh->texture[0] = "Wheel_Texture.png";
+	//	wheelMesh->textureRatio[0] = 1.0f;
+	//	wheelMesh->normalMap = "Wheel_Texture_Normal.png";
+	//	TransformComponent* wheelTransform = wheel->GetComponent<TransformComponent>();
 
-		if (i % 2 == 0)
-		{
-			wheelTransform->drawScale = glm::vec3(-1.23, 0.75, 0.75);
-		}
-		else
-		{
-			wheelTransform->drawScale = glm::vec3(1.23, 0.75, 0.75);
-		}
+	//	if (i % 2 == 0)
+	//	{
+	//		wheelTransform->drawScale = glm::vec3(-1.23, 0.75, 0.75);
+	//	}
+	//	else
+	//	{
+	//		wheelTransform->drawScale = glm::vec3(1.23, 0.75, 0.75);
+	//	}
 
 
-		wheels.push_back(wheelTransform);
+	//	wheels.push_back(wheelTransform);
 
-	}
-	vehicleClass.SetWheel(wheels);
+	//}
+	//vehicleClass.SetWheel(wheels);
 
-	vehicleClass.startPos = glm::vec3(-1700,50, 76);
-	vehicleClass.vehicleInit();
+	//vehicleClass.startPos = glm::vec3(-1700,50, 76);
+	//vehicleClass.vehicleInit();
 
 	while (!glfwWindowShouldClose(engine.window))
 	{
@@ -144,11 +144,11 @@ int main(void)
 			playerAnimations.animationSystem->AttachObjectToBone("mixamorig_LeftHand", gunTransform);
 		}
 
-		ImGui::Begin("Debug");
+		/*ImGui::Begin("Debug");
 		ImGui::DragFloat3("Camera Position", &cameraOffset[0], 0.1f);
 		ImGui::DragFloat3("Look Ahead", &cameraTarget[0], 0.1f);
 		ImGui::Checkbox("Is Inside Vehicle", &isInsideVehicle);
-		ImGui::End();
+		ImGui::End();*/
 
 
 		if (skyBox == nullptr)
@@ -161,106 +161,108 @@ int main(void)
 			skyBoxTransform->drawPosition = camera->cameraEye;
 		}
 
-		if (glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition) < 150.0f)
-		{
-			if (keyHit == GLFW_KEY_E)
-			{
-				isInsideVehicle = true;
-				soldierMesh->bIsVisible = false;
-				keyHit = 0;
-			}
-		}
+		//if (glm::distance(soldierTransform->drawPosition, vehicleTransform->drawPosition) < 150.0f)
+		//{
+		//	if (keyHit == GLFW_KEY_E)
+		//	{
+		//		isInsideVehicle = true;
+		//		soldierMesh->bIsVisible = false;
+		//		keyHit = 0;
+		//	}
+		//}
 
-		if (isInsideVehicle)
-		{
-			if (keyHit == GLFW_KEY_E)
-			{
-				isInsideVehicle = false;
-				soldierMesh->bIsVisible = true;
-				vehicleClass.brake();
-				keyHit = 0;
-			}
-		}
-		if (!isInsideVehicle)
-		{
-			soldierTransform->setRotationFromEuler(glm::vec3(0, -camera->yaw / 100.0f, 0));
+		//if (isInsideVehicle)
+		//{
+		//	if (keyHit == GLFW_KEY_E)
+		//	{
+		//		isInsideVehicle = false;
+		//		soldierMesh->bIsVisible = true;
+		//		vehicleClass.brake();
+		//		keyHit = 0;
+		//	}
+		//}
+		//if (!isInsideVehicle)
+		//{
+		//	soldierTransform->setRotationFromEuler(glm::vec3(0, -camera->yaw / 100.0f, 0));
 
-			glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
-			camera->Follow(soldierTransform->drawPosition, cameraOffset,
-				soldierTransform->drawPosition + cameraTarget, cameraRot);
-			if (IsKeyPressed(GLFW_KEY_W))
-			{
-				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKFRONT);
-				controller->Move(soldierTransform->GetForwardVector() * speed, engine.deltaTime);
-			}
-			if (IsKeyPressed(GLFW_KEY_S))
-			{
-				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKBACK);
-				controller->Move(-soldierTransform->GetForwardVector() * speed, engine.deltaTime);
-			}
-			if (IsKeyPressed(GLFW_KEY_A))
-			{
-				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKRIGHT);
-				controller->Move(-soldierTransform->GetRightVector() * speed, engine.deltaTime);
-			}
-			if (IsKeyPressed(GLFW_KEY_D))
-			{				
-				playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKLEFT);
-				controller->Move(soldierTransform->GetRightVector() * speed, engine.deltaTime);
-			}
-			if (!IsKeyPressed(GLFW_KEY_W) && !IsKeyPressed(GLFW_KEY_S) && !IsKeyPressed(GLFW_KEY_A) && !IsKeyPressed(GLFW_KEY_D))
-			{
-				playerAnimations.SetState(cPlayerAnimations::PlayerState::IDLE);
-				controller->Move(glm::vec3(0, 0, 0), engine.deltaTime);
-			}
-		}
-		else
-		{
-			glm::vec3 cameraRot = glm::vec3(camera->pitch / 50.0f, -camera->yaw / 50.0f, 0);
-			camera->Follow(vehicleTransform->drawPosition, cameraOffset,
-				vehicleTransform->drawPosition + vehicleTarget, cameraRot);
+		//	glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
+		//	camera->Follow(soldierTransform->drawPosition, cameraOffset,
+		//		soldierTransform->drawPosition + cameraTarget, cameraRot);
+		//	if (!IsKeyPressed(GLFW_KEY_W) && !IsKeyPressed(GLFW_KEY_S) && !IsKeyPressed(GLFW_KEY_A) && !IsKeyPressed(GLFW_KEY_D))
+		//	{
+		//		playerAnimations.SetState(cPlayerAnimations::PlayerState::IDLE);
+		//		controller->Move(glm::vec3(0, 0, 0), engine.deltaTime);
+		//	}
 
-			glm::vec3 soldierPos = vehicleTransform->drawPosition + glm::vec3(300,100, 0);
-			controller->controller->setPosition(PxExtendedVec3(soldierPos.x, soldierPos.y, soldierPos.z));
+		//	if (IsKeyPressed(GLFW_KEY_W))
+		//	{
+		//		playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKFRONT);
+		//		controller->Move(soldierTransform->GetForwardVector() * speed, engine.deltaTime);
+		//	}
+		//	if (IsKeyPressed(GLFW_KEY_S))
+		//	{
+		//		playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKBACK);
+		//		controller->Move(-soldierTransform->GetForwardVector() * speed, engine.deltaTime);
+		//	}
+		//	if (IsKeyPressed(GLFW_KEY_A))
+		//	{
+		//		playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKRIGHT);
+		//		controller->Move(-soldierTransform->GetRightVector() * speed, engine.deltaTime);
+		//	}
+		//	if (IsKeyPressed(GLFW_KEY_D))
+		//	{				
+		//		playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKLEFT);
+		//		controller->Move(soldierTransform->GetRightVector() * speed, engine.deltaTime);
+		//	}
 
-			//player is in vehicle
-			if (IsKeyPressed(GLFW_KEY_W))
-			{
-				vehicleClass.moveForward();
-			}
-			if (IsKeyPressed(GLFW_KEY_S))
-			{
-				vehicleClass.moveBackward();
-			}
+		//}
+		//else
+		//{
+		//	glm::vec3 cameraRot = glm::vec3(camera->pitch / 50.0f, -camera->yaw / 50.0f, 0);
+		//	camera->Follow(vehicleTransform->drawPosition, cameraOffset,
+		//		vehicleTransform->drawPosition + vehicleTarget, cameraRot);
 
-			if (IsKeyPressed(GLFW_KEY_A))
-			{
-				vehicleClass.turnLeft();
-			}
-			else if (IsKeyPressed(GLFW_KEY_D))
-			{
-				vehicleClass.turnRight();
-			}
-			else
-			{
-				vehicleClass.stopTurning();
-			}
+		//	glm::vec3 soldierPos = vehicleTransform->drawPosition + glm::vec3(300,100, 0);
+		//	controller->controller->setPosition(PxExtendedVec3(soldierPos.x, soldierPos.y, soldierPos.z));
 
-			if (IsKeyPressed(GLFW_KEY_SPACE))
-			{
-				vehicleClass.brake();
-			}
+		//	//player is in vehicle
+		//	if (IsKeyPressed(GLFW_KEY_W))
+		//	{
+		//		vehicleClass.moveForward();
+		//	}
+		//	if (IsKeyPressed(GLFW_KEY_S))
+		//	{
+		//		vehicleClass.moveBackward();
+		//	}
 
-			if (IsKeyPressed(GLFW_KEY_R))
-			{
-				vehicleClass.reset();
-			}
-			
-		}
+		//	if (IsKeyPressed(GLFW_KEY_A))
+		//	{
+		//		vehicleClass.turnLeft();
+		//	}
+		//	else if (IsKeyPressed(GLFW_KEY_D))
+		//	{
+		//		vehicleClass.turnRight();
+		//	}
+		//	else
+		//	{
+		//		vehicleClass.stopTurning();
+		//	}
 
-		vehicleClass.Update(engine.deltaTime);
+		//	if (IsKeyPressed(GLFW_KEY_SPACE))
+		//	{
+		//		vehicleClass.brake();
+		//	}
 
-		playerAnimations.Update(engine.deltaTime);
+		//	if (IsKeyPressed(GLFW_KEY_R))
+		//	{
+		//		vehicleClass.reset();
+		//	}
+		//	
+		//}
+
+		//vehicleClass.Update(engine.deltaTime);
+
+		//playerAnimations.Update(engine.deltaTime);
 
 		engine.EndRender();
 	}

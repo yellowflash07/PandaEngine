@@ -2,6 +2,8 @@
 #include <imgui.h>
 #include <iostream>
 
+//extern bool IMGUI_ENABLE;
+
 Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 upVector, float near, float far)
 {
     this->cameraEye = position;
@@ -28,11 +30,11 @@ Camera::~Camera()
 void Camera::Update(GLFWwindow* window, double deltaTime)
 {
 
-    ImGui::Begin("Camera Controls");
+    /*ImGui::Begin("Camera Controls");
     ImGui::Text("Camera Position: (%f, %f, %f)", cameraEye.x, cameraEye.y, cameraEye.z);
     ImGui::Text("Camera Target: (%f, %f, %f)", cameraTarget.x, cameraTarget.y, cameraTarget.z);
     ImGui::Text("Camera Up Vector: (%f, %f, %f)", upVector.x, upVector.y, upVector.z);
-    ImGui::End();
+    ImGui::End();*/
 
     float ratio;
     int width, height;

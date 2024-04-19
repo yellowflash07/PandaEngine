@@ -5,7 +5,7 @@ GameObject::GameObject(std::string name)
 	m_Name = name;
 }
 
-void GameObject::Destroy()
+GameObject::~GameObject()
 {
 	m_Registry->destroy(entity);
 }

@@ -1,5 +1,7 @@
 #include "Scene.h"
 
+extern bool IMGUI_ENABLE;
+
 Scene::Scene(std::string name)
 {
 	this->name = name;
@@ -24,13 +26,17 @@ GameObject* Scene::CreateGameObject(std::string name)
 
 void Scene::Update(float deltaTime)
 {
-	ImGui::Begin("Scene");
-
-	if (ImGui::Button("Create GameObject"))
+	if (IMGUI_ENABLE)
 	{
-		CreateGameObject("GameObject");
-	}
+		ImGui::Begin("Scene");
 
+		if (ImGui::Button("Create GameObject"))
+		{
+			CreateGameObject("GameObject");
+		}
+		ImGui::Checkbox("Debug Physics", &debugPhysics);
+	}
+	
 	cLight* light = NULL;
 
 	for (GameObject* go : m_GameObjects)
@@ -77,9 +83,10 @@ void Scene::Update(float deltaTime)
 	{
 
 		//if (ImGui::Button(go->m_Name.c_str()))
-
-		DrawTreeNode(go);
-
+		if (IMGUI_ENABLE)
+		{
+			DrawTreeNode(go);
+		}
 		//main pass
 		UpdateGameObject(go, glm::mat4(1.0f), deltaTime);
 
@@ -90,22 +97,24 @@ void Scene::Update(float deltaTime)
 		PhysXManager::getInstance()->Update(deltaTime);
 		
 	}
-	ImGui::Checkbox("Debug Physics", &debugPhysics);
+
 	if (debugPhysics)
 	{
 		PhysXManager::getInstance()->DebugUpdate(deltaTime);
 		PhysXManager::getInstance()->DrawDebug();
 	}
 	
-
-	ImGui::End();	
-
-	ImGui::Begin("Inspector");
-	if (m_pCurrentGameObject != nullptr)
+	if (IMGUI_ENABLE)
 	{
-		DrawUI(m_pCurrentGameObject);
-	}
-	ImGui::End();
+		ImGui::End();
+
+		ImGui::Begin("Inspector");
+		if (m_pCurrentGameObject != nullptr)
+		{
+			DrawUI(m_pCurrentGameObject);
+		}
+		ImGui::End();
+	}	
 }
 
 void Scene::Init(MeshManager* meshManager, PhysicsManager* phyManager, cLightManager* lightManager,
@@ -272,6 +281,15 @@ GameObject* Scene::CreateChildObject(GameObject* go, std::string childName)
 	return pGameObject;
 }
 
+void Scene::DestroyGameObject(GameObject* go)
+{
+	for (GameObject* go : m_GameObjects)
+	{
+		m_GameObjects.erase(std::remove(m_GameObjects.begin(), m_GameObjects.end(), go), m_GameObjects.end());
+		delete go;
+	}
+}
+
 void Scene::DrawContextMenu(GameObject* go)
 {
 	if (ImGui::BeginPopupContextItem())
@@ -306,6 +324,7 @@ void Scene::DrawContextMenu(GameObject* go)
 				{
 					PhysXBody* pxBody = &go->AddComponent<PhysXBody>(go->GetComponent<TransformComponent>());
 					pxBody->mesh = mesh;
+					pxBody->GameObject = go;
 				}
 				if (ImGui::MenuItem("Character Controller"))
 				{
@@ -316,7 +335,7 @@ void Scene::DrawContextMenu(GameObject* go)
 			if (ImGui::MenuItem("Remove Object"))
 			{
 				//go->Destroy();
-				m_GameObjects.erase(std::remove(m_GameObjects.begin(), m_GameObjects.end(), go), m_GameObjects.end());
+				DestroyGameObject(go);
 			}
 
 

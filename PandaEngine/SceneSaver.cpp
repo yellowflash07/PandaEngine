@@ -911,6 +911,7 @@ GameObject* SceneSaver::LoadGameObject(GameObjectConfig& gameObjectConfig, Scene
 
         p->isTrigger = physXConfig.isTrigger;
         p->SetTrigger();
+        p->GameObject = go;
 	}
 
     if (gameObjectConfig.characterController.height > 0)
