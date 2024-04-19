@@ -54,7 +54,7 @@ void main() {
 		return;
 	}   
 
-
+    
     mat4 matMVP = matProjection * matView;// * matModel;
 
     gl_Position = matMVP * vec4(worldPos, 1.0);
