@@ -63,11 +63,11 @@ VehicleDesc cVehicle::initVehicleDesc(cMesh* chassisMesh)
 	// const PxVec3 chassisDims(4.5f, 2.0f, 9.0f);
 	const PxVec3 chassisMOI
 	((chassisDims.y * chassisDims.y + chassisDims.z * chassisDims.z) * chassisMass / 12,
-		(chassisDims.x * chassisDims.x + chassisDims.z * chassisDims.z) /** 0.8f*/ * chassisMass / 12,
+		(chassisDims.x * chassisDims.x + chassisDims.z * chassisDims.z) * 0.8f * chassisMass / 12,
 		(chassisDims.x * chassisDims.x + chassisDims.y * chassisDims.y) * chassisMass / 12);
 	//  const PxVec3 chassisMOI(1000, 800, 1000);
 	  //fo
-	const PxVec3 chassisCMOffset(0.0f, -chassisDims.y * 0.5f - 1.65f, -0.75f);
+	const PxVec3 chassisCMOffset(0.0f, -chassisDims.y - 1.65f, 0.0f);
 	//  const PxVec3 chassisCMOffset(0.0f, 0.0, 0.25f);
 
 	vehicleDesc.chassisMass = chassisMass;
@@ -160,6 +160,9 @@ void cVehicle::reset()
 	gVehicleInputData->setDigitalSteerRight(false);
 	gVehicleInputData->setDigitalBrake(false);
 	gVehicleInputData->setDigitalHandbrake(false);
+	PxVec3 resetPos = PxVec3(gVehicle4W->getRigidDynamicActor()->getGlobalPose().p.x, 
+		gVehicle4W->getRigidDynamicActor()->getGlobalPose().p.y + 50, 
+		gVehicle4W->getRigidDynamicActor()->getGlobalPose().p.z);
 	PxTransform currentTransform(gVehicle4W->getRigidDynamicActor()->getGlobalPose().p, PxQuat(PxIdentity));
 	gVehicle4W->getRigidDynamicActor()->setGlobalPose(currentTransform);
 }

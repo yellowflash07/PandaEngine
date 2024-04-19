@@ -3,6 +3,12 @@
 EnemyManager::EnemyManager(Scene* scene, GameObject* player)
 	: m_Scene(scene), m_Player(player)
 {
+	m_EnemySpawnPoints.push_back(glm::vec3(glm::vec3(-1514, -86.11502075195313, 11.56)));
+	m_EnemySpawnPoints.push_back(glm::vec3(glm::vec3(-600, -86, 2066)));
+	m_EnemySpawnPoints.push_back(glm::vec3(glm::vec3(1846, -86, 1766)));
+	m_EnemySpawnPoints.push_back(glm::vec3(glm::vec3(2081, -86, 417)));
+	m_EnemySpawnPoints.push_back(glm::vec3(glm::vec3(2081, -86, 417)));
+
 }
 
 EnemyManager::~EnemyManager()
@@ -11,6 +17,11 @@ EnemyManager::~EnemyManager()
 
 void EnemyManager::Update(float deltaTime)
 {
+	if (m_Enemies.size() < m_EnemyCount)
+	{
+		CreateEnemy();
+	}
+
 	for (GameObject* enemy : m_Enemies)
 	{
 		if (m_EnemyStates[enemy] == EnemyState::ALIVE)
@@ -46,6 +57,9 @@ void EnemyManager::AddEnemy()
 
 void EnemyManager::RemoveEnemy(GameObject* enemy)
 {
+	PhysXBody* physXBody = enemy->GetComponent<PhysXBody>();
+	physXBody->isTrigger = true;
+	physXBody->SetTrigger();
 	m_Enemies.erase(std::remove(m_Enemies.begin(), m_Enemies.end(), enemy), m_Enemies.end());
 	m_Scene->DestroyGameObject(enemy);
 }
@@ -56,7 +70,7 @@ void EnemyManager::CreateEnemy()
 	GameObject* enemy = m_Scene->CreateGameObject(this->name + std::to_string(currentEnemyCount));
 	enemy->tag = "Zombie";
 	TransformComponent* transform = enemy->GetComponent<TransformComponent>();	
-	transform->drawPosition = this->position;
+	transform->drawPosition = m_EnemySpawnPoints[rand() % m_EnemySpawnPoints.size()];
 	transform->eulerRotation = this->rotation;
 	transform->drawScale = this->scale;
 

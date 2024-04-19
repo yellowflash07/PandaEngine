@@ -109,29 +109,14 @@ int main(void)
 	cMesh* vehicleMesh = vehicle->GetComponent<cMesh>();
 	VehicleDesc vehicleDesc = vehicleClass.initVehicleDesc(vehicleMesh);
 	EnemyManager enemyManager(scene, scene->GetGameObjectByName("Soldier"));
-	enemyManager.m_Scene = scene;
-	enemyManager.CreateEnemy();
+	//enemyManager.m_Scene = scene;
+	//enemyManager.CreateEnemy();
 
 	std::vector<TransformComponent*> wheels;
 	for (int i = 0; i < 4; i++)
 	{
-		GameObject* wheel = scene->CreateGameObject(std::to_string(i));
-		cMesh* wheelMesh = &wheel->AddComponent<cMesh>("CarWheel_UV.fbx", "carWheel");
-		wheelMesh->texture[0] = "Wheel_Texture.png";
-		wheelMesh->textureRatio[0] = 1.0f;
-		wheelMesh->normalMap = "Wheel_Texture_Normal.png";
+		GameObject* wheel = scene->GetGameObjectByName(std::to_string(i));
 		TransformComponent* wheelTransform = wheel->GetComponent<TransformComponent>();
-
-		if (i % 2 == 0)
-		{
-			wheelTransform->drawScale = glm::vec3(-1.23, 0.75, 0.75);
-		}
-		else
-		{
-			wheelTransform->drawScale = glm::vec3(1.23, 0.75, 0.75);
-		}
-
-
 		wheels.push_back(wheelTransform);
 
 	}
@@ -222,6 +207,8 @@ int main(void)
 			}
 			if (!isInsideVehicle)
 			{
+				enemyManager.Update(engine.deltaTime);
+
 				soldierTransform->setRotationFromEuler(glm::vec3(0, -camera->yaw / 100.0f, 0));
 
 				glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
@@ -305,7 +292,7 @@ int main(void)
 
 			playerAnimations.Update(engine.deltaTime);
 
-			enemyManager.Update(engine.deltaTime);
+			
 		}
 		else
 		{

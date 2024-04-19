@@ -292,7 +292,8 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 				specular = specAmount * specularLight;
 			};
 			vec3 lightColor = theLights[index].diffuse.rgb;
-			vec3 finalCol =  (diffuse * (1.0f - shadowFactor) + ambient) + specular  * (1.0f - shadowFactor) * lightColor;
+						vec3 finalCol =  (diffuse * (1.0f - shadowFactor) + ambient) + specular  * (1.0f - shadowFactor) * lightColor;
+
 			finalObjectColour.rgb = vertexMaterialColour.rgb * finalCol;
 			return finalObjectColour;		
 		}

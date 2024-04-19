@@ -22,13 +22,15 @@ public:
 
     void CreateEnemy();
 
-	int m_EnemyCount = 0;
+	int m_EnemyCount = 5;
     Scene* m_Scene;
 private:
 	std::vector<GameObject*> m_Enemies;
     int currentEnemyCount = 0;
     AnimationSystem* m_AnimationSystem;
     std::map<GameObject*, EnemyState> m_EnemyStates;
+
+    std::vector<glm::vec3> m_EnemySpawnPoints;
 
     GameObject* m_Player;
     float speed = 0.5f;

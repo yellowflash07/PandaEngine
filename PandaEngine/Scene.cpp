@@ -292,8 +292,8 @@ void Scene::DestroyGameObject(GameObject* go)
 	{
 		if (m_GameObjects[i] == go)
 		{
-			m_Registry.destroy(go->entity);
-			go = nullptr;
+			//m_Registry.destroy(go->entity);
+			//go = nullptr;
 			m_GameObjects.erase(m_GameObjects.begin() + i);
 			//delete go;
 			break;
@@ -346,7 +346,8 @@ void Scene::DrawContextMenu(GameObject* go)
 			if (ImGui::MenuItem("Remove Object"))
 			{
 				//go->Destroy();
-				DestroyGameObject(go);
+				//DestroyGameObject(go);
+				m_GameObjects.erase(std::remove(m_GameObjects.begin(), m_GameObjects.end(), go), m_GameObjects.end());
 			}
 
 

@@ -603,10 +603,10 @@ void VehicleCreator::setupWheelsSimulationData(const PxF32 wheelMass, const PxF3
 			//Set the suspension data.
 			for (PxU32 i = 0; i < numWheels; i++)
 			{
-				suspensions[i].mMaxCompression = 0.3f;
+				suspensions[i].mMaxCompression = 0.01f;
 				suspensions[i].mMaxDroop = 0.1f;
 				suspensions[i].mSpringStrength = 35000.0f;
-				suspensions[i].mSpringDamperRate = 4500.0f;
+				suspensions[i].mSpringDamperRate = 6000.0f;
 				suspensions[i].mSprungMass = suspSprungMasses[i];
 			}
 

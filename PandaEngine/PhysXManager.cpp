@@ -73,13 +73,17 @@ PxFilterFlags contactReportFilterShader(PxFilterObjectAttributes attributes0, Px
 		| PxPairFlag::eNOTIFY_TOUCH_FOUND
 		| PxPairFlag::eNOTIFY_TOUCH_LOST
 		| PxPairFlag::eNOTIFY_CONTACT_POINTS;
-
+	//pairFlags ;
 	if ((0 != (filterData0.word0 & filterData1.word1)) && (0 != (filterData1.word0 & filterData0.word1)))
 	{
 		pairFlags |= PxPairFlag::eCONTACT_DEFAULT;
 		pairFlags |= PxPairFlags(PxU16(filterData0.word2 | filterData1.word2));
 	}
-		//return PxFilterFlag::eSUPPRESS;
+	else
+	{
+		return PxFilterFlag::eSUPPRESS;
+	}
+		
 
 	
 
