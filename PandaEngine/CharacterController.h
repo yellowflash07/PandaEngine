@@ -20,7 +20,8 @@ public:
 	float radius;
 	glm::vec3 position;
 	PxCapsuleController* controller;
-
+	float stepOffset = 0.5f;
+	float slopeLimit = 0.1f;
 private:
 	PxControllerManager* manager;
 	PxMaterial* material;

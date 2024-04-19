@@ -148,7 +148,7 @@ void Camera::ProcessKeyboardInput(GLFWwindow* window, double deltaTime)
 {
     if (!camControl)
     {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+      //  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         return;
     }
     if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)

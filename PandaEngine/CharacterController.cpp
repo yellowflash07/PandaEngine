@@ -17,13 +17,14 @@ CharacterController::CharacterController(TransformComponent* transform)
 	//desc->position = PxExtendedVec3(transform->drawPosition.x, transform->drawPosition.y, transform->drawPosition.z);
 	//this->position = transform->drawPosition;
 	desc->upDirection = PxVec3(0, 1, 0);
-	desc->slopeLimit = 10.0f;
+	desc->slopeLimit = 10000.0f;
 	desc->stepOffset = 1.6f;
 	desc->climbingMode = PxCapsuleClimbingMode::eEASY;
 	desc->material = gMaterial;
 	if (!desc->isValid())
 	{
 		printf("Failed to create character controller\n");
+		EXIT_FAILURE;
 		return;
 	}
 	manager->setOverlapRecoveryModule(true);
@@ -53,7 +54,7 @@ void CharacterController::Update(float deltaTime)
 	currentYVelocity += PhysXManager::getInstance()->gScene->getGravity().y * deltaTime;
 
 	// Clamp vertical velocity (optional)
-	currentYVelocity = std::clamp(currentYVelocity, -10.0f, 10.0f);  // Adjust terminal velocity as needed
+	//currentYVelocity = std::clamp(currentYVelocity, -10.0f, 10.0f);  // Adjust terminal velocity as needed
 
 	// Combine direction (assumed to be available) and updated vertical velocity
 	PxVec3 disp = PxVec3(direction.x, currentYVelocity, direction.z) * deltaTime;
@@ -90,6 +91,16 @@ void CharacterController::Render()
 		controller->setHeight(height);
 		PhysXManager::getInstance()->updateDebug = true;
 	}
+
+	if (ImGui::DragFloat("Slope Limit", &slopeLimit, 0.1f))
+	{
+		controller->setSlopeLimit(slopeLimit);
+	}
+	if (ImGui::DragFloat("Step Offset", &stepOffset, 0.1f))
+	{
+		controller->setStepOffset(stepOffset);
+	}
+
 	if (ImGui::DragFloat3("Position", &position[0], 0.1f))
 	{
 		controller->setPosition(PxExtendedVec3(position.x, position.y, position.z));

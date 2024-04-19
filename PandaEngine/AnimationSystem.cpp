@@ -755,7 +755,12 @@ void AnimationSystem::AttachObjectToBone(std::string boneName, TransformComponen
 			BoneInfo* boneInfo = &drawInfo->vecBoneInfo[i];
 			if (boneInfo->boneName == boneName)
 			{
-				transform->parentTransform = boneInfo->GlobalTransformation;
+				
+				//transform relavtive to mesh
+				glm::mat4 relativeTransform = m_mesh->transform.GetTransform() * boneInfo->GlobalTransformation;
+
+				transform->parentTransform = relativeTransform;
+
 			}
 		}
 	}

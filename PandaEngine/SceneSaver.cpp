@@ -337,6 +337,7 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
         meshConfig.isDynamicLOD = mesh->dynamicLOD;
         meshConfig.UV_Offset = mesh->UV_Offset;
         meshConfig.UV_Tiling = mesh->UV_Tiling;
+        meshConfig.transperancy = mesh->transperancy;
         gameObjectConfig.mesh = meshConfig;
     }
 
@@ -388,6 +389,8 @@ void SceneSaver::GetGameObjectConifg(GameObject* go, GameObjectConfig& gameObjec
         characterControllerConfig.height = characterController->height;
         characterControllerConfig.radius = characterController->radius;
         characterControllerConfig.position = characterController->position;
+        characterControllerConfig.stepOffset = characterController->stepOffset;
+        characterControllerConfig.slopeLimit = characterController->slopeLimit;
         gameObjectConfig.characterController = characterControllerConfig;
     }
     else
@@ -514,6 +517,8 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
         mesh.AddMember("enableShadow", go.mesh.enableShadow, jsonDocument.GetAllocator());
         mesh.AddMember("isDynamicLOD", go.mesh.isDynamicLOD, jsonDocument.GetAllocator());
 
+        mesh.AddMember("transperancy", go.mesh.transperancy, jsonDocument.GetAllocator());
+
         gameObjectValue.AddMember("mesh", mesh, jsonDocument.GetAllocator());
     }
 
@@ -606,6 +611,9 @@ void SceneSaver::SaveGameObject(GameObjectConfig go, rapidjson::Value& gameObjec
 		position.PushBack(go.characterController.position.z, jsonDocument.GetAllocator());
 		characterController.AddMember("position", position, jsonDocument.GetAllocator());
 
+        characterController.AddMember("stepOffset", go.characterController.stepOffset, jsonDocument.GetAllocator());
+        characterController.AddMember("slopeLimit", go.characterController.slopeLimit, jsonDocument.GetAllocator());
+
 		gameObjectValue.AddMember("characterController", characterController, jsonDocument.GetAllocator());
     }
 
@@ -696,6 +704,11 @@ void SceneSaver::GetLoadGameObjectConfig(rapidjson::Value& gameObject, GameObjec
             meshConfig.UV_Tiling = glm::vec2(UV_Tiling[0].GetFloat(), UV_Tiling[1].GetFloat());
         }
 
+        if (mesh.HasMember("transperancy"))
+        {
+			meshConfig.transperancy = mesh["transperancy"].GetFloat();
+		}
+
         gameObjectConfig.mesh = meshConfig;
     }
 
@@ -760,6 +773,7 @@ void SceneSaver::GetLoadGameObjectConfig(rapidjson::Value& gameObject, GameObjec
             //p->radius = physXObj["radius"].GetFloat();
         }
 
+
         gameObjectConfig.physXObj = physXConfig;
     }
     else
@@ -778,6 +792,17 @@ void SceneSaver::GetLoadGameObjectConfig(rapidjson::Value& gameObject, GameObjec
 
         const rapidjson::Value& position = characterController["position"];
         characterControllerConfig.position = glm::vec3(position[0].GetFloat(), position[1].GetFloat(), position[2].GetFloat());
+
+
+        if (characterController.HasMember("stepOffset"))
+        {
+            characterControllerConfig.stepOffset= characterController["stepOffset"].GetFloat();
+        }
+
+        if (characterController.HasMember("slopeLimit"))
+        {
+			characterControllerConfig.slopeLimit = characterController["slopeLimit"].GetFloat();
+		}
 
         gameObjectConfig.characterController = characterControllerConfig;
     }
@@ -843,6 +868,7 @@ GameObject* SceneSaver::LoadGameObject(GameObjectConfig& gameObjectConfig, Scene
         m->dynamicLOD = meshConfig.isDynamicLOD;
         m->UV_Offset = meshConfig.UV_Offset;
         m->UV_Tiling = meshConfig.UV_Tiling;
+        m->transperancy = meshConfig.transperancy;
         m->transform = *t;
     }
 
@@ -895,9 +921,13 @@ GameObject* SceneSaver::LoadGameObject(GameObjectConfig& gameObjectConfig, Scene
 		c->height = characterControllerConfig.height;
 		c->radius = characterControllerConfig.radius;
 		c->position = characterControllerConfig.position;
+        c->stepOffset = characterControllerConfig.stepOffset;
+        c->slopeLimit = characterControllerConfig.slopeLimit;
         c->controller->setHeight(c->height);
         c->controller->setRadius(c->radius);
         c->controller->setPosition(PxExtendedVec3(c->position.x, c->position.y, c->position.z));
+        c->controller->setStepOffset(c->stepOffset);
+        c->controller->setSlopeLimit(c->slopeLimit);
     }
 
    

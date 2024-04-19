@@ -32,6 +32,7 @@ struct MeshConfig
 	std::string normalMap;
 	bool enableShadow;
 	bool isDynamicLOD;
+	float transperancy = 1.0f;
 	glm::vec2 UV_Offset = glm::vec2(0.0f);
 	glm::vec2 UV_Tiling = glm::vec2(1.0f);
 };
@@ -67,6 +68,8 @@ struct CharacterControllerConfig
 	float height = 0.0f;
 	float radius = 0.0f;
 	glm::vec3 position;
+	float stepOffset = 0.0f;
+	float slopeLimit = 0.0f;
 };
 
 struct GameObjectConfig

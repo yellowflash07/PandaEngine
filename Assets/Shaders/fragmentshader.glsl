@@ -142,14 +142,7 @@ void main()
 //		return;
 //	}
 
-  // float distanceToWorld = distance(eyeLocation.xyz, vertexWorldPos.xyz);
-	// distanceToWorld = distanceToWorld / 1000.0f;
-  // outputColour.rgb = vec3(distanceToWorld,0,0);
-	// outputColour.a = 1.0f;
-	//return;
-
-	//outputColour = vec4(tangent.xyz, 1.0f);
-	//outputColour = vec4(bitangent.xyz, 1.0f);
+ 
 	//return;
 
 	if(isShadowMap)
@@ -281,13 +274,7 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 		// (BEFORE the attenuation, since sunlight has no attenuation, really)
 		if ( intLightType == DIRECTIONAL_LIGHT_TYPE )		// = 2
 		{
-			// This is supposed to simulate sunlight. 
-			// SO: 
-			// -- There's ONLY direction, no position
-			// -- Almost always, there's only 1 of these in a scene
-			// Cheapest light to calculate. 
-
-			float ambient = 0.20f;
+			float ambient = theLights[index].atten.x;
 
 			// diffuse lighting
 			vec3 normal = normalize(vertexNormal);
@@ -298,15 +285,15 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 			float specular = 0.0f;
 			if (diffuse != 0.0f)
 			{
-				float specularLight = 0.50f;
+				float specularLight =  theLights[index].atten.y;
 				vec3 viewDirection = normalize(vec3(eyeLocation) - vertexWorldPos);
 				vec3 halfwayVec = normalize(viewDirection + lightDirection);
-				float specAmount = pow(max(dot(normal, halfwayVec), 0.0f), 16);
+				float specAmount = pow(max(dot(normal, halfwayVec), 0.0f), theLights[index].atten.z);
 				specular = specAmount * specularLight;
 			};
-			vec3 lightColor = vec3(1.0f);
+			vec3 lightColor = theLights[index].diffuse.rgb;
 			vec3 finalCol =  (diffuse * (1.0f - shadowFactor) + ambient) + specular  * (1.0f - shadowFactor) * lightColor;
-			finalObjectColour.rgb += vertexMaterialColour.rgb * finalCol;
+			finalObjectColour.rgb = vertexMaterialColour.rgb * finalCol;
 			return finalObjectColour;		
 		}
 		
