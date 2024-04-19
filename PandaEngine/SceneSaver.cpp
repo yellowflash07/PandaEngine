@@ -982,6 +982,9 @@ GameObject* SceneSaver::LoadGameObjectAsync(cMesh* loadedMesh, GameObjectConfig 
     mesh->normalMap = config.mesh.normalMap;
     mesh->enableShadow = config.mesh.enableShadow;
     mesh->dynamicLOD = config.mesh.isDynamicLOD;
+    mesh->UV_Offset = config.mesh.UV_Offset;
+    mesh->UV_Tiling = config.mesh.UV_Tiling;
+    mesh->transperancy = config.mesh.transperancy;
 
     if (config.light.index >= 0)
     {
@@ -1021,6 +1024,7 @@ GameObject* SceneSaver::LoadGameObjectAsync(cMesh* loadedMesh, GameObjectConfig 
 
         p->isTrigger = physXConfig.isTrigger;
         p->SetTrigger();
+        p->GameObject = go;
     }
 
     if (config.characterController.height > 0)
@@ -1033,6 +1037,9 @@ GameObject* SceneSaver::LoadGameObjectAsync(cMesh* loadedMesh, GameObjectConfig 
         c->position = characterControllerConfig.position;
         c->controller->setHeight(c->height);
         c->controller->setRadius(c->radius);
+        c->controller->setPosition(PxExtendedVec3(c->position.x, c->position.y, c->position.z));
+        c->controller->setStepOffset(c->stepOffset);
+        c->controller->setSlopeLimit(c->slopeLimit);
     }
 
 

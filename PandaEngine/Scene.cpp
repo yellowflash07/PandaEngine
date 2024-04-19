@@ -232,6 +232,11 @@ void Scene::UpdateGameObject(GameObject* go, glm::mat4 matModel, float deltaTime
 		if (physXBody != nullptr)
 		{
 			physXBody->Update(deltaTime);
+			GameObject* physXGo = (GameObject*)physXBody->GameObject;
+			if (go == nullptr)
+			{
+				physXBody->GameObject = go;
+			}
 		}
 
 		CharacterController* controller = go->GetComponent<CharacterController>();
@@ -283,10 +288,15 @@ GameObject* Scene::CreateChildObject(GameObject* go, std::string childName)
 
 void Scene::DestroyGameObject(GameObject* go)
 {
-	for (GameObject* go : m_GameObjects)
+	for (int i = 0; i < m_GameObjects.size(); i++)
 	{
-		m_GameObjects.erase(std::remove(m_GameObjects.begin(), m_GameObjects.end(), go), m_GameObjects.end());
-		delete go;
+		if (m_GameObjects[i] == go)
+		{
+			//m_Registry.destroy(go->entity);
+			m_GameObjects.erase(m_GameObjects.begin() + i);
+			//delete go;
+			break;
+		}
 	}
 }
 

@@ -63,6 +63,8 @@ void PhysXBody::SetShape(ColliderType type)
 	shape->setQueryFilterData(qryFilterData);
 	shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
 	body->attachShape(*shape);
+	shape->userData = this;
+	body->userData = this;
 	shape->release();
 }
 
@@ -88,7 +90,7 @@ void PhysXBody::SetBody(bool isDynamic)
 	std::cout << "Body created: " << dynamic << std::endl;
 	gScene->addActor(*body);
 	gActorMap[this->body] = this;
-
+	body->userData = this;
 	body->setActorFlag(PxActorFlag::eVISUALIZATION, true);
 }
 

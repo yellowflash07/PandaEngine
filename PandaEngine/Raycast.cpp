@@ -27,7 +27,7 @@ bool Raycast::RaycastHit(HitResult& hitResult)
 		hitResult.hitPoint = glm::vec3(hit.block.position.x, hit.block.position.y, hit.block.position.z);
 		hitResult.hitNormal = glm::vec3(hit.block.normal.x, hit.block.normal.y, hit.block.normal.z);
 		hitResult.distance = hit.block.distance;
-		hitResult.hitActor = ::gActorMap[hit.block.actor];
+		hitResult.hitActor = (PhysXBody*)hit.block.actor->userData;
 		return true;
 	}
 

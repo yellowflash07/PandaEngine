@@ -288,6 +288,18 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cPlayerAnimations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainAnimationBlend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicleClassNewMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cVehicle.cpp">
+      <Filter>Physics\PhysX\Vehicle Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Basic Shader Manager\cShaderManager.h">
@@ -507,6 +519,12 @@
       <Filter>Physics\PhysX\Vehicle Physics</Filter>
     </ClInclude>
     <ClInclude Include="PhysXVehicleEnums.h">
+      <Filter>Physics\PhysX\Vehicle Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="cPlayerAnimations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cVehicle.h">
       <Filter>Physics\PhysX\Vehicle Physics</Filter>
     </ClInclude>
   </ItemGroup>
