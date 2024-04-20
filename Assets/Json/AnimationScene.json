@@ -310,9 +310,9 @@
             "loadAsync": false,
             "transform": {
                 "position": [
-                    -1142.50634765625,
-                    -97.3058853149414,
-                    555.513671875
+                    681.6385498046875,
+                    -95.1263198852539,
+                    -2181.150634765625
                 ],
                 "rotation": [
                     -1.5699999332427979,
@@ -321,8 +321,8 @@
                 ],
                 "scale": [
                     20.0,
-                    19.99956512451172,
-                    19.99956512451172
+                    19.99937629699707,
+                    19.99937629699707
                 ]
             },
             "mesh": {
@@ -661,99 +661,28 @@
             "children": []
         },
         {
-            "name": "garbagebags_1",
+            "name": "Ground",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    -1086.9368896484375,
-                    -92.53028869628906,
-                    727.4815673828125
+                    50.63299560546875,
+                    -90.23841857910156,
+                    -56.983001708984375
                 ],
                 "rotation": [
-                    -3.141592502593994,
-                    -0.8654466271400452,
-                    -3.141592502593994
-                ],
-                "scale": [
-                    0.25,
-                    0.25,
-                    0.25
-                ]
-            },
-            "mesh": {
-                "fileName": "garbagebags.fbx",
-                "friendlyName": "garbagebags.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "garbagebagsColor.png",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "garbagebagsNormal.png",
-                "UV_Offset": [
                     0.0,
+                    -0.0,
                     0.0
                 ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "Tree_Fern_1_01",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -2040.514892578125,
-                    -77.33110809326172,
-                    1178.0576171875
-                ],
-                "rotation": [
-                    -7.005167645957044e-8,
-                    0.050455670803785324,
-                    -4.667741748676235e-8
-                ],
                 "scale": [
-                    0.4999992847442627,
-                    0.5,
-                    0.4999992847442627
+                    5000.0,
+                    1.0,
+                    5000.0
                 ]
             },
             "mesh": {
-                "fileName": "Tree_Fern_1.fbx",
-                "friendlyName": "Tree_Fern_1.fbx",
+                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -775,7 +704,7 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "Green_Texture.jpg",
+                    "203536.png",
                     "",
                     "",
                     ""
@@ -796,6 +725,92 @@
                     1.0,
                     1.0
                 ],
+                "enableShadow": false,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "physXObj": {
+                "type": 1,
+                "halfExtents": [
+                    3650.5458984375,
+                    0.5,
+                    6930.123046875
+                ],
+                "isDynamic": false,
+                "isTrigger": false,
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            "children": []
+        },
+        {
+            "name": "Mountain_1",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -3041.089599609375,
+                    505.7720031738281,
+                    97.42139434814453
+                ],
+                "rotation": [
+                    1.569946527481079,
+                    0.005637490190565586,
+                    3.14156436920166
+                ],
+                "scale": [
+                    999.993896484375,
+                    2501.32763671875,
+                    1729.8236083984375
+                ]
+            },
+            "mesh": {
+                "fileName": "Mountain.fbx",
+                "friendlyName": "Mountain.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Default OBJ_albedo.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "Default OBJ_normal.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    0.6600000262260437
+                ],
                 "enableShadow": true,
                 "isDynamicLOD": false,
                 "transperancy": 1.0
@@ -803,28 +818,99 @@
             "children": []
         },
         {
-            "name": "Plank_01_01",
+            "name": "Mountain_7",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -1188.190673828125,
+                    -159.06480407714844,
+                    2806.79345703125
+                ],
+                "rotation": [
+                    0.662052571773529,
+                    1.4591524600982666,
+                    2.1529245376586914
+                ],
+                "scale": [
+                    999.9945678710938,
+                    2501.310791015625,
+                    1729.87353515625
+                ]
+            },
+            "mesh": {
+                "fileName": "Mountain.fbx",
+                "friendlyName": "Mountain.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Default OBJ_albedo.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "Default OBJ_normal.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    0.6600000262260437
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Plank_02_01",
             "loadAsync": true,
             "transform": {
                 "position": [
                     -939.316650390625,
-                    -84.00623321533203,
-                    541.0736694335938
+                    -87.41532135009766,
+                    795.1715698242188
                 ],
                 "rotation": [
-                    -3.0215184688568115,
+                    3.1313087940216064,
                     -0.0,
                     0.0
                 ],
                 "scale": [
                     49.999637603759766,
-                    50.00003433227539,
-                    49.999881744384766
+                    49.999820709228516,
+                    49.999820709228516
                 ]
             },
             "mesh": {
-                "fileName": "Plank_01.fbx",
-                "friendlyName": "Plank_01.fbx",
+                "fileName": "Plank_02.fbx",
+                "friendlyName": "Plank_02.fbx",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -859,518 +945,6 @@
                 ],
                 "maskTexture": "",
                 "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "BoundingBox3",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    -2652.6806640625
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scale": [
-                    77064.7578125,
-                    1719.6650390625,
-                    17.85681915283203
-                ]
-            },
-            "mesh": {
-                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": false,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": false,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "physXObj": {
-                "type": 1,
-                "halfExtents": [
-                    38532.37890625,
-                    859.83251953125,
-                    8.928409576416016
-                ],
-                "isDynamic": false,
-                "isTrigger": false,
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ]
-            },
-            "children": []
-        },
-        {
-            "name": "Gun",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -2.0,
-                    5.0,
-                    4.0
-                ],
-                "rotation": [
-                    1.5700000524520874,
-                    0.0,
-                    -1.7000000476837158
-                ],
-                "scale": [
-                    10.0,
-                    10.0,
-                    10.0
-                ]
-            },
-            "mesh": {
-                "fileName": "Gun.fbx",
-                "friendlyName": "Gun.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "Tree_Fern_6_01",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -2244.89501953125,
-                    -77.33114624023438,
-                    696.906005859375
-                ],
-                "rotation": [
-                    -7.005112223623655e-8,
-                    0.05045553296804428,
-                    -4.6677286036356236e-8
-                ],
-                "scale": [
-                    0.4999982416629791,
-                    0.5,
-                    0.4999982416629791
-                ]
-            },
-            "mesh": {
-                "fileName": "Tree_Fern_6.fbx",
-                "friendlyName": "Tree_Fern_6.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "Green_Texture.jpg",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "Tree_Palm2_01",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -1635.573974609375,
-                    20.4440860748291,
-                    2128.677734375
-                ],
-                "rotation": [
-                    -7.004830848700294e-8,
-                    0.050455231219530106,
-                    -4.667677799830017e-8
-                ],
-                "scale": [
-                    0.24999691545963287,
-                    0.25,
-                    0.24999691545963287
-                ]
-            },
-            "mesh": {
-                "fileName": "Tree_Palm2.fbx",
-                "friendlyName": "Tree_Palm2.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "T_Palm.png",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "SkyBox",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -3255.81201171875,
-                    419.72601318359375,
-                    2220.813720703125
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    5000.0,
-                    5000.0,
-                    5000.0
-                ]
-            },
-            "mesh": {
-                "fileName": "Sphere_1_unit_Radius_UV.ply",
-                "friendlyName": "SkyBox",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": true,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": false,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "bunch_stones_1",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -1339.09130859375,
-                    -87.57542419433594,
-                    255.38401794433594
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scale": [
-                    10.000001907348633,
-                    10.000005722045898,
-                    10.00001049041748
-                ]
-            },
-            "mesh": {
-                "fileName": "bunch_stones.fbx",
-                "friendlyName": "bunch_stones.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "StreetLight_Base_Color.png",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "Street_Light_1",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -954.215087890625,
-                    -92.53028869628906,
-                    571.6085815429688
-                ],
-                "rotation": [
-                    -3.141592502593994,
-                    -0.8654466271400452,
-                    -3.141592502593994
-                ],
-                "scale": [
-                    0.25,
-                    0.25,
-                    0.25
-                ]
-            },
-            "mesh": {
-                "fileName": "StreetLight.obj",
-                "friendlyName": "StreetLight.obj",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "StreetLight_Base_Color.png",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "StreetLight_Normal_DirectX.png",
                 "UV_Offset": [
                     0.0,
                     0.0
@@ -1457,28 +1031,28 @@
             "children": []
         },
         {
-            "name": "Tree_Fern_2_01",
+            "name": "Tree_Banana_2_01",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    -1806.3297119140625,
-                    -77.33110809326172,
-                    1535.26904296875
+                    -804.6539916992188,
+                    -90.30353546142578,
+                    -2342.322021484375
                 ],
                 "rotation": [
-                    -7.005198909837418e-8,
-                    0.050456028431653976,
-                    -4.667730379992463e-8
+                    -2.6586546297835412e-8,
+                    0.073299340903759,
+                    -4.5126682834961684e-8
                 ],
                 "scale": [
-                    0.4999992847442627,
                     0.5,
-                    0.4999992847442627
+                    0.5,
+                    0.5
                 ]
             },
             "mesh": {
-                "fileName": "Tree_Fern_2.fbx",
-                "friendlyName": "Tree_Fern_2.fbx",
+                "fileName": "Tree_Banana_2.fbx",
+                "friendlyName": "Tree_Banana_2.fbx",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -1500,7 +1074,7 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "Green_Texture.jpg",
+                    "T_Banana.png",
                     "",
                     "",
                     ""
@@ -1512,7 +1086,7 @@
                     1.0
                 ],
                 "maskTexture": "",
-                "normalMap": "",
+                "normalMap": "T_Banana_N.png",
                 "UV_Offset": [
                     0.0,
                     0.0
@@ -1528,28 +1102,28 @@
             "children": []
         },
         {
-            "name": "Ground",
+            "name": "Tree_Banana_1_01",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    50.63299560546875,
-                    -90.23841857910156,
-                    -56.983001708984375
+                    -1273.419921875,
+                    -19.230117797851563,
+                    776.3546142578125
                 ],
                 "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
+                    -2.6586546297835412e-8,
+                    0.073299340903759,
+                    -4.5126682834961684e-8
                 ],
                 "scale": [
-                    5000.0,
-                    1.0,
-                    5000.0
+                    0.5,
+                    0.5,
+                    0.5
                 ]
             },
             "mesh": {
-                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "fileName": "Tree_Banana_1.fbx",
+                "friendlyName": "Tree_Banana_1.fbx",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -1571,7 +1145,7 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "203536.png",
+                    "T_Banana.png",
                     "",
                     "",
                     ""
@@ -1583,7 +1157,7 @@
                     1.0
                 ],
                 "maskTexture": "",
-                "normalMap": "",
+                "normalMap": "T_Banana_N.png",
                 "UV_Offset": [
                     0.0,
                     0.0
@@ -1592,24 +1166,9 @@
                     1.0,
                     1.0
                 ],
-                "enableShadow": false,
+                "enableShadow": true,
                 "isDynamicLOD": false,
                 "transperancy": 1.0
-            },
-            "physXObj": {
-                "type": 1,
-                "halfExtents": [
-                    3650.5458984375,
-                    0.5,
-                    6930.123046875
-                ],
-                "isDynamic": false,
-                "isTrigger": false,
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ]
             },
             "children": []
         },
@@ -1771,13 +1330,84 @@
             "children": []
         },
         {
-            "name": "TrafficCone_1",
+            "name": "Plank_01_01",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    -1222.5150146484375,
-                    -86.50237274169922,
-                    414.11578369140625
+                    -939.316650390625,
+                    -84.00623321533203,
+                    541.0736694335938
+                ],
+                "rotation": [
+                    -3.0215184688568115,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    49.999637603759766,
+                    50.00003433227539,
+                    49.999881744384766
+                ]
+            },
+            "mesh": {
+                "fileName": "Plank_01.fbx",
+                "friendlyName": "Plank_01.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Planks_Diff.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "garbagebags_1",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -1086.9368896484375,
+                    -92.53028869628906,
+                    727.4815673828125
                 ],
                 "rotation": [
                     -3.141592502593994,
@@ -1785,14 +1415,14 @@
                     -3.141592502593994
                 ],
                 "scale": [
-                    0.5,
-                    0.5,
-                    0.5
+                    0.25,
+                    0.25,
+                    0.25
                 ]
             },
             "mesh": {
-                "fileName": "Traffic_Cone.fbx",
-                "friendlyName": "Traffic_Cone.fbx",
+                "fileName": "garbagebags.fbx",
+                "friendlyName": "garbagebags.fbx",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -1814,7 +1444,7 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "Traffic_Cone_Base_Color.png",
+                    "garbagebagsColor.png",
                     "",
                     "",
                     ""
@@ -1826,7 +1456,7 @@
                     1.0
                 ],
                 "maskTexture": "",
-                "normalMap": "",
+                "normalMap": "garbagebagsNormal.png",
                 "UV_Offset": [
                     0.0,
                     0.0
@@ -1842,28 +1472,28 @@
             "children": []
         },
         {
-            "name": "Plank_02_01",
+            "name": "Gun",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    -939.316650390625,
-                    -87.41532135009766,
-                    795.1715698242188
+                    -2.0,
+                    5.0,
+                    4.0
                 ],
                 "rotation": [
-                    3.1313087940216064,
-                    -0.0,
-                    0.0
+                    1.5700000524520874,
+                    0.0,
+                    -1.7000000476837158
                 ],
                 "scale": [
-                    49.999637603759766,
-                    49.999820709228516,
-                    49.999820709228516
+                    10.0,
+                    10.0,
+                    10.0
                 ]
             },
             "mesh": {
-                "fileName": "Plank_02.fbx",
-                "friendlyName": "Plank_02.fbx",
+                "fileName": "Gun.fbx",
+                "friendlyName": "Gun.fbx",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -1885,519 +1515,7 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "Planks_Diff.png",
                     "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "Stone Debris_01",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -1418.1026611328125,
-                    -86.40044403076172,
-                    430.3867492675781
-                ],
-                "rotation": [
-                    1.5846861600875854,
-                    -0.865447461605072,
-                    -3.141592264175415
-                ],
-                "scale": [
-                    100.00006103515625,
-                    100.00006103515625,
-                    100.00001525878906
-                ]
-            },
-            "mesh": {
-                "fileName": "Stone Debris_01.fbx",
-                "friendlyName": "Stone Debris_01.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "Wall.jpg",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "Tree_Palm3_01",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -2244.89501953125,
-                    -77.33114624023438,
-                    696.906005859375
-                ],
-                "rotation": [
-                    -7.005112223623655e-8,
-                    0.05045553296804428,
-                    -4.6677286036356236e-8
-                ],
-                "scale": [
-                    0.4999982416629791,
-                    0.5,
-                    0.4999982416629791
-                ]
-            },
-            "mesh": {
-                "fileName": "Tree_Palm3.fbx",
-                "friendlyName": "Tree_Palm3.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "T_Palm.png",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "Plank_04_01",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -937.4932861328125,
-                    -85.78761291503906,
-                    684.0999755859375
-                ],
-                "rotation": [
-                    3.0831851959228516,
-                    -0.0,
-                    0.0
-                ],
-                "scale": [
-                    49.999637603759766,
-                    49.99985885620117,
-                    49.99985885620117
-                ]
-            },
-            "mesh": {
-                "fileName": "Plank_04.fbx",
-                "friendlyName": "Plank_04.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "Planks_Diff.png",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "Plane",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    0.0,
-                    -88.5,
-                    2360.03759765625
-                ],
-                "rotation": [
-                    -1.5699999332427979,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    100.0,
-                    99.9990463256836,
-                    99.9990463256836
-                ]
-            },
-            "mesh": {
-                "fileName": "Grid_10x10_vertical_in_y.ply",
-                "friendlyName": "Grid_10x10_vertical_in_y.ply",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "grass.jpg",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "GrassNormal.png",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    2.4800000190734863,
-                    2.9800000190734863
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "Tree_Banana_1_01",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -1273.419921875,
-                    -19.230117797851563,
-                    776.3546142578125
-                ],
-                "rotation": [
-                    -2.6586546297835412e-8,
-                    0.073299340903759,
-                    -4.5126682834961684e-8
-                ],
-                "scale": [
-                    0.5,
-                    0.5,
-                    0.5
-                ]
-            },
-            "mesh": {
-                "fileName": "Tree_Banana_1.fbx",
-                "friendlyName": "Tree_Banana_1.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "T_Banana.png",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": true,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "children": []
-        },
-        {
-            "name": "BoundingBox2",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    2355.4130859375
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scale": [
-                    5734.30126953125,
-                    2453.36865234375,
-                    10.368260383605957
-                ]
-            },
-            "mesh": {
-                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": false,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "textureRatio": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "maskTexture": "",
-                "normalMap": "",
-                "UV_Offset": [
-                    0.0,
-                    0.0
-                ],
-                "UV_Tiling": [
-                    1.0,
-                    1.0
-                ],
-                "enableShadow": false,
-                "isDynamicLOD": false,
-                "transperancy": 1.0
-            },
-            "physXObj": {
-                "type": 1,
-                "halfExtents": [
-                    2867.150634765625,
-                    1226.684326171875,
-                    5.1841301918029785
-                ],
-                "isDynamic": false,
-                "isTrigger": false,
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ]
-            },
-            "children": []
-        },
-        {
-            "name": "Tree_Fern_5_01",
-            "loadAsync": true,
-            "transform": {
-                "position": [
-                    -2162.299072265625,
-                    -77.3311538696289,
-                    64.12393188476563
-                ],
-                "rotation": [
-                    -7.005174751384402e-8,
-                    0.05045577511191368,
-                    -4.6677410381334994e-8
-                ],
-                "scale": [
-                    0.4999992847442627,
-                    0.5,
-                    0.4999992847442627
-                ]
-            },
-            "mesh": {
-                "fileName": "Tree_Fern_5.fbx",
-                "friendlyName": "Tree_Fern_5.fbx",
-                "bIsWireframe": false,
-                "bDoNotLight": false,
-                "bIsVisible": true,
-                "bUseDebugColours": false,
-                "wholeObjectDebugColourRGBA": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "isSkyBox": false,
-                "hasVertexColors": false,
-                "isReflective": false,
-                "useBone": false,
-                "texture": [
-                    "Green_Texture.jpg",
                     "",
                     "",
                     ""
@@ -2496,28 +1614,99 @@
             "children": []
         },
         {
-            "name": "Plank_05_01",
+            "name": "SkyBox",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    -1022.0298461914063,
-                    -83.26268768310547,
-                    698.71533203125
+                    -2644.0966796875,
+                    716.2825927734375,
+                    -230.53341674804688
                 ],
                 "rotation": [
-                    3.1022865772247314,
-                    0.13116224110126495,
-                    0.0018123271875083447
+                    0.0,
+                    0.0,
+                    0.0
                 ],
                 "scale": [
-                    49.999629974365234,
-                    49.99958801269531,
-                    49.99940872192383
+                    5000.0,
+                    5000.0,
+                    5000.0
                 ]
             },
             "mesh": {
-                "fileName": "Plank_05.fbx",
-                "friendlyName": "Plank_05.fbx",
+                "fileName": "Sphere_1_unit_Radius_UV.ply",
+                "friendlyName": "SkyBox",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": true,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": false,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Stone Debris_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    1108.5921630859375,
+                    -48.761207580566406,
+                    1642.5074462890625
+                ],
+                "rotation": [
+                    1.5846861600875854,
+                    -0.865447461605072,
+                    -3.141592264175415
+                ],
+                "scale": [
+                    100.00006103515625,
+                    100.00006103515625,
+                    100.00001525878906
+                ]
+            },
+            "mesh": {
+                "fileName": "Stone Debris_01.fbx",
+                "friendlyName": "Stone Debris_01.fbx",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -2539,7 +1728,7 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "Planks_Diff.png",
+                    "Wall.jpg",
                     "",
                     "",
                     ""
@@ -2567,28 +1756,28 @@
             "children": []
         },
         {
-            "name": "Tree_Banana_2_01",
+            "name": "Mountain_3",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    -1816.3414306640625,
-                    -90.30345153808594,
-                    816.2220458984375
+                    -979.4232788085938,
+                    578.7617797851563,
+                    -2992.900390625
                 ],
                 "rotation": [
-                    -2.6586546297835412e-8,
-                    0.073299340903759,
-                    -4.5126682834961684e-8
+                    0.3254404067993164,
+                    1.433609962463379,
+                    1.8142855167388916
                 ],
                 "scale": [
-                    0.5,
-                    0.5,
-                    0.5
+                    999.9964599609375,
+                    2501.318359375,
+                    1729.876953125
                 ]
             },
             "mesh": {
-                "fileName": "Tree_Banana_2.fbx",
-                "friendlyName": "Tree_Banana_2.fbx",
+                "fileName": "Mountain.fbx",
+                "friendlyName": "Mountain.fbx",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -2610,26 +1799,26 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "T_Banana.png",
+                    "Default OBJ_albedo.png",
                     "",
                     "",
                     ""
                 ],
                 "textureRatio": [
-                    1.0,
-                    1.0,
+                    0.0,
+                    0.0,
                     1.0,
                     1.0
                 ],
                 "maskTexture": "",
-                "normalMap": "",
+                "normalMap": "Default OBJ_normal.png",
                 "UV_Offset": [
                     0.0,
                     0.0
                 ],
                 "UV_Tiling": [
                     1.0,
-                    1.0
+                    0.6600000262260437
                 ],
                 "enableShadow": true,
                 "isDynamicLOD": false,
@@ -2638,28 +1827,28 @@
             "children": []
         },
         {
-            "name": "Plank_03_01",
+            "name": "Tree_Palm3_01",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    -939.316650390625,
-                    -86.59825897216797,
-                    427.05126953125
+                    -1993.58837890625,
+                    14.273185729980469,
+                    684.2156372070313
                 ],
                 "rotation": [
-                    3.0886363983154297,
-                    -0.0,
-                    0.0
+                    -7.004741320315588e-8,
+                    0.050455231219530106,
+                    -4.6676493781205863e-8
                 ],
                 "scale": [
-                    49.999637603759766,
-                    50.000099182128906,
-                    49.999916076660156
+                    0.249994695186615,
+                    0.25,
+                    0.249994695186615
                 ]
             },
             "mesh": {
-                "fileName": "Plank_03.fbx",
-                "friendlyName": "Plank_03.fbx",
+                "fileName": "Tree_Palm3.fbx",
+                "friendlyName": "Tree_Palm3.fbx",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -2681,7 +1870,7 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
-                    "Planks_Diff.png",
+                    "T_Palm.png",
                     "",
                     "",
                     ""
@@ -2693,7 +1882,7 @@
                     1.0
                 ],
                 "maskTexture": "",
-                "normalMap": "",
+                "normalMap": "T_Banana_N.png",
                 "UV_Offset": [
                     0.0,
                     0.0
@@ -2795,6 +1984,1314 @@
             "children": []
         },
         {
+            "name": "Mountain_5",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    2970.48876953125,
+                    506.57257080078125,
+                    -1009.7363891601563
+                ],
+                "rotation": [
+                    -1.5557894706726074,
+                    0.029915645718574524,
+                    0.0020732430275529623
+                ],
+                "scale": [
+                    999.9946899414063,
+                    2501.31884765625,
+                    1729.828125
+                ]
+            },
+            "mesh": {
+                "fileName": "Mountain.fbx",
+                "friendlyName": "Mountain.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Default OBJ_albedo.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "Default OBJ_normal.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    0.6600000262260437
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "BoundingBox3",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    -2652.6806640625
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    77064.7578125,
+                    1719.6650390625,
+                    17.85681915283203
+                ]
+            },
+            "mesh": {
+                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": false,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": false,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "physXObj": {
+                "type": 1,
+                "halfExtents": [
+                    38532.37890625,
+                    859.83251953125,
+                    8.928409576416016
+                ],
+                "isDynamic": false,
+                "isTrigger": false,
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            "children": []
+        },
+        {
+            "name": "Plane",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    0.0,
+                    -88.5,
+                    2360.03759765625
+                ],
+                "rotation": [
+                    -1.5699999332427979,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    100.0,
+                    99.9990463256836,
+                    99.9990463256836
+                ]
+            },
+            "mesh": {
+                "fileName": "Grid_10x10_vertical_in_y.ply",
+                "friendlyName": "Grid_10x10_vertical_in_y.ply",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "grass.jpg",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "GrassNormal.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    2.4800000190734863,
+                    2.9800000190734863
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Plank_03_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -939.316650390625,
+                    -86.59825897216797,
+                    427.05126953125
+                ],
+                "rotation": [
+                    3.0886363983154297,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    49.999637603759766,
+                    50.000099182128906,
+                    49.999916076660156
+                ]
+            },
+            "mesh": {
+                "fileName": "Plank_03.fbx",
+                "friendlyName": "Plank_03.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Planks_Diff.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Tree_Fern_5_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -2162.299072265625,
+                    -77.3311538696289,
+                    64.12393188476563
+                ],
+                "rotation": [
+                    -7.005174751384402e-8,
+                    0.05045577511191368,
+                    -4.6677410381334994e-8
+                ],
+                "scale": [
+                    0.4999992847442627,
+                    0.5,
+                    0.4999992847442627
+                ]
+            },
+            "mesh": {
+                "fileName": "Tree_Fern_5.fbx",
+                "friendlyName": "Tree_Fern_5.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Green_Texture.jpg",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Plank_04_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -937.4932861328125,
+                    -85.78761291503906,
+                    684.0999755859375
+                ],
+                "rotation": [
+                    3.0831851959228516,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    49.999637603759766,
+                    49.99985885620117,
+                    49.99985885620117
+                ]
+            },
+            "mesh": {
+                "fileName": "Plank_04.fbx",
+                "friendlyName": "Plank_04.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Planks_Diff.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "bunch_stones_1",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -1339.09130859375,
+                    -87.57542419433594,
+                    255.38401794433594
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    10.000001907348633,
+                    10.000005722045898,
+                    10.00001049041748
+                ]
+            },
+            "mesh": {
+                "fileName": "bunch_stones.fbx",
+                "friendlyName": "bunch_stones.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "StreetLight_Base_Color.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Mountain_6",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    2967.12255859375,
+                    504.16082763671875,
+                    1840.501953125
+                ],
+                "rotation": [
+                    1.5699496269226074,
+                    -0.05614040046930313,
+                    -3.141568899154663
+                ],
+                "scale": [
+                    999.99560546875,
+                    2501.338134765625,
+                    1729.83447265625
+                ]
+            },
+            "mesh": {
+                "fileName": "Mountain.fbx",
+                "friendlyName": "Mountain.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Default OBJ_albedo.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "Default OBJ_normal.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    0.6600000262260437
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Tree_Fern_2_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    1581.5135498046875,
+                    -77.33116149902344,
+                    2006.82177734375
+                ],
+                "rotation": [
+                    -7.005041879892815e-8,
+                    0.050455451011657715,
+                    -4.6677115506099653e-8
+                ],
+                "scale": [
+                    0.4999966621398926,
+                    0.5,
+                    0.4999966621398926
+                ]
+            },
+            "mesh": {
+                "fileName": "Tree_Fern_2.fbx",
+                "friendlyName": "Tree_Fern_2.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Green_Texture.jpg",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "TrafficCone_1",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -1222.5150146484375,
+                    -86.50237274169922,
+                    414.11578369140625
+                ],
+                "rotation": [
+                    -3.141592502593994,
+                    -0.8654466271400452,
+                    -3.141592502593994
+                ],
+                "scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "mesh": {
+                "fileName": "Traffic_Cone.fbx",
+                "friendlyName": "Traffic_Cone.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Traffic_Cone_Base_Color.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Mountain_2",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -3103.5234375,
+                    572.9993286132813,
+                    -2465.752685546875
+                ],
+                "rotation": [
+                    1.5892740488052368,
+                    0.12815938889980316,
+                    3.039637804031372
+                ],
+                "scale": [
+                    999.9964599609375,
+                    2501.32177734375,
+                    1729.8162841796875
+                ]
+            },
+            "mesh": {
+                "fileName": "Mountain.fbx",
+                "friendlyName": "Mountain.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Default OBJ_albedo.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "Default OBJ_normal.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    0.6600000262260437
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Mountain_8",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    992.6488037109375,
+                    127.76617431640625,
+                    2702.06884765625
+                ],
+                "rotation": [
+                    0.5234550833702087,
+                    1.443258285522461,
+                    2.0217669010162354
+                ],
+                "scale": [
+                    999.9956665039063,
+                    2501.3154296875,
+                    1729.8763427734375
+                ]
+            },
+            "mesh": {
+                "fileName": "Mountain.fbx",
+                "friendlyName": "Mountain.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Default OBJ_albedo.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "Default OBJ_normal.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    0.6600000262260437
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Tree_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -365.7701110839844,
+                    -127.46537017822266,
+                    1963.040283203125
+                ],
+                "rotation": [
+                    -1.5699999332427979,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    20.0,
+                    19.999401092529297,
+                    19.999401092529297
+                ]
+            },
+            "mesh": {
+                "fileName": "L_Tree_1.ply",
+                "friendlyName": "L_Tree_1.ply",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Tree_Palm2_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -1635.573974609375,
+                    20.4440860748291,
+                    2128.677734375
+                ],
+                "rotation": [
+                    -7.004830848700294e-8,
+                    0.050455231219530106,
+                    -4.667677799830017e-8
+                ],
+                "scale": [
+                    0.24999691545963287,
+                    0.25,
+                    0.24999691545963287
+                ]
+            },
+            "mesh": {
+                "fileName": "Tree_Palm2.fbx",
+                "friendlyName": "Tree_Palm2.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "T_Palm.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "T_Palm_N.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "BoundingBox2",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    2355.4130859375
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    5734.30126953125,
+                    2453.36865234375,
+                    10.368260383605957
+                ]
+            },
+            "mesh": {
+                "fileName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "friendlyName": "Cube_1x1x1_xyz_n_rgba.ply",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": false,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": false,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "physXObj": {
+                "type": 1,
+                "halfExtents": [
+                    2867.150634765625,
+                    1226.684326171875,
+                    5.1841301918029785
+                ],
+                "isDynamic": false,
+                "isTrigger": false,
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            "children": []
+        },
+        {
+            "name": "Tree_Fern_1_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -2040.514892578125,
+                    -77.33110809326172,
+                    1178.0576171875
+                ],
+                "rotation": [
+                    -7.005167645957044e-8,
+                    0.050455670803785324,
+                    -4.667741748676235e-8
+                ],
+                "scale": [
+                    0.4999992847442627,
+                    0.5,
+                    0.4999992847442627
+                ]
+            },
+            "mesh": {
+                "fileName": "Tree_Fern_1.fbx",
+                "friendlyName": "Tree_Fern_1.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Green_Texture.jpg",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Plank_05_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -1022.0298461914063,
+                    -83.26268768310547,
+                    698.71533203125
+                ],
+                "rotation": [
+                    3.1022865772247314,
+                    0.13116224110126495,
+                    0.0018123271875083447
+                ],
+                "scale": [
+                    49.999629974365234,
+                    49.99958801269531,
+                    49.99940872192383
+                ]
+            },
+            "mesh": {
+                "fileName": "Plank_05.fbx",
+                "friendlyName": "Plank_05.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Planks_Diff.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Mountain_4",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -3467.484619140625,
+                    505.7151794433594,
+                    175.95065307617188
+                ],
+                "rotation": [
+                    1.569932460784912,
+                    -0.18212999403476715,
+                    -3.1414594650268555
+                ],
+                "scale": [
+                    999.9971313476563,
+                    2501.327392578125,
+                    1729.82373046875
+                ]
+            },
+            "mesh": {
+                "fileName": "Mountain.fbx",
+                "friendlyName": "Mountain.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Default OBJ_albedo.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "Default OBJ_normal.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    0.6600000262260437
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
             "name": "Terrain",
             "loadAsync": true,
             "transform": {
@@ -2876,28 +3373,28 @@
             "children": []
         },
         {
-            "name": "Tree_01",
+            "name": "Street_Light_1",
             "loadAsync": true,
             "transform": {
                 "position": [
-                    -1121.39453125,
-                    -125.59535217285156,
-                    -384.9071960449219
+                    -954.215087890625,
+                    -92.53028869628906,
+                    571.6085815429688
                 ],
                 "rotation": [
-                    -1.5699999332427979,
-                    0.0,
-                    0.0
+                    -3.141592502593994,
+                    -0.8654466271400452,
+                    -3.141592502593994
                 ],
                 "scale": [
-                    20.0,
-                    19.999658584594727,
-                    19.999658584594727
+                    0.25,
+                    0.25,
+                    0.25
                 ]
             },
             "mesh": {
-                "fileName": "L_Tree_1.ply",
-                "friendlyName": "L_Tree_1.ply",
+                "fileName": "StreetLight.obj",
+                "friendlyName": "StreetLight.obj",
                 "bIsWireframe": false,
                 "bDoNotLight": false,
                 "bIsVisible": true,
@@ -2919,7 +3416,149 @@
                 "isReflective": false,
                 "useBone": false,
                 "texture": [
+                    "StreetLight_Base_Color.png",
                     "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "StreetLight_Normal_DirectX.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    1.0
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Mountain_4",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    1776.8565673828125,
+                    508.4042053222656,
+                    -3139.6240234375
+                ],
+                "rotation": [
+                    -1.5584287643432617,
+                    -1.5015273094177246,
+                    -0.012368851341307163
+                ],
+                "scale": [
+                    999.9976196289063,
+                    2501.324951171875,
+                    1729.830810546875
+                ]
+            },
+            "mesh": {
+                "fileName": "Mountain.fbx",
+                "friendlyName": "Mountain.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Default OBJ_albedo.png",
+                    "",
+                    "",
+                    ""
+                ],
+                "textureRatio": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0
+                ],
+                "maskTexture": "",
+                "normalMap": "Default OBJ_normal.png",
+                "UV_Offset": [
+                    0.0,
+                    0.0
+                ],
+                "UV_Tiling": [
+                    1.0,
+                    0.6600000262260437
+                ],
+                "enableShadow": true,
+                "isDynamicLOD": false,
+                "transperancy": 1.0
+            },
+            "children": []
+        },
+        {
+            "name": "Tree_Fern_6_01",
+            "loadAsync": true,
+            "transform": {
+                "position": [
+                    -2244.89501953125,
+                    -77.33114624023438,
+                    696.906005859375
+                ],
+                "rotation": [
+                    -7.005112223623655e-8,
+                    0.05045553296804428,
+                    -4.6677286036356236e-8
+                ],
+                "scale": [
+                    0.4999982416629791,
+                    0.5,
+                    0.4999982416629791
+                ]
+            },
+            "mesh": {
+                "fileName": "Tree_Fern_6.fbx",
+                "friendlyName": "Tree_Fern_6.fbx",
+                "bIsWireframe": false,
+                "bDoNotLight": false,
+                "bIsVisible": true,
+                "bUseDebugColours": false,
+                "wholeObjectDebugColourRGBA": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "isSkyBox": false,
+                "hasVertexColors": false,
+                "isReflective": false,
+                "useBone": false,
+                "texture": [
+                    "Green_Texture.jpg",
                     "",
                     "",
                     ""
