@@ -8,7 +8,7 @@
 #include "ImGuizmo.h"
 #include "Debug.h"
 
-bool IMGUI_ENABLE = false;
+bool IMGUI_ENABLE = true;
 
 static void error_callback(int error, const char* description)
 {
