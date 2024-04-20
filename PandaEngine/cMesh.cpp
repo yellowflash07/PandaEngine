@@ -240,7 +240,7 @@ unsigned int cMesh::m_nextUniqueID = cMesh::FIRST_UNIQUE_ID;
 cMesh::cMesh(std::string meshName, std::string friendlyName)
 {
 	//std::cout << "!!!!!!!!!!!!!!" << std::endl;
-	std::cout << meshName << "," << friendlyName << std::endl;
+	//std::cout << meshName << "," << friendlyName << std::endl;
 	
 	this->LoadMesh(meshName, friendlyName);
 

@@ -736,7 +736,7 @@ void AnimationSystem::LoadAnimationFromFile(std::string fileName)
 				drawInfo->Animations.push_back(animInfo);
 			}
 			//m_mesh->modelDrawInfo.Animations.push_back(info);
-			printf("Added Animation: %s\n", animInfo.AnimationName.c_str());
+			//printf("Added Animation: %s\n", animInfo.AnimationName.c_str());
 		}
 	}
 }
