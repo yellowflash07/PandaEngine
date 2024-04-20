@@ -60,13 +60,12 @@ int main(void)
 	}
 
 	bool loaded = engine.meshManager->LoadCubeMap("space",
-		"CubeMaps/TropicalSunnyDayLeft2048.bmp",
-		"CubeMaps/TropicalSunnyDayRight2048.bmp",
-		"CubeMaps/TropicalSunnyDayDown2048.bmp",
-		"CubeMaps/TropicalSunnyDayUp2048.bmp",
-		"CubeMaps/TropicalSunnyDayFront2048.bmp",
-		"CubeMaps/TropicalSunnyDayBack2048.bmp",
-		true);
+		"CubeMaps/px.png", 
+		"CubeMaps/nx.png", 
+		"CubeMaps/py.png", 
+		"CubeMaps/ny.png", 
+		"CubeMaps/pz.png", 
+		"CubeMaps/nz.png", true);
 
 	camera->SetPosition(glm::vec3(11.0f, 158.0f, 401.0f));
 

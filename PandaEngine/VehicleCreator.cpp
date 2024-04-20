@@ -314,7 +314,7 @@ void VehicleCreator::customizeVehicleToLengthScale(const PxReal lengthScale, PxR
 
 		//Slow forward speed correction.
 		{
-			wheelsSimData->setSubStepCount(5.0f * lengthScale, 3, 1);
+			wheelsSimData->setSubStepCount(5.0f * lengthScale, 15, 10);
 			wheelsSimData->setMinLongSlipDenominator(4.0f * lengthScale);
 		}
 
