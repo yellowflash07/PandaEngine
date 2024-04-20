@@ -39,8 +39,7 @@ void cPlayerAnimations::LoadAnimations()
 	animationSystem->LoadAnimationFromFile("A_Pistol_Walk_Backward.dae");
 	animationSystem->LoadAnimationFromFile("A_Pistol_Strafe_Left.dae");
 	animationSystem->LoadAnimationFromFile("A_Pistol_Strafe_Right.dae");
-	animationSystem->LoadAnimationFromFile("A_Pistol_Jump.dae");
-	animationSystem->LoadAnimationFromFile("A_Falling_Back_Death.dae");
+	animationSystem->LoadAnimationFromFile("Shooting.dae");
 
 }
 

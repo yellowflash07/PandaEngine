@@ -8,7 +8,7 @@
 #include "ImGuizmo.h"
 #include "Debug.h"
 
-bool IMGUI_ENABLE = true;
+bool IMGUI_ENABLE = false;
 
 static void error_callback(int error, const char* description)
 {
@@ -47,6 +47,13 @@ bool Engine::Initialize()
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+
+    if (!IMGUI_ENABLE)
+    {
+        glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+    }
+
   //  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     window = glfwCreateWindow(1920, 1080, "Template Scene", NULL, NULL);
     if (!window)

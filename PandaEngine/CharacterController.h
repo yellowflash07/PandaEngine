@@ -14,6 +14,10 @@ public:
 
 	void Move(glm::vec3 direction, float deltaTime);
 
+	void Hold(glm::vec3 position);
+
+	void StopHold();
+
 	void Render() override;
 
 	float height;
@@ -34,7 +38,7 @@ private:
 	TransformComponent* transform;
 	PxCapsuleControllerDesc* desc;
 	glm::vec3 direction;
-
+	bool isHolding = false;
 
 };
 

@@ -19,8 +19,7 @@ public:
 		WALKBACK = 3,
 		WALKLEFT = 4,
 		WALKRIGHT = 5,
-		JUMP = 6,
-		DIE = 7
+		SHOOT = 6
 	};
 
 	void BlendTo(PlayerState playerState, float deltaTime);

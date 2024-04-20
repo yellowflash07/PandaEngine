@@ -521,9 +521,6 @@
     <ClInclude Include="PhysXVehicleEnums.h">
       <Filter>Physics\PhysX\Vehicle Physics</Filter>
     </ClInclude>
-    <ClInclude Include="cPlayerAnimations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cVehicle.h">
       <Filter>Physics\PhysX\Vehicle Physics</Filter>
     </ClInclude>
@@ -531,6 +528,9 @@
       <Filter>Debug</Filter>
     </ClInclude>
     <ClInclude Include="EnemyManager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cPlayerAnimations.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

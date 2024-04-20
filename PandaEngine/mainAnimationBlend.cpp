@@ -8,6 +8,7 @@
 #include "cVehicle.h"
 #include "Raycast.h"
 extern Camera* camera;
+extern bool IMGUI_ENABLE;
 int keyHit = 0;
 int mouseKeyHit = 0;
 #include "Scene.h"
@@ -131,10 +132,22 @@ int main(void)
 
 		engine.Update();
 
-		if (IsKeyPressed(GLFW_KEY_G))
+		if (IMGUI_ENABLE)
+		{
+			if (IsKeyPressed(GLFW_KEY_G))
+			{
+				scene->Play();
+			}
+			if (IsKeyPressed(GLFW_KEY_H))
+			{
+				scene->Stop();
+			}
+		}
+		else
 		{
 			scene->Play();
 		}
+		
 
 		if (skyBox == nullptr)
 		{
@@ -158,12 +171,8 @@ int main(void)
 				playerAnimations.animationSystem->AttachObjectToBone("mixamorig_LeftHand", gunTransform);
 
 				glm::vec3 gunPos = glm::vec3(gunTransform->parentTransform[3]) + gunTransform->drawPosition;
-
-				glm::vec3 rayPos = glm::vec3(controller->controller->getPosition().x,
-					controller->controller->getPosition().y, controller->controller->getPosition().z);
 				glm::vec3 rayDir = soldierTransform->GetForwardVector();
-				//glm::vec3 rayDir = glm::vec3(0, -1, 0);
-				Raycast raycast(gunPos, rayDir, 1000.0f);
+				Raycast raycast(gunPos, rayDir, 10000.0f);
 				HitResult hitResult;
 				if (raycast.RaycastHit(hitResult))
 				{
@@ -202,6 +211,7 @@ int main(void)
 					isInsideVehicle = false;
 					soldierMesh->bIsVisible = true;
 					vehicleClass.brake();
+					controller->StopHold();
 					keyHit = 0;
 				}
 			}
@@ -214,7 +224,7 @@ int main(void)
 				glm::vec3 cameraRot = glm::vec3(camera->pitch / 100.0f, -camera->yaw / 100.0f, 0);
 				camera->Follow(soldierTransform->drawPosition, cameraOffset,
 					soldierTransform->drawPosition + cameraTarget, cameraRot);
-				if (!IsKeyPressed(GLFW_KEY_W) && !IsKeyPressed(GLFW_KEY_S) && !IsKeyPressed(GLFW_KEY_A) && !IsKeyPressed(GLFW_KEY_D))
+				if (!IsKeyPressed(GLFW_KEY_W) && !IsKeyPressed(GLFW_KEY_S) && !IsKeyPressed(GLFW_KEY_A) && !IsKeyPressed(GLFW_KEY_D) && !glfwGetMouseButton(engine.window, GLFW_MOUSE_BUTTON_LEFT))
 				{
 					playerAnimations.SetState(cPlayerAnimations::PlayerState::IDLE);
 					controller->Move(glm::vec3(0, 0, 0), engine.deltaTime);
@@ -241,6 +251,11 @@ int main(void)
 						playerAnimations.SetState(cPlayerAnimations::PlayerState::WALKRIGHT);
 						controller->Move(soldierTransform->GetRightVector() * speed, engine.deltaTime);
 					}
+					if (glfwGetMouseButton(engine.window, GLFW_MOUSE_BUTTON_LEFT))
+					{
+						playerAnimations.SetState(cPlayerAnimations::PlayerState::SHOOT);
+						controller->Move(glm::vec3(0, 0, 0), engine.deltaTime);
+					}
 				}
 
 			}
@@ -249,9 +264,10 @@ int main(void)
 				glm::vec3 cameraRot = glm::vec3(camera->pitch / 50.0f, -camera->yaw / 50.0f, 0);
 				camera->Follow(vehicleTransform->drawPosition, cameraOffset,
 					vehicleTransform->drawPosition + vehicleTarget, cameraRot);
-
-				glm::vec3 soldierPos = vehicleTransform->drawPosition + glm::vec3(300, 100, 0);
-				controller->controller->setPosition(PxExtendedVec3(soldierPos.x, soldierPos.y, soldierPos.z));
+				glm::vec3 vehicleForward = vehicleTransform->GetForwardVector();
+				glm::vec3 soldierForwardPos = vehicleTransform->drawPosition + vehicleForward * 200.0f;
+				glm::vec3 soldierPos = glm::vec3(soldierForwardPos.x, 100.0f, soldierForwardPos.z);
+				controller->Hold(soldierPos);
 
 				//player is in vehicle
 				if (IsKeyPressed(GLFW_KEY_W))

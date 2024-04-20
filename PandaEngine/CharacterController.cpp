@@ -50,6 +50,8 @@ CharacterController::~CharacterController()
 
 void CharacterController::Update(float deltaTime)
 {
+	if (isHolding) return;
+
 	// Get current vertical velocity
 	PxVec3 currentVelocity = controller->getActor()->getLinearVelocity();
 	float currentYVelocity = currentVelocity.y;
@@ -78,6 +80,17 @@ void CharacterController::Move(glm::vec3 direction, float deltaTime)
 	//PxVec3 disp = PxVec3(direction.x, direction.y, direction.z) * deltaTime;
 	//// Move the character controller
 	//controller->move(disp, 0.0f, deltaTime, 0);
+}
+
+void CharacterController::Hold(glm::vec3 position)
+{
+	controller->setPosition(PxExtendedVec3(position.x, position.y, position.z));
+	isHolding = true;
+}
+
+void CharacterController::StopHold()
+{
+	isHolding = false;
 }
 
 void CharacterController::Render()

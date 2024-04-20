@@ -29,8 +29,9 @@ private:
     int currentEnemyCount = 0;
     AnimationSystem* m_AnimationSystem;
     std::map<GameObject*, EnemyState> m_EnemyStates;
-
+    float deathTime = 1.3f;
     std::vector<glm::vec3> m_EnemySpawnPoints;
+    std::map<GameObject*, float> m_EnemyDeathTimes;
 
     GameObject* m_Player;
     float speed = 0.5f;
